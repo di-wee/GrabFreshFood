@@ -15,10 +15,10 @@ const Product = () => {
 							variant='top'
 							src='https://via.placeholder.com/150'
 						/>
-						<Card.Body>
+						<Card.Body style={{ width: '250vh' }}>
 							<Card.Title>Product Title</Card.Title>
 							<Card.Text>Product Description</Card.Text>
-							<Button variant='primary'>Add to Cart</Button>
+							<Button variant='primary'>Add to cart</Button>
 						</Card.Body>
 					</Card>
 				</div>

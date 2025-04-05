@@ -2,7 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
-const Product = () => {
+const ProductCatalogue = () => {
 	return (
 		<div className='container'>
 			<div
@@ -27,4 +27,4 @@ const Product = () => {
 	);
 };
 
-export default Product;
+export default ProductCatalogue;

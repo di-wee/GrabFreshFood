@@ -1,8 +1,13 @@
 import React from 'react';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
+import { useState } from 'react';
 
 function ShoppingCart() {
+	//api call to retrieve shopping cart
+	const [cartItems, setCartItems] = useState({});
+	const [quant, setQuant] = useState(1);
+
 	return (
 		<div className='main container'>
 			<div className='title row'>
@@ -22,12 +27,15 @@ function ShoppingCart() {
 			<div className='container'>
 				<form>
 					<div className='row mt-4'>
-						{/* Shopping cart product grid */}
+						{/* Shopping cart grid */}
 						<div className='col-md-7 pr-md-3'>
 							<div
 								className='border bg-light rounded overflow-hidden'
 								style={{ padding: '1vh 1vh 0 1vh' }}>
-								<CartItem />
+								<CartItem
+									quant={quant}
+									setQuant={setQuant}
+								/>
 							</div>
 						</div>
 

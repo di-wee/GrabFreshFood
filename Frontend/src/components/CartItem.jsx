@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-function CartItem() {
+function CartItem(props) {
+	const [quant, setQuant] = useState(1);
+
 	return (
 		<div className='row border-bottom p-3 align-items-center'>
 			<div className='product-checkbox col-1 d-flex justify-content-center'>
@@ -29,6 +31,8 @@ function CartItem() {
 					style={{ width: '80px' }}
 					type='number'
 					defaultValue='1'
+					value={quant}
+					onChange={(e) => setQuant(e.target.value)}
 				/>
 			</div>
 			<div

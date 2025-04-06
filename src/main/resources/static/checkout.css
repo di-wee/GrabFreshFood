@@ -1,5 +1,6 @@
 .checkout-grid {
-    margin-top: 7vh;
+    margin-top: 4vh;
+    margin-bottom: 9vh;
     width: 50%;
     padding: 7vh 5vh 5vh 5vh;
     display: flex;
@@ -62,4 +63,17 @@ label {
     align-self: end;
     font-weight: bold;
     margin-bottom: -3vh;
+}
+
+.payment-progress-grid {
+    margin-top: 7vh;
+}
+
+.progress-text {
+    display: flex;
+    flex-direction: row;
+}
+
+.bi-1-circle-fill {
+    color: dimgrey;
 }

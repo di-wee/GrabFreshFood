@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GrabFreshFood</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/checkout.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<!--Payment progress bar-->
+<div class="payment-progress-grid container">
+    <div class="payment-progress row">
+        <div class="progress-text col-2" style="padding-left: 3vh;">
+            <i class="bi bi-1-circle-fill" style="margin-right: .5vh"></i>
+            <p>Shipping Details</p>
+        </div>
+        <div class="col-8">
+            <hr class="w-100 border border-secondary-subtle"/>
+        </div>
+        <div class="progress-text col-2" style="padding-left: 2vh">
+            <i class="bi bi-1-circle" style="margin-right: .5vh"></i>
+            <p>Payment</p>
+        </div>
+    </div>
+</div>
+<!--Checkout grid-->
+<div class="checkout-grid container bg-light">
+    <div class="top-banner">
+        <h5 class="banner-text"><span style="margin-right: 10px"><i class="bi bi-geo-alt"></i></span>Add delivery
+            address</h5>
+    </div>
+    <form method="post" style="width: 100%" th:action="@{/checkout}">
+        <div class="checkout-form form-group">
+            <label>Postal code</label>
+            <input class="form-control" name="postalCode" type="text"/>
+            <div class="label-row">
+                <label>Building Name</label>
+                <span class="optional-text">Optional</span>
+            </div>
+            <input class="form-control" name="buildingName" type="text"/>
+            <label>Address</label>
+            <input class="form-control" name="address" type="text"/>
+            <div class="row row-cols-2">
+                <div class="col">
+                    <label>Floor number</label>
+                    <input class="form-control" name="floorNumber" type="text"/>
+                    <p style="font-size: smaller; font-weight: bold; color: grey">Please enter your floor and unit
+                        number, if applicable.</p>
+                </div>
+                <div class="col">
+                    <label>Unit number</label>
+                    <input class="form-control" name="unitNumber" type="text"/>
+                </div>
+            </div>
+            <h5 style="font-weight: bold; margin-top: 3vh">Recipient's information</h5>
+            <hr class="w-100 border border-secondary-subtle" style="margin-bottom: -.5vh"/>
+            <label>Name</label>
+            <input class="form-control" name="name" type="text"/>
+            <label>Phone number</label>
+            <input class="form-control" name="phoneNumber" type="text"/>
+            <button class="payment-button btn btn-success" type="submit">Save & continue</button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+</body>
+
+</html>

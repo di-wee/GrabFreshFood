@@ -11,6 +11,7 @@
 
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
+<!--Payment progress bar-->
 <div class="payment-progress-grid container">
     <div class="payment-progress row">
         <div class="progress-text col-2" style="padding-left: 3vh;">
@@ -26,12 +27,13 @@
         </div>
     </div>
 </div>
+<!--Checkout grid-->
 <div class="checkout-grid container bg-light">
     <div class="top-banner">
         <h5 class="banner-text"><span style="margin-right: 10px"><i class="bi bi-geo-alt"></i></span>Add delivery
             address</h5>
     </div>
-    <form method="post" style="width: 100%" th:action="@{/payment}">
+    <form method="post" style="width: 100%" th:action="@{/checkout}">
         <div class="checkout-form form-group">
             <label>Postal code</label>
             <input class="form-control" name="postalCode" type="text"/>

@@ -9,4 +9,9 @@ public class OrderController {
     public String checkoutPage() {
         return "checkout-page";
     }
+
+    @GetMapping("/payment")
+    public String paymentPage() {
+        return "payment-page";
+    }
 }

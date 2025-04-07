@@ -94,10 +94,6 @@
                 <!-- Categories and Browse All -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="browseAllDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Browse All
-                        </a>
                         <ul class="dropdown-menu" aria-labelledby="browseAllDropdown">
                             <li><a class="dropdown-item" th:href="@{/category/all}">All Products</a></li>
                             <li><a class="dropdown-item" th:href="@{/new-arrivals}">New Arrivals</a></li>
@@ -158,12 +154,6 @@
 
                 <!-- User Actions -->
                 <div class="user-actions d-flex align-items-center ms-lg-3">
-                    <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/lists}">
-                        <div class="position-relative">
-                            <i class="bi bi-heart fs-5"></i>
-                        </div>
-                        <span class="d-none d-md-inline small">Lists</span>
-                    </a>
                     <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/account}">
                         <div class="position-relative">
                             <i class="bi bi-person fs-5"></i>

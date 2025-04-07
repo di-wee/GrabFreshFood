@@ -28,9 +28,11 @@ CREATE TABLE `shopping_cart_item` (
   `price` double NOT NULL,
   `is_checkout` tinyint(1) DEFAULT NULL,
   `quantity` int NOT NULL,
+  `cart_id` INT NOT NULL,
   PRIMARY KEY (`item_id`),
   KEY `fk.cart_product_id_idx` (`product_id`),
-  CONSTRAINT `fk.cart_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `fk.cart_product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+CONSTRAINT `fk.cart_cart_id` FOREIGN KEY (`cart_id`) REFERENCES `cart` (`cart_id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,7 +42,18 @@ CREATE TABLE `shopping_cart_item` (
 
 LOCK TABLES `shopping_cart_item` WRITE;
 /*!40000 ALTER TABLE `shopping_cart_item` DISABLE KEYS */;
-INSERT INTO `shopping_cart_item` VALUES (1,1,2.5,0,2),(2,2,4,0,1),(3,3,12,1,1),(4,4,3.5,0,3),(5,5,3,1,2),(6,6,10,0,1),(7,7,6,1,1),(8,8,4.5,0,2),(9,9,8,1,1),(10,10,5,0,1);
+INSERT INTO `shopping_cart_item` VALUES
+(1,1,2.5,0,2,1),
+(2,2,4,0,1,1),
+(3,3,12,1,1,2),
+(4,4,3.5,0,3,3),
+(5,5,3,1,2,4),
+(6,6,10,0,1,1),
+(7,7,6,1,1,2),
+(8,8,4.5,0,2,3),   -- Added cart_id = 3
+(9,9,8,1,1,4),     -- Added cart_id = 4
+(10,10,5,0,1,3);
+
 /*!40000 ALTER TABLE `shopping_cart_item` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

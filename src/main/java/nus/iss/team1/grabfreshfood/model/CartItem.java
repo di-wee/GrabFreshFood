@@ -12,10 +12,10 @@ public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
-    private Long cartItemId;
+    private int cartItemId;
 
     @Column(name = "product_id")
-    private Long productId;
+    private int productId;
     private double price;
 
     @Column(name = "is_checkout")

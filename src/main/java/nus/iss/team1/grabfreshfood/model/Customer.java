@@ -2,11 +2,7 @@
 
 package nus.iss.team1.grabfreshfood.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "customer")
@@ -14,12 +10,15 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private Long id;
 
+    @Column(name = "email")
     private String username;
     private String password;
 
-    public Customer() { }
+    public Customer() {
+    }
 
     public Customer(String username, String password) {
         this.username = username;

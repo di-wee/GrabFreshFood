@@ -22,8 +22,6 @@ public class Cart {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    private String status;
-
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
 

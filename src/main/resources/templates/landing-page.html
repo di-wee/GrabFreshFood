@@ -85,69 +85,6 @@
                         <p class="m-0 small">Beverages</p>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="category-item bg-white text-center rounded-3 p-3 shadow-sm">
-                        <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: var(--grabfreshfood-light-green);">
-                            <i class="bi bi-house fs-3 text-grabfreshfood"></i>
-                        </div>
-                        <p class="m-0 small">Household</p>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="category-item bg-white text-center rounded-3 p-3 shadow-sm">
-                        <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: var(--grabfreshfood-light-green);">
-                            <i class="bi bi-droplet fs-3 text-grabfreshfood"></i>
-                        </div>
-                        <p class="m-0 small">Health & Beauty</p>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="category-item bg-white text-center rounded-3 p-3 shadow-sm">
-                        <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: var(--grabfreshfood-light-green);">
-                            <i class="bi bi-balloon fs-3 text-grabfreshfood"></i>
-                        </div>
-                        <p class="m-0 small">Baby & Child</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Promotions -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <h4 class="fw-bold mb-3">Current Promotions</h4>
-            <div class="row g-3">
-                <div class="col-12 col-md-4">
-                    <div class="bg-white rounded-3 shadow-sm overflow-hidden">
-                        <img src="https://via.placeholder.com/400x250" class="img-fluid w-100" alt="Promotion">
-                        <div class="p-3">
-                            <h5 class="fw-bold">Fresh Produce Sale</h5>
-                            <p class="text-grabfreshfood fw-bold">Up to 30% off</p>
-                            <a href="#" class="text-grabfreshfood fw-bold text-decoration-none">Shop Now</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="bg-white rounded-3 shadow-sm overflow-hidden">
-                        <img src="https://via.placeholder.com/400x250" class="img-fluid w-100" alt="Promotion">
-                        <div class="p-3">
-                            <h5 class="fw-bold">Weekly Specials</h5>
-                            <p class="text-grabfreshfood fw-bold">Buy 1 Get 1 Free</p>
-                            <a href="#" class="text-grabfreshfood fw-bold text-decoration-none">Shop Now</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-4">
-                    <div class="bg-white rounded-3 shadow-sm overflow-hidden">
-                        <img src="https://via.placeholder.com/400x250" class="img-fluid w-100" alt="Promotion">
-                        <div class="p-3">
-                            <h5 class="fw-bold">Household Essentials</h5>
-                            <p class="text-grabfreshfood fw-bold">20% off</p>
-                            <a href="#" class="text-grabfreshfood fw-bold text-decoration-none">Shop Now</a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -184,55 +121,6 @@
 <!-- ✅ React & ReactDOM via CDN -->
 <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
-<!-- ✅ Flash Deals React Component -->
-<script>
-    const FlashDeals = () => {
-        const deals = [
-            { id: 1, name: "Jasmine Rice 5kg", originalPrice: 13.90, salePrice: 10.90, discount: "22%", image: "https://via.placeholder.com/150" },
-            { id: 2, name: "Washing Powder 3kg", originalPrice: 11.50, salePrice: 8.90, discount: "23%", image: "https://via.placeholder.com/150" },
-            { id: 3, name: "Instant Noodles (5 Pack)", originalPrice: 4.80, salePrice: 3.50, discount: "27%", image: "https://via.placeholder.com/150" },
-            { id: 4, name: "Orange Juice 1L", originalPrice: 3.20, salePrice: 2.40, discount: "25%", image: "https://via.placeholder.com/150" }
-        ];
-
-        return React.createElement("div", { className: "bg-white rounded-3 p-3 shadow-sm" },
-            React.createElement("div", { className: "row gx-3" },
-                deals.map(deal =>
-                    React.createElement("div", { className: "col-6 col-md-3 mb-3", key: deal.id },
-                        React.createElement("div", { className: "position-relative border rounded p-2 h-100 d-flex flex-column" },
-                            React.createElement("span", {
-                                className: "position-absolute top-0 start-0 bg-danger text-white small fw-bold px-2 py-1 rounded-top-end rounded-bottom-end",
-                                style: { fontSize: "0.7rem" }
-                            }, "FLASH DEAL"),
-                            React.createElement("span", {
-                                className: "position-absolute top-0 end-0 bg-warning text-dark small fw-bold px-2 py-1 rounded",
-                                style: { fontSize: "0.7rem" }
-                            }, `SAVE ${deal.discount}`),
-                            React.createElement("div", { className: "text-center py-2" },
-                                React.createElement("img", { src: deal.image, className: "img-fluid", style: { maxHeight: "100px" }, alt: deal.name })
-                            ),
-                            React.createElement("div", { className: "mt-auto" },
-                                React.createElement("p", { className: "small mb-1", style: { minHeight: "32px", lineHeight: "16px" } }, deal.name),
-                                React.createElement("div", { className: "d-flex justify-content-between align-items-center" },
-                                    React.createElement("div", null,
-                                        React.createElement("span", { className: "fw-bold text-grabfreshfood", style: { color: "#0D723B" } }, `$${deal.salePrice.toFixed(2)}`),
-                                        React.createElement("span", { className: "small text-muted text-decoration-line-through ms-2" }, `$${deal.originalPrice.toFixed(2)}`)
-                                    ),
-                                    React.createElement("button", { className: "btn btn-sm", style: { backgroundColor: "#0D723B", color: "white" } },
-                                        React.createElement("i", { className: "bi bi-plus" })
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById("flash-deals-root"));
-    root.render(React.createElement(FlashDeals));
-</script>
 
 <!-- Simple Footer -->
 <footer class="bg-grabfreshfood text-white py-4 mt-5">

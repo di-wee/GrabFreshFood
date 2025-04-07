@@ -32,7 +32,8 @@
 </script>
 
 <body>
-<div th:replace="fragments/navbar :: #navbar"></div>
+<
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="login-grid container bg-white">
     <form class="w-100" method="post" th:action="@{/login}">

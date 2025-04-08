@@ -2,8 +2,14 @@ package nus.iss.team1.grabfreshfood.service;
 
 
 import nus.iss.team1.grabfreshfood.model.Cart;
+import nus.iss.team1.grabfreshfood.model.CartItem;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface CartService {
 
-    Cart findCartById(Long id);
+    Cart findCartByCustomerId(int customerId);
+
+    List<CartItem> findCartItemsByCartId(int cartId);
 }

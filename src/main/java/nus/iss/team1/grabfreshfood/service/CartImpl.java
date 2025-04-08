@@ -1,6 +1,7 @@
 package nus.iss.team1.grabfreshfood.service;
 
 import jakarta.transaction.Transactional;
+import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
@@ -25,7 +26,7 @@ public class CartImpl implements CartService {
     }
 
     @Override
-    //Done by Dionis Wee
+    //Done by Dionis
     public Cart findCartByCustomerId(int customerId) {
         //find cart first by customerId
         Cart cart = cartRepo.findCartByCustomerId(customerId);
@@ -40,10 +41,36 @@ public class CartImpl implements CartService {
     }
 
     @Override
-    //Done by Dionis Wee
+    //Done by Dionis
     public List<CartItem> findCartItemsByCartId(int cartId) {
         return cartItemRepo.findCartItemsByCartId(cartId);
 
     }
+
+    @Override
+    //Done by Dionis
+    public CartItem findCartItem(int cartId, int cartItemId) {
+        //extracting item from db via cartId and cartItemId
+        CartItem item = cartItemRepo.findCartItem(cartId, cartItemId);
+
+        //item should exist, else throw exception
+        if (item == null) {
+            throw new CartItemNotFoundException("Cart item of id (" + cartItemId + ") from Cart (id: " + cartId + " ) does not exist.");
+
+        }
+        return item;
+
+    }
+
+    @Override
+    public CartItem updateItemQuantity(int cartId, int cartItemId, int quantity) {
+        //extracting cart item by reusing method above
+        CartItem item = findCartItem(cartId, cartItemId);
+
+        //setting new quantity
+        item.setQuantity(quantity);
+        return cartItemRepo.save(item);
+    }
+
 
 }

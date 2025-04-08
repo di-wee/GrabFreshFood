@@ -10,6 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Integer> {
+
+    //Done by Dionis
     @Query("SELECT c FROM Cart c WHERE c.customerId = :customerId")
     Cart findCartByCustomerId(@Param("customerId") int customerId);
+
+    Cart findCartByCartId(int cartId);
 }

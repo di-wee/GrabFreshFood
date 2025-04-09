@@ -1,7 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function CartItem({ item }) {
-	const [quant, setQuant] = useState(1);
+	const [product, setProduct] = useState({});
+
+	const fetchProduct = async () => {
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/product/${item.productId}`;
+
+			const res = await fetch(url);
+			if (!res.ok) throw new Error('Error getting product details!');
+			const data = await res.json();
+			console.log('Product: ', data);
+			setProduct(data);
+			return data;
+		} catch (err) {
+			console.error('Error: ', err);
+		}
+	};
+
+	useEffect(() => {
+		fetchProduct();
+	}, []);
 
 	return (
 		<div className='row border-bottom p-3 align-items-center'>
@@ -30,8 +49,6 @@ function CartItem({ item }) {
 					min='1'
 					style={{ width: '80px' }}
 					type='number'
-					value={quant}
-					onChange={(e) => setQuant(e.target.value)}
 				/>
 			</div>
 			<div

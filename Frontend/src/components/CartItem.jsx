@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CartItem(props) {
+function CartItem() {
 	const [quant, setQuant] = useState(1);
 
 	return (
@@ -30,7 +30,6 @@ function CartItem(props) {
 					min='1'
 					style={{ width: '80px' }}
 					type='number'
-					defaultValue='1'
 					value={quant}
 					onChange={(e) => setQuant(e.target.value)}
 				/>

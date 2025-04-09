@@ -3,7 +3,6 @@ package nus.iss.team1.grabfreshfood.controller;
 import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Order;
-import nus.iss.team1.grabfreshfood.service.OrderHistoryImpl;
 import nus.iss.team1.grabfreshfood.service.OrderHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

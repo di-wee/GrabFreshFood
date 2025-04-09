@@ -3,7 +3,7 @@ package nus.iss.team1.grabfreshfood.controller;
 import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Order;
-import nus.iss.team1.grabfreshfood.service.OrderHistoryService;
+import nus.iss.team1.grabfreshfood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderHistoryController {
 
     @Autowired
-    private OrderHistoryService ohservice;
+    private OrderService ohservice;
 
     @GetMapping("/order-history")
     public String getOrderHistory(@RequestParam(required = false, defaultValue = "All") String type, Model model, HttpSession session) {

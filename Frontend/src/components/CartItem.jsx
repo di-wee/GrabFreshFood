@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from 'react';
 
-function CartItem({ item, selectedItems, setSelectedItems }) {
+function CartItem({
+	item,
+	selectedItems,
+	setSelectedItems,
+	setQuantities,
+	quantities,
+}) {
 	//state management
 	const [product, setProduct] = useState({});
 
+	//handling of updating of item quantity
+	function handleUpdateQuantity(itemId, newQuantity) {
+		setQuantities((prev) => ({
+			...prev,
+			[itemId]: newQuantity,
+		}));
+	}
+
+	// handling toggling of checkbox
 	function handleToggleCheckBox(itemId) {
 		if (selectedItems.includes(itemId)) {
 			//if item is already selected, remove it.
@@ -64,6 +79,10 @@ function CartItem({ item, selectedItems, setSelectedItems }) {
 					min='1'
 					style={{ width: '80px' }}
 					type='number'
+					value={quantities}
+					onChange={(event) =>
+						handleUpdateQuantity(item.cartItemId, parseInt(event.target.value))
+					}
 				/>
 			</div>
 			<div

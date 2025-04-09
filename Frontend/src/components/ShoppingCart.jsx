@@ -7,7 +7,7 @@ function ShoppingCart() {
 	//state management
 	const [customerId, setCustomerId] = useState(null);
 	const [cartItems, setCartItems] = useState([]);
-	const [quanties, setQuanties] = useState({});
+	const [quantities, setQuantities] = useState({});
 	const [selectedItems, setSelectedItems] = useState([]); //array to contain id of selected items
 
 	//fetching customerId
@@ -39,6 +39,14 @@ function ShoppingCart() {
 			//to preselect all items in checkbox, first extract out cartItemId into array
 			const preSelectAllItems = items.map((item) => item.cartItemId);
 			setSelectedItems(preSelectAllItems);
+
+			//setting quantity of items
+			const initialQuantity = {};
+			//populate initalQuantity with existing item quantity or default to 1
+			items.forEach((item) => {
+				initialQuantity[item.cartItemId] = item.quantity || 1;
+			});
+			setQuantities(initialQuantity);
 			return items;
 		} catch (err) {
 			console.error('Error fetching cart items:', err);
@@ -85,6 +93,8 @@ function ShoppingCart() {
 										item={item}
 										selectedItems={selectedItems}
 										setSelectedItems={setSelectedItems}
+										setQuantities={setQuantities}
+										quantities={quantities[item.cartItemId]}
 									/>
 								))}
 							</div>

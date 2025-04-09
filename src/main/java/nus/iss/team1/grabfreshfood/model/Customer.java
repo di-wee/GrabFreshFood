@@ -4,6 +4,7 @@ package nus.iss.team1.grabfreshfood.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -36,6 +37,10 @@ public class Customer {
 
     @Column(name = "is_active")
     private Boolean isActive;
+
+    //mapped order
+    @OneToMany(mappedBy = "customer")
+    private List<Order> myOrders;
 
     public Customer() { }
 
@@ -99,5 +104,15 @@ public class Customer {
     }
     public void setIsActive(Boolean active) {
         this.isActive = active;
+    }
+
+    //myOrders setter and getter
+
+    public List<Order> getMyOrders() {
+        return myOrders;
+    }
+
+    public void setMyOrders(List<Order> myOrders) {
+        this.myOrders = myOrders;
     }
 }

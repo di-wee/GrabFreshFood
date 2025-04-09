@@ -24,13 +24,17 @@ public class RestController {
 
     //Done by Dionis
     @GetMapping("/cart/customer/{customerId}/items")
-    public List<CartItem> getCustomerCartItems(@PathVariable("customerId") int customerId) {
+    public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
         //first extract Cart for customer
         Cart cart = cartService.findCartByCustomerId(customerId);
 
         //using CartID from Cart obj to get the list of cartitems.
+        List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
+
         // possible for list to be empty. no need for exceptions
-        return cartService.findCartItemsByCartId(cart.getCartId());
+        return new ResponseEntity<>(items, HttpStatus.OK);
+
+
     }
 
     //Done by Dionis (tested)
@@ -51,13 +55,15 @@ public class RestController {
         }
     }
 
-    @GetMapping("/session/customer-id/")
+    @GetMapping("/session/customer-id")
     public ResponseEntity<Integer> getCustomerId(HttpSession session) {
-        try {
-            Customer customer = (Customer) session.getAttribute("customer");
-            return new ResponseEntity<>(customer.getId(), HttpStatus.OK);
-        } catch (Exception e) {
+
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            Integer customerId = customer.getId();
+            return new ResponseEntity<>(customerId, HttpStatus.OK);
         }
 
 

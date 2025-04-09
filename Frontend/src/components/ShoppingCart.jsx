@@ -1,12 +1,55 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
 import { useState } from 'react';
 
 function ShoppingCart() {
-	//api call to retrieve shopping cart
-	const [cartItems, setCartItems] = useState({});
+	//state management
+	const [customerId, setCustomerId] = useState(null);
+	const [cartItems, setCartItems] = useState([]);
 	const [quant, setQuant] = useState(1);
+
+	//fetching customerId
+	const fetchCustomerId = async () => {
+		try {
+			const url = import.meta.env.VITE_SERVER + 'api/session/customer-id';
+			const res = await fetch(url);
+			if (!res.ok) throw new Error('Error getting cart items!');
+			const data = await res.json();
+			//checking
+			console.log('Customer ID: ', data);
+			setCustomerId(data);
+			return data;
+		} catch (err) {
+			console.error('Error fetching customer ID: '.err);
+		}
+	};
+
+	//fetch cart items
+	const fetchCartItems = async (id) => {
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/cart/customer/${id}/items`;
+			const res = await fetch(url);
+			if (!res.ok) throw new Error('Error getting cart items');
+			const items = await res.json();
+			setCartItems(items);
+			console.log('Cart: ', items);
+			return items;
+		} catch (err) {
+			console.error('Error fetching cart items:', err);
+		}
+	};
+
+	useEffect(() => {
+		const loadCart = async () => {
+			const id = await fetchCustomerId();
+			console.log('id: ', id);
+			if (id) {
+				await fetchCartItems(id);
+			}
+		};
+		loadCart();
+	}, []);
 
 	return (
 		<div className='main container'>

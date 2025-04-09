@@ -1,7 +1,6 @@
-package nus.iss.team1.grabfreshfood.service.ProductService;
+package nus.iss.team1.grabfreshfood.service;
 
 import nus.iss.team1.grabfreshfood.model.Product;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

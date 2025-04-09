@@ -1,28 +1,29 @@
 package nus.iss.team1.grabfreshfood.controller;
 
+import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.DTO.UpdateCartItemReq;
 import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
-import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
+import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.service.CartService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
-@RestController
-@RequestMapping("/api/cart")
-public class ShoppingCartRestController {
+@org.springframework.web.bind.annotation.RestController
+@RequestMapping("/api")
+public class RestController {
     @Autowired
     private CartService cartService;
 
     //Done by Dionis
-    @GetMapping("/customer/{customerId}/items")
+    @GetMapping("/cart/customer/{customerId}/items")
     public List<CartItem> getCustomerCartItems(@PathVariable("customerId") int customerId) {
         //first extract Cart for customer
         Cart cart = cartService.findCartByCustomerId(customerId);
@@ -33,7 +34,7 @@ public class ShoppingCartRestController {
     }
 
     //Done by Dionis (tested)
-    @PutMapping("/update-quantity")
+    @PutMapping("/cart/update-quantity")
     public ResponseEntity<CartItem> updateItemQuantity(@RequestBody UpdateCartItemReq req) {
         try {
 
@@ -49,4 +50,17 @@ public class ShoppingCartRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/session/customer-id/")
+    public ResponseEntity<Integer> getCustomerId(HttpSession session) {
+        try {
+            Customer customer = (Customer) session.getAttribute("customer");
+            return new ResponseEntity<>(customer.getId(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+
+    }
+
 }

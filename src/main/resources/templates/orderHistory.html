@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>GrabFreshFood</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/orderHistory.css">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<div class="showPage">
+    <div class="tabbar">
+        <section class="tabBar" role="tabList">
+            <h2 class="titleHidden">Tab List Section</h2>
+            <a th:href="@{/orderHistory(type='All')}" th:class="${selectedType == 'All'} ? 'selected' : 'nonSelected'" title="All" role="tab" th:attr="aria-selected=${selectedType == 'All'}">
+                <span class="tabText">All</span>
+            </a>
+            <a th:href="@{/orderHistory(type='Processing')}" th:class="${selectedType == 'Processing'} ? 'selected' : 'nonSelected'" title="Processing" role="tab" th:attr="aria-selected=${selectedType == 'Processing'}">
+                <span class="tabText">Processing</span>
+            </a>
+            <a th:href="@{/orderHistory(type='Shipped')}" th:class="${selectedType == 'Shipped'} ? 'selected' : 'nonSelected'" title="Shipped" role="tab" th:attr="aria-selected=${selectedType == 'Shipped'}">
+                <span class="tabText">Shipped</span>
+            </a>
+            <a th:href="@{/orderHistory(type='Delivered')}" th:class="${selectedType == 'Delivered'} ? 'selected' : 'nonSelected'" title="Delivered" role="tab" th:attr="aria-selected=${selectedType == 'Delivered'}">
+                <span class="tabText">Delivered</span>
+            </a>
+        </section>
+    </div>
+    <div class="showOrder">
+        <h2 class="titleHidden">Order List Section</h2>
+        <div th:each="order : ${orders}" class = "orderCard">
+            <div class="orderHeader">
+                <span class="orderId" th:text="'Order Id: ' + ${order.id}"></span>
+                <span class="orderDate" th:text="'Order Date: ' + ${order.orderDate}"></span>
+                <span class="orderStatus" th:text="${order.orderStatus}"></span>
+            </div>
+            <div class="orderItems">
+                <div class="item" th:each="item : ${order.myOrderItems}">
+                    <span class="itemName" th:text="${item.product.productName}"></span>
+                    <span class="itemQuantity" th:text="'x' + ${item.quantity}"></span>
+                    <span class="itemTotalPrice" th:text="'$' + ${item.price}"></span>
+                </div>
+            </div>
+            <div class="orderTotalAmount">
+                <span class="orderTotal" th:text="'Total: $' + ${order.totalAmount}"></span>
+            </div>
+
+        </div>
+    </div>
+    
+</div>
+</body>
+</html>

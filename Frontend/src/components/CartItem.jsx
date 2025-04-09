@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
-function CartItem({ item }) {
+function CartItem({ item, selectedItems, setSelectedItems }) {
+	//state management
 	const [product, setProduct] = useState({});
 
+	function handleToggleCheckBox(itemId) {
+		if (selectedItems.includes(itemId)) {
+			//if item is already selected, remove it.
+			setSelectedItems(selectedItems.filter((id) => id !== itemId));
+		} else {
+			//or else add the item to state
+			setSelectedItems([...selectedItems, itemId]);
+		}
+	}
+
+	//fetching product details
 	const fetchProduct = async () => {
 		try {
 			const url = import.meta.env.VITE_SERVER + `api/product/${item.productId}`;
@@ -13,6 +25,7 @@ function CartItem({ item }) {
 			console.log('Product: ', data);
 			setProduct(data);
 			return data;
+			console.log('product state: ', product);
 		} catch (err) {
 			console.error('Error: ', err);
 		}
@@ -28,6 +41,8 @@ function CartItem({ item }) {
 				<input
 					className='form-check-input'
 					type='checkbox'
+					checked={selectedItems.includes(item.cartItemId)}
+					onChange={() => handleToggleCheckBox(item.cartItemId)}
 				/>
 			</div>
 			<div className='product-image col-2'>
@@ -39,10 +54,10 @@ function CartItem({ item }) {
 			</div>
 			<div className='product-name col-7'>
 				<h6>
-					<b>Product Name</b>
+					<b>{product.productName}</b>
 				</h6>
-				<p>
-					unit g <span>·</span> <span>$Price</span>
+				<p style={{ fontSize: 'smaller' }}>
+					<i>{product.information}</i>
 				</p>
 				<input
 					className='form-control form-control-sm text-center'
@@ -55,7 +70,7 @@ function CartItem({ item }) {
 				className='price-delete col-1 d-flex flex-column align-items-center'
 				style={{ marginLeft: '3vh' }}>
 				<h6 className='mb-1'>
-					<b>$Price</b>
+					<b>${product.price}</b>
 				</h6>
 				<i
 					className='bi bi-trash3'

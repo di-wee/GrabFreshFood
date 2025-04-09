@@ -8,6 +8,7 @@ function ShoppingCart() {
 	const [customerId, setCustomerId] = useState(null);
 	const [cartItems, setCartItems] = useState([]);
 	const [quanties, setQuanties] = useState({});
+	const [selectedItems, setSelectedItems] = useState([]); //array to contain id of selected items
 
 	//fetching customerId
 	const fetchCustomerId = async () => {
@@ -34,6 +35,10 @@ function ShoppingCart() {
 			const items = await res.json();
 			setCartItems(items);
 			console.log('Cart: ', items);
+
+			//to preselect all items in checkbox, first extract out cartItemId into array
+			const preSelectAllItems = items.map((item) => item.cartItemId);
+			setSelectedItems(preSelectAllItems);
 			return items;
 		} catch (err) {
 			console.error('Error fetching cart items:', err);
@@ -76,7 +81,11 @@ function ShoppingCart() {
 								className='border bg-light rounded overflow-hidden mb-2'
 								style={{ padding: '1vh 1vh 0 1vh' }}>
 								{cartItems.map((item) => (
-									<CartItem item={item} />
+									<CartItem
+										item={item}
+										selectedItems={selectedItems}
+										setSelectedItems={setSelectedItems}
+									/>
 								))}
 							</div>
 						</div>

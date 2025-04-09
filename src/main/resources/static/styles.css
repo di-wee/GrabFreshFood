@@ -1,4 +1,3 @@
-/* GrabFreshFood brand colors */
 :root {
     --grabfreshfood-green: #0D723B;
     --grabfreshfood-light-green: #E8F5E9;
@@ -75,75 +74,35 @@ body {
 }
 
 .ratio-custom {
-    --bs-aspect-ratio: 15%; /* This will create a very short banner */
+    --bs-aspect-ratio: 15%;
 }
 
-/* GrabFreshFood brand colors */
-:root {
-    --grabfreshfood-green: #0D723B;
-    --grabfreshfood-light-green: #E8F5E9;
+.hero-banner-img {
+    height: 300px;
+    width: 100%;
+    object-fit: cover;
 }
 
-.text-grabfreshfood {
-    color: var(--grabfreshfood-green) !important;
+.carousel-item {
+    position: relative;
 }
 
-.navbar-grabfreshfood .nav-link {
-    color: #333;
-    font-weight: 500;
-}
-
-.navbar-grabfreshfood .nav-link:hover,
-.navbar-grabfreshfood .nav-link:focus {
-    color: var(--grabfreshfood-green);
-}
-
-.dropdown-menu {
-    border-radius: 0.5rem;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    border: none;
-}
-
-.dropdown-item:hover,
-.dropdown-item:focus {
-    background-color: var(--grabfreshfood-light-green);
-    color: var(--grabfreshfood-green);
-}
-
-.search-bar {
-    border-radius: 1.5rem;
-    border: 1px solid #ced4da;
-    padding-left: 1rem;
-}
-
-.search-bar:focus {
-    box-shadow: 0 0 0 0.25rem rgba(13, 114, 59, 0.25);
-    border-color: var(--grabfreshfood-green);
-}
-
-.search-button {
-    border-radius: 0 1.5rem 1.5rem 0;
-    background-color: var(--grabfreshfood-green);
-    color: white;
-    border: none;
-}
-
-.search-button:hover {
-    background-color: #0A5D30;
-}
-
-.user-actions .nav-link {
-    font-size: 0.875rem;
-    padding: 0.5rem;
-}
-
-.badge-cart {
-    font-size: 0.6rem;
-    padding: 0.25rem 0.4rem;
-    background-color: #dc3545;
-    color: white;
+.carousel-caption {
     position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(30%, -30%);
+    top: 50%;
+    transform: translateY(-50%);
+    left: 5%;
+    text-align: left;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    max-width: 90%;
+    width: fit-content;
+    color: white;
+}
+
+.icon-circle {
+    width: 80px;
+    height: 80px;
+    background-color: var(--grabfreshfood-light-green);
 }

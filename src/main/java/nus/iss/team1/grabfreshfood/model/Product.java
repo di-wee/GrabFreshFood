@@ -1,43 +1,58 @@
 package nus.iss.team1.grabfreshfood.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.util.List;
-
-@Getter
-@Setter
 @Entity
-@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
+    @Column(name="product_id", nullable = false)
     private int id;
-
-    @Column(name = "product_name")
-    private String productName;
-
-    @Column(name = "information", columnDefinition = "TEXT")
-    private String information;
-
-    private double price;
-
+    @Column(name = "product_name", nullable = false)
+    private String name;
+    @Column(name="imformation")
+    private String description;
+    private float price;
     @Column(name = "stock_quantity")
-    private int stockQuantity;
+    private int quantity;
 
-    @Column(name = "image_url")
-    private String imageURL;
+    public int getId() {
+        return id;
+    }
 
-    private String sku;
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    @Column(name = "is_active")
-    private Boolean isActive;
+    public String getName() {
+        return name;
+    }
 
-    @OneToMany(mappedBy = "product")
-    private List<OrderItems> myOrderItem;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public Product(){}
+    public String getDescription() {
+        return description;
+    }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }

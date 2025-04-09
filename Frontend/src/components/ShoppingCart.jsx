@@ -7,7 +7,7 @@ function ShoppingCart() {
 	//state management
 	const [customerId, setCustomerId] = useState(null);
 	const [cartItems, setCartItems] = useState([]);
-	const [quantities, setQuantities] = useState({});
+	const [quantities, setQuantities] = useState({}); //key value pair to contain id: quantity
 	const [selectedItems, setSelectedItems] = useState([]); //array to contain id of selected items
 
 	//fetching customerId

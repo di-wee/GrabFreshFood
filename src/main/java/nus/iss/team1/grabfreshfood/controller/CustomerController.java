@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
+
 import java.util.Optional;
 
 @Controller
@@ -42,6 +43,8 @@ public class CustomerController {
         // Plain-text comparison for demo; use hashing in production
         if (cust != null && cust.getPassword().equals(password)) {
             session.setAttribute("customer", cust);
+            //Storing customerId in session to be extracted later for Shopping Cart
+            session.setAttribute("customerId", cust.getId());
             return "landing-page";
         }
         model.addAttribute("error", "Invalid username or password");

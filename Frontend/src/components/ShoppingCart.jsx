@@ -7,7 +7,7 @@ function ShoppingCart() {
 	//state management
 	const [customerId, setCustomerId] = useState(null);
 	const [cartItems, setCartItems] = useState([]);
-	const [quant, setQuant] = useState(1);
+	const [quanties, setQuanties] = useState({});
 
 	//fetching customerId
 	const fetchCustomerId = async () => {
@@ -73,12 +73,11 @@ function ShoppingCart() {
 						{/* Shopping cart grid */}
 						<div className='col-md-7 pr-md-3'>
 							<div
-								className='border bg-light rounded overflow-hidden'
+								className='border bg-light rounded overflow-hidden mb-2'
 								style={{ padding: '1vh 1vh 0 1vh' }}>
-								<CartItem
-									quant={quant}
-									setQuant={setQuant}
-								/>
+								{cartItems.map((item) => (
+									<CartItem item={item} />
+								))}
 							</div>
 						</div>
 

@@ -6,7 +6,9 @@ import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
 import nus.iss.team1.grabfreshfood.model.Customer;
+import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.service.CartService;
+import nus.iss.team1.grabfreshfood.service.ProductService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,9 @@ import java.util.List;
 public class RestController {
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private ProductService productService;
 
     //Done by Dionis
     @GetMapping("/cart/customer/{customerId}/items")
@@ -67,6 +72,16 @@ public class RestController {
         }
 
 
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable("id") int id) {
+        Product product = productService.findProductById(id);
+        if (product == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
     }
 
 }

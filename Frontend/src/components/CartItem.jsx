@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CartItem() {
+function CartItem({ item }) {
 	const [quant, setQuant] = useState(1);
 
 	return (

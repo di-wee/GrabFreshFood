@@ -19,8 +19,14 @@ public class OrderImpl implements OrderService {
 
     @Autowired
     private OrderRepository orderRepo;
+
+    @Autowired
     private CustomerRepository customerRepo;
+
+    @Autowired
     private ProductRepository productRepo;
+
+    @Autowired
     private OrderItemsRepository orderItemsRepo;
 
 //show customer order list

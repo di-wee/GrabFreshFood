@@ -1,7 +1,10 @@
 package nus.iss.team1.grabfreshfood.model;
 
 import jakarta.persistence.*;
-
+import lombok.Getter;
+import lombok.Setter;
+@Getter
+@Setter
 @Entity
 public class Product {
     @Id
@@ -15,44 +18,11 @@ public class Product {
     private float price;
     @Column(name = "stock_quantity")
     private int quantity;
+    @ManyToOne
+    private SubCategory subCategory;
+    @ManyToOne
+    private Category category;
 
-    public int getId() {
-        return id;
+    public Product(){}
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-}

@@ -79,19 +79,16 @@
 <div th:fragment="navbar">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-3 navbar-grabfreshfood">
         <div class="container">
-            <!-- Logo -->
             <a class="navbar-brand fw-bold text-grabfreshfood me-lg-4" th:href="@{/}">
                 GrabFreshFood
             </a>
 
-            <!-- Mobile Toggle Button -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
                     aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarMain">
-                <!-- Categories and Browse All -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
                         <ul class="dropdown-menu" aria-labelledby="browseAllDropdown">
@@ -102,7 +99,6 @@
                             <li><a class="dropdown-item" th:href="@{/brands}">Shop by Brand</a></li>
                         </ul>
                     </li>
-                    <!-- Individual Categories -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="fruitsVegDropdown" role="button"
                            data-bs-toggle="dropdown" aria-expanded="false">
@@ -141,7 +137,6 @@
                     </li>
                 </ul>
 
-                <!-- Search Bar -->
                 <form class="d-flex mb-3 mb-lg-0 me-lg-3 w-100 w-lg-50" th:action="@{/search}" method="get">
                     <div class="input-group">
                         <input class="form-control search-bar" type="search" name="query"
@@ -152,14 +147,30 @@
                     </div>
                 </form>
 
-                <!-- User Actions -->
                 <div class="user-actions d-flex align-items-center ms-lg-3">
-                    <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/account}">
-                        <div class="position-relative">
-                            <i class="bi bi-person fs-5"></i>
-                        </div>
-                        <span class="d-none d-md-inline small">Account</span>
-                    </a>
+                    <span th:if="${session.customer == null}">
+                        <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/login}">
+                            <div class="position-relative">
+                                <i class="bi bi-box-arrow-in-right fs-5"></i>
+                            </div>
+                            <span class="d-none d-md-inline small">Login</span>
+                        </a>
+                    </span>
+                    <span th:if="${session.customer != null}" class="d-flex">
+                        <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/account}">
+                            <div class="position-relative">
+                                <i class="bi bi-person fs-5"></i>
+                            </div>
+                            <span class="d-none d-md-inline small">Account</span>
+                        </a>
+                        <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/logout}">
+                            <div class="position-relative">
+                                <i class="bi bi-box-arrow-right fs-5"></i>
+                            </div>
+                            <span class="d-none d-md-inline small">Logout</span>
+                        </a>
+                    </span>
+
                     <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/cart}">
                         <div class="position-relative">
                             <i class="bi bi-cart fs-5"></i>
@@ -172,5 +183,6 @@
         </div>
     </nav>
 </div>
+
 </body>
 </html>

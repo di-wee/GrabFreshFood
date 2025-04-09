@@ -1,0 +1,139 @@
+/*for the TabBar*/
+.tabbar{
+    background-color: #f7f7f7;
+    width: 100%;
+}
+
+.tabBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.titleHidden {
+    display: none;
+}
+
+a[role="tab"] {
+    flex-grow: 1;
+    display: flex;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    color: #333;
+    background-color: transparent;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    margin: 5px 0;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 40px;
+}
+
+a[role="tab"]:not(:last-child)::after{
+    content: '';
+    position: absolute;top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background-color: #ddd;
+}
+
+a[role="tab"].nonSelected {
+    color: #666;
+    background-color: #f7f7f7;
+}
+
+a[role="tab"].selected {
+    color: #0D723B;
+    font-weight: bold;
+
+}
+
+a[role="tab"]:hover {
+    color:#0D723B;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tabText {
+    font-weight: normal;
+    text-transform: capitalize;
+}
+
+a[role="tab"][aria-selected="true"] {
+    color: #0D723B;
+}
+
+a[role="tab"][aria-selected="false"]:hover {
+    color: #0D723B;
+    font-weight: bold;
+}
+
+/*for Order List*/
+
+.orderCard {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    margin: 10px auto;
+}
+
+.orderHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color:#E8F5E9;
+}
+
+.itemName{
+    flex-basis: 40%;
+}
+
+.itemQuantity{
+    flex-basis: 20%;
+    text-align: center;
+}
+
+.itemTotalPrice{
+    flex-basis: 40%;
+    text-align: right;
+}
+
+.orderItems {
+    margin-bottom: 10px;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.itemName {
+    font-weight: bold;
+}
+
+.itemQuantity,
+.itemTotalPrice {
+    margin-left: 10px;
+}
+
+.orderTotalAmount {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0D723B;
+}
+

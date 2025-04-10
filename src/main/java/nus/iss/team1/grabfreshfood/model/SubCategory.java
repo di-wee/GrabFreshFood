@@ -1,4 +1,5 @@
 package nus.iss.team1.grabfreshfood.model;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,16 +9,19 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Category {
+public class SubCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="category_id",nullable=false)
+    @Column(name="subcategory_id", nullable = false)
     private int id;
-    @Column(name="category_name",nullable=false)
+    @Column(name="subcategory_name")
     private String name;
     @Column(name="information")
     private String description;
-    @OneToMany( mappedBy = "category")
-    private List<SubCategory> subCategories;
-    public Category() {}
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+    @OneToMany(mappedBy ="subCategory")
+    private List<Product> products;
+    public SubCategory() {}
 }

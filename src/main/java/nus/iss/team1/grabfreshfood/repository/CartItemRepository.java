@@ -20,5 +20,4 @@ public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
     CartItem findCartItem(@Param("cartItemId") int cartItemId, @Param("cartId") int cartId);
 
 
-    int cart(Cart cart);
 }

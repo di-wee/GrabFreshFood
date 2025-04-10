@@ -9,7 +9,6 @@ import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,7 @@ import java.util.List;
 @CrossOrigin
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api")
-public class RestController {
+public class GeneralRestController {
     @Autowired
     private CartService cartService;
 

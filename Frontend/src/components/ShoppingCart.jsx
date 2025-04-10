@@ -7,8 +7,10 @@ function ShoppingCart() {
 	//state management
 	const [customerId, setCustomerId] = useState(null);
 	const [cartItems, setCartItems] = useState([]);
+	const [subtotal, setSubTotal] = useState(0);
 	const [quantities, setQuantities] = useState({}); //key value pair to contain id: quantity
 	const [selectedItems, setSelectedItems] = useState([]); //array to contain id of selected items
+	//note that on checkout to pass selecteditems and quantities
 
 	//fetching customerId
 	const fetchCustomerId = async () => {
@@ -47,6 +49,16 @@ function ShoppingCart() {
 				initialQuantity[item.cartItemId] = item.quantity || 1;
 			});
 			setQuantities(initialQuantity);
+
+			//setting subtotal on fetching cartItems
+			let subTotal = 0;
+			for (let cartitem of items) {
+				const itemPrice = cartitem.price * cartitem.quantity;
+				subTotal += itemPrice;
+			}
+			console.log('Subtotal of existing items: ', subTotal);
+			setSubTotal(subTotal);
+
 			return items;
 		} catch (err) {
 			console.error('Error fetching cart items:', err);
@@ -95,6 +107,9 @@ function ShoppingCart() {
 										setSelectedItems={setSelectedItems}
 										setQuantities={setQuantities}
 										quantities={quantities[item.cartItemId]}
+										setSubTotal={setSubTotal}
+										subtotal={subtotal}
+										cartItems={cartItems}
 									/>
 								))}
 							</div>

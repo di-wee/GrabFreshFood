@@ -2,7 +2,6 @@ package nus.iss.team1.grabfreshfood.service;
 
 import jakarta.transaction.Transactional;
 import nus.iss.team1.grabfreshfood.model.*;
-import nus.iss.team1.grabfreshfood.repository.CustomerRepository;
 import nus.iss.team1.grabfreshfood.repository.OrderItemsRepository;
 import nus.iss.team1.grabfreshfood.repository.OrderRepository;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
@@ -21,16 +20,12 @@ public class OrderImpl implements OrderService {
     private OrderRepository orderRepo;
 
     @Autowired
-    private CustomerRepository customerRepo;
-
-    @Autowired
     private ProductRepository productRepo;
 
     @Autowired
     private OrderItemsRepository orderItemsRepo;
 
 //show customer order list
-
     public List<Order> getOrderHistoryForCustomer(String status, Customer customer){
         if (status.equals(OrderStatus.PROCESSING) || status.equals(OrderStatus.SHIPPED) || status.equals(OrderStatus.DELIVERED)){
             return orderRepo.findByOrderStatusAndCustomer(status, customer);
@@ -38,11 +33,10 @@ public class OrderImpl implements OrderService {
         return orderRepo.findByCustomer(customer);
     }
 
-//create new order to DB and get the orderId for payment
-
-    public int createNewOrderAndId(int customerId, Map<Integer, CartItem> cartItems){
+//create new order to DB and get the orderId for address and payment
+    public int createNewOrderAndId(Customer customer, Map<Integer, CartItem> cartItems){
         Order order = new Order();
-        order.setCustomer(customerRepo.findById(customerId));
+        order.setCustomer(customer);
         order.setOrderStatus(OrderStatus.TOPAY);
         order.setOrderDate(LocalDate.now());
 
@@ -62,5 +56,49 @@ public class OrderImpl implements OrderService {
         }
 
         return saveNewOrder.getId();
+    }
+
+// find order by orderId
+    public Order getOrderByOrderId(int orderId){
+        return orderRepo.findById(orderId);
+    }
+
+// get the address and update it to DB
+    public void getAndSaveDeliverAddress(int orderId, String address, String floorNumber, String unitNumber){
+        StringBuilder deliverAddress = new StringBuilder();
+
+        if (address != null && !address.isEmpty()){
+            deliverAddress.append(address);
+        }
+        if (floorNumber != null && !floorNumber.isEmpty()){
+            if (deliverAddress.length() > 0 ){
+                deliverAddress.append(", ");
+            }
+            deliverAddress.append("#" + floorNumber);
+        }
+        if (unitNumber != null && !unitNumber.isEmpty()){
+            if (deliverAddress.length() > 0 ){
+                deliverAddress.append(" -");
+            }
+            deliverAddress.append(unitNumber);
+        }
+
+        String shippingAddress = deliverAddress.toString();
+
+        Order order = getOrderByOrderId(orderId);
+
+        order.setShippingAddress(shippingAddress);
+
+        orderRepo.save(order);
+    }
+
+    //pay order and update order status to DB
+    public void makePayment(int orderId, String cardNumber, String cardExpiry, String cvc){
+        Order order = getOrderByOrderId(orderId);
+
+        order.setPaymentMethod(OrderStatus.CREDITCARD);
+        order.setOrderStatus(OrderStatus.PROCESSING);
+
+        orderRepo.save(order);
     }
 }

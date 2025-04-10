@@ -34,7 +34,8 @@
         <h5 class="banner-text"><span style="margin-right: 10px"><i class="bi bi-geo-alt"></i></span>Add delivery
             address</h5>
     </div>
-    <form method="post" style="width: 100%" th:action="@{/checkout}">
+    <form method="post" style="width: 100%" th:action="@{/checkout/pay}">
+        <input type="hidden" name="orderId" th:value="${orderId}">
         <div class="checkout-form form-group">
             <label>Postal code</label>
             <input class="form-control" name="postalCode" type="text"/>

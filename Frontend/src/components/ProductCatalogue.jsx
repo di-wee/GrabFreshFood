@@ -44,6 +44,7 @@ const ProductCatalogue = ({ keyword }) => {
 	function handleProductOnClick() {
 		//this will need to redirect to Priscilla's spring controller, make sure to
 		// include the id of the product to accomodate for her logic
+
 	}
 
 	return (

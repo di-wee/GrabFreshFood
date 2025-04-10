@@ -6,6 +6,9 @@ function CartItem({
 	setSelectedItems,
 	setQuantities,
 	quantities,
+	setSubTotal,
+	subTotal,
+	cartItems,
 }) {
 	//state management
 	const [product, setProduct] = useState({});
@@ -16,6 +19,7 @@ function CartItem({
 			...prev,
 			[itemId]: newQuantity,
 		}));
+		calculateSubTotal;
 	}
 
 	// handling toggling of checkbox
@@ -23,9 +27,27 @@ function CartItem({
 		if (selectedItems.includes(itemId)) {
 			//if item is already selected, remove it.
 			setSelectedItems(selectedItems.filter((id) => id !== itemId));
+			calculateSubTotal;
 		} else {
 			//or else add the item to state
-			setSelectedItems([...selectedItems, itemId]);
+			setSelectedItems([...selectedItems, itemId]); // [1, 2 ,4]
+			calculateSubTotal;
+		}
+	}
+
+	function calculateSubTotal() {
+		let total = 0;
+		for (let item of cartItems) {
+			//if selectedItems include the particular cartItemId
+			if (selectedItems.includes(item.cartItemId)) {
+				//extract quantities in state via itemId
+				const quant = quantities[item.cartItemId];
+				const price = item.price;
+				const itemTotal = quant * price;
+				total += itemTotal;
+				console.log('current total: ', total);
+				setSubTotal(total);
+			}
 		}
 	}
 

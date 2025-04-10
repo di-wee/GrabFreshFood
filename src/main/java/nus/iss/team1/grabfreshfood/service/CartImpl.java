@@ -28,15 +28,15 @@ public class CartImpl implements CartService {
     @Override
     //Done by Dionis
     public Cart findCartByCustomerId(int customerId) {
-        //find cart first by customerId
+    	//find cart first by customerId
         Cart cart = cartRepo.findCartByCustomerId(customerId);
-
+        
         //if cart is null to throw exception as Cart should be created for customer
         // when customer registers an account
         if (cart == null) {
             throw new CartNotFoundException("Cart does not exist for Customer ID: " + customerId);
         }
-
+        
         return cart;
     }
 
@@ -44,33 +44,48 @@ public class CartImpl implements CartService {
     //Done by Dionis
     public List<CartItem> findCartItemsByCartId(int cartId) {
         return cartItemRepo.findCartItemsByCartId(cartId);
-
+        
     }
 
     @Override
     //Done by Dionis
     public CartItem findCartItem(int cartId, int cartItemId) {
-        //extracting item from db via cartId and cartItemId
+    	//extracting item from db via cartId and cartItemId
         CartItem item = cartItemRepo.findCartItem(cartId, cartItemId);
-
+        
         //item should exist, else throw exception
         if (item == null) {
-            throw new CartItemNotFoundException("Cart item of id (" + cartItemId + ") from Cart (id: " + cartId + " ) does not exist.");
-
+            throw new CartItemNotFoundException("Cart item with id (" + cartItemId + ") not found in cart with id " + cartId);
+        
         }
         return item;
-
+    
     }
 
     @Override
     public CartItem updateItemQuantity(int cartId, int cartItemId, int quantity) {
-        //extracting cart item by reusing method above
-        CartItem item = findCartItem(cartId, cartItemId);
-
-        //setting new quantity
-        item.setQuantity(quantity);
+    	//extracting cart item by reusing method above
+    	CartItem item = findCartItem(cartId, cartItemId);
+        
+    	//setting new quantity
+    	item.setQuantity(quantity);
         return cartItemRepo.save(item);
     }
-
-
+    
+    //Done by Lewis
+    // Implemented deleteCartItem method – the signature exactly matches the one in the CartService interface.
+    @Override
+    public String deleteCartItem(int cartId, int itemId) {
+        // Retrieve the cart item (this will throw a CartItemNotFoundException if it does not exist)
+        CartItem item = findCartItem(cartId, itemId);
+        
+        if (item == null) {
+       
+            throw new CartItemNotFoundException("Cart item with id (" + itemId + ") not found in cart with id " + cartId);
+        
+        }
+        // Delete the cart item.
+        cartItemRepo.delete(item);
+        return "Successfully deleted.";
+    }
 }

@@ -10,7 +10,7 @@ import nus.iss.team1.grabfreshfood.model.Product;
 
 @Service
 @Transactional(readOnly = true)
-public class ProductServiceImpl implements ProductService {
+public class ProductImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
     @Override

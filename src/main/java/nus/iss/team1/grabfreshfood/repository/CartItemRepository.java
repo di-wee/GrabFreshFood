@@ -18,6 +18,5 @@ public interface CartItemRepository extends JpaRepository<CartItem, Integer> {
     //Done by Dionis
     @Query("SELECT ci FROM CartItem ci WHERE ci.cart.cartId = :cartId AND ci.cartItemId = :cartItemId ")
     CartItem findCartItem(@Param("cartItemId") int cartItemId, @Param("cartId") int cartId);
-
-
+    
 }

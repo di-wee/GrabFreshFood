@@ -26,12 +26,11 @@ CREATE TABLE `cart` (
   `cart_id` int NOT NULL AUTO_INCREMENT,
   `customer_id` int NOT NULL,
   `creation_date` date NOT NULL,
-  `cart_status` varchar(255) NOT NULL,
   `total_price` double NOT NULL,
   PRIMARY KEY (`cart_id`),
-  KEY `fk_cart_customer` (`customer_id`),
+  UNIQUE KEY `customer_id_UNIQUE` (`customer_id`),
   CONSTRAINT `fk_cart_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +39,6 @@ CREATE TABLE `cart` (
 
 LOCK TABLES `cart` WRITE;
 /*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,1,'2024-06-05','active',0),(2,1,'2024-03-12','active',150),(3,2,'2024-05-28','checked out',250),(4,3,'2024-01-05','active',50),(5,4,'2024-04-20','pending',100),(6,1,'2024-02-18','checked out',300);
 /*!40000 ALTER TABLE `cart` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-05 17:33:26
+-- Dump completed on 2025-04-10  4:11:58

@@ -1,5 +1,6 @@
 package nus.iss.team1.grabfreshfood.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,11 @@ public class Product {
     @ManyToOne
     private Category category;
 
-    public Product(){}
+    @OneToMany(mappedBy = "product")
+    @JsonIgnore
+    private List<OrderItems> myOrderItem;
+
+    public Product() {
+
     }
 

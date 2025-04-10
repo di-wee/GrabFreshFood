@@ -1,7 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function CartItem() {
-	const [quant, setQuant] = useState(1);
+function CartItem({
+	item,
+	selectedItems,
+	setSelectedItems,
+	setQuantities,
+	quantities,
+}) {
+	//state management
+	const [product, setProduct] = useState({});
+
+	//handling of updating of item quantity
+	function handleUpdateQuantity(itemId, newQuantity) {
+		setQuantities((prev) => ({
+			...prev,
+			[itemId]: newQuantity,
+		}));
+	}
+
+	// handling toggling of checkbox
+	function handleToggleCheckBox(itemId) {
+		if (selectedItems.includes(itemId)) {
+			//if item is already selected, remove it.
+			setSelectedItems(selectedItems.filter((id) => id !== itemId));
+		} else {
+			//or else add the item to state
+			setSelectedItems([...selectedItems, itemId]);
+		}
+	}
+
+	//fetching product details
+	const fetchProduct = async () => {
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/product/${item.productId}`;
+
+			const res = await fetch(url);
+			if (!res.ok) throw new Error('Error getting product details!');
+			const data = await res.json();
+			console.log('Product: ', data);
+			setProduct(data);
+			return data;
+			console.log('product state: ', product);
+		} catch (err) {
+			console.error('Error: ', err);
+		}
+	};
+
+	useEffect(() => {
+		fetchProduct();
+	}, []);
 
 	return (
 		<div className='row border-bottom p-3 align-items-center'>
@@ -9,6 +56,8 @@ function CartItem() {
 				<input
 					className='form-check-input'
 					type='checkbox'
+					checked={selectedItems.includes(item.cartItemId)}
+					onChange={() => handleToggleCheckBox(item.cartItemId)}
 				/>
 			</div>
 			<div className='product-image col-2'>
@@ -20,25 +69,27 @@ function CartItem() {
 			</div>
 			<div className='product-name col-7'>
 				<h6>
-					<b>Product Name</b>
+					<b>{product.productName}</b>
 				</h6>
-				<p>
-					unit g <span>·</span> <span>$Price</span>
+				<p style={{ fontSize: 'smaller' }}>
+					<i>{product.information}</i>
 				</p>
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'
 					style={{ width: '80px' }}
 					type='number'
-					value={quant}
-					onChange={(e) => setQuant(e.target.value)}
+					value={quantities}
+					onChange={(event) =>
+						handleUpdateQuantity(item.cartItemId, parseInt(event.target.value))
+					}
 				/>
 			</div>
 			<div
 				className='price-delete col-1 d-flex flex-column align-items-center'
 				style={{ marginLeft: '3vh' }}>
 				<h6 className='mb-1'>
-					<b>$Price</b>
+					<b>${product.price}</b>
 				</h6>
 				<i
 					className='bi bi-trash3'

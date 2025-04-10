@@ -14,7 +14,7 @@ public class SubCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
-    @OneToMany(mappedBy ="subcategory")
+    @OneToMany(mappedBy ="subCategory")
     private List<Product> products;
 
 }

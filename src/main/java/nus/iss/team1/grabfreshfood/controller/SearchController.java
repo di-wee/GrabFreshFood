@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/search")
+@RequestMapping("/search")
 public class SearchController {
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping
+    @GetMapping("/result")
     public List<Product> queryProducts(@RequestParam("query") String query, Model model) {
         model.addAttribute("query", query);
         return productService.findProductByQuery(query);

@@ -1,8 +1,8 @@
 package nus.iss.team1.grabfreshfood.service;
 import java.util.List;
+import java.util.Optional;
 
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
-import nus.iss.team1.grabfreshfood.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,5 +24,9 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProduct() {
         return productRepository.findAll();
+    }
+    @Override
+    public Optional<Product> findProductById(int id) {
+        return productRepository.findById(id);
     }
 }

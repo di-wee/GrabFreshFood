@@ -22,7 +22,7 @@ public class CategoryController {
     }
     @GetMapping("/category/{subcategoryName}")
     public String categorySubcategory(@PathVariable ("subcategoryName")String subcategoryName, Model model) {
-        List<Product>products=productService.findProductBySubCategory(subcategoryName);
+        List<Product> products=productService.findProductBySubCategory(subcategoryName);
         model.addAttribute("category", subcategoryName);
         model.addAttribute("products", products);
         return "category-page";

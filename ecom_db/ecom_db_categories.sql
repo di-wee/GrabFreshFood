@@ -26,7 +26,6 @@ CREATE TABLE `categories` (
   `category_id` int NOT NULL,
   `category_name` varchar(255) NOT NULL,
   `information` text,
-  `subcategory_name` text NOT NULL,
   PRIMARY KEY (`category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -37,7 +36,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Fresh Produce','Locally grown or imported fruits and vegetables.','Fruits'),(2,'Rice & Noodles','Various types of rice, noodles, and grains.','Grains'),(3,'Meat & Seafood','Fresh meat and seafood products.','Seafood'),(4,'Pantry Staples','Cooking essentials and pantry items.','Noodles'),(5,'Fresh Produce','Locally grown or imported fruits and vegetables.','Vegetables'),(6,'Rice & Noodles','Various types of rice, noodles, and grains.','Rice'),(7,'Fresh Produce','Locally grown or imported fruits and vegetables.','Fruits'),(8,'Pantry Staples','Cooking essentials and pantry items.','Noodles'),(9,'Meat & Seafood','Fresh meat and seafood products.','Poultry'),(10,'Rice & Noodles','Various types of rice, noodles, and grains.','Rice');
+INSERT INTO `categories` VALUES (1,'Fresh Produce','Fresh fruits and vegetables.'),(2,'Dairy & Eggs','Milk, eggs, cheese, and chilled goods.'),(3,'Meats & Seafood','Meat, poultry, and seafood products.'),(4,'Pantry Staples','Rice, noodles, pasta, and other dry goods.'),(5,'Beverages','Tea, juice, coffee, and alcoholic beverages.'),(6,'Household Essentials','Laundry, tissues, and cleaning supplies.');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-05 17:33:26
+-- Dump completed on 2025-04-10  4:11:59

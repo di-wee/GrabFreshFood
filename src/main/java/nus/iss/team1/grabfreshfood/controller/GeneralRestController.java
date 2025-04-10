@@ -103,4 +103,29 @@ public class GeneralRestController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/search/{query}")
+    public ResponseEntity<List<Product>> searchResult(@PathVariable("query") String query) {
+        List<Product> products = productService.findProductByQuery(query);
+        if (products == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.findAllProduct();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{subcategoryName}")
+    public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("subcategoryName")String subcategoryName) {
+        List<Product> products = productService.findProductBySubCategory(subcategoryName);
+        if (products == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 }

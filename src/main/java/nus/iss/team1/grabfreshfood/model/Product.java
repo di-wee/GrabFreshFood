@@ -18,6 +18,10 @@ public class Product {
     private float price;
     @Column(name = "stock_quantity")
     private int quantity;
+    private String unit;
+    private String sku;
+    private String is_active;
+
     @ManyToOne
     private SubCategory subCategory;
     @ManyToOne

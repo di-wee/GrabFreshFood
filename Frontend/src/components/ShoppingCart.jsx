@@ -24,7 +24,7 @@ function ShoppingCart() {
 			setCustomerId(data);
 			return data;
 		} catch (err) {
-			console.error('Error fetching customer ID: '.err);
+			console.error('Error fetching customer ID: ', err);
 		}
 	};
 
@@ -77,60 +77,76 @@ function ShoppingCart() {
 	}, []);
 
 	return (
-		<div className='main container'>
-			<div className='title row'>
-				<div className='col'>
-					<h5>Shopping Cart</h5>
+		<>
+			{cartItems.length === 0 ? (
+				<div className='empty container d-flex flex-column justify-content-center align-items-center'>
+					<div>
+						<h5>Your cart is empty</h5>
+						<p>Add items into your shopping cart and they will appear here.</p>
+						<button
+							href='http://localhost:8080/'
+							className='btn btn-success btn-sm'>
+							Start Shopping
+						</button>
+					</div>
 				</div>
-				<div className='col text-right'>
-					<button className='btn btn-outline-danger'>
-						<span style={{ marginRight: '5px' }}>
-							<i className='bi bi-trash3'></i>
-						</span>
-						Empty cart
-					</button>
-				</div>
-			</div>
-
-			<div className='container'>
-				<form>
-					<div className='row mt-4'>
-						{/* Shopping cart grid */}
-						<div className='col-md-7 pr-md-3'>
-							<div
-								className='border bg-light rounded overflow-hidden mb-2'
-								style={{ padding: '1vh 1vh 0 1vh' }}>
-								{cartItems.map((item) => (
-									<CartItem
-										item={item}
-										selectedItems={selectedItems}
-										setSelectedItems={setSelectedItems}
-										setQuantities={setQuantities}
-										quantities={quantities[item.cartItemId]}
-										setSubTotal={setSubTotal}
-										subtotal={subtotal}
-										cartItems={cartItems}
-									/>
-								))}
-							</div>
+			) : (
+				<div className='main container'>
+					<div className='title row'>
+						<div className='col'>
+							<h5>Shopping Cart</h5>
 						</div>
-
-						{/* Subtotal grid */}
-						<div className='col-md-5 pl-md-3'>
-							<CartSummary />
-							<div className='text-right mt-3'>
-								<button
-									className='btn btn-success btn-sm'
-									style={{ width: '100%' }}
-									type='submit'>
-									Checkout
-								</button>
-							</div>
+						<div className='col text-right'>
+							<button className='btn btn-outline-danger'>
+								<span style={{ marginRight: '5px' }}>
+									<i className='bi bi-trash3'></i>
+								</span>
+								Empty cart
+							</button>
 						</div>
 					</div>
-				</form>
-			</div>
-		</div>
+
+					<div className='container'>
+						<form>
+							<div className='row mt-4'>
+								{/* Shopping cart grid */}
+								<div className='col-md-7 pr-md-3'>
+									<div
+										className='border bg-light rounded overflow-hidden mb-2'
+										style={{ padding: '1vh 1vh 0 1vh' }}>
+										{cartItems.map((item) => (
+											<CartItem
+												item={item}
+												selectedItems={selectedItems}
+												setSelectedItems={setSelectedItems}
+												setQuantities={setQuantities}
+												quantities={quantities[item.cartItemId]}
+												setSubTotal={setSubTotal}
+												subtotal={subtotal}
+												cartItems={cartItems}
+											/>
+										))}
+									</div>
+								</div>
+
+								{/* Subtotal grid */}
+								<div className='col-md-5 pl-md-3'>
+									<CartSummary />
+									<div className='text-right mt-3'>
+										<button
+											className='btn btn-success btn-sm'
+											style={{ width: '100%' }}
+											type='submit'>
+											Checkout
+										</button>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			)}
+		</>
 	);
 }
 

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ProductService {
     public List<Product> findProductByQuery(String query);
+    public List<Product> findProductBySubCategory(String subcategoryName);
+    public List<Product> findAllProduct();
 }

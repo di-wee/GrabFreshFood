@@ -92,7 +92,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
                         <ul class="dropdown-menu" aria-labelledby="browseAllDropdown">
-                            <li><a class="dropdown-item" th:href="@{/category/all}">All Products</a></li>
+                            <li><a class="dropdown-item" th:href="@{/all}">All Products</a></li>
                             <li><a class="dropdown-item" th:href="@{/new-arrivals}">New Arrivals</a></li>
                             <li><a class="dropdown-item" th:href="@{/promotions}">Promotions</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -137,7 +137,7 @@
                     </li>
                 </ul>
 
-                <form class="d-flex mb-3 mb-lg-0 me-lg-3 w-100 w-lg-50" th:action="@{/search}" method="get">
+                <form class="d-flex mb-3 mb-lg-0 me-lg-3 w-100 w-lg-50" th:action="@{/search/result}" method="get">
                     <div class="input-group">
                         <input class="form-control search-bar" type="search" name="query"
                                placeholder="Search for groceries..." aria-label="Search" >

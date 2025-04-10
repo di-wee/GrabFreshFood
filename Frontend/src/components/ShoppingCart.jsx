@@ -79,16 +79,25 @@ function ShoppingCart() {
 	return (
 		<>
 			{cartItems.length === 0 ? (
-				<div className='empty container d-flex flex-column justify-content-center align-items-center'>
-					<div>
-						<h5>Your cart is empty</h5>
-						<p>Add items into your shopping cart and they will appear here.</p>
-						<button
-							href='http://localhost:8080/'
-							className='btn btn-success btn-sm'>
-							Start Shopping
-						</button>
-					</div>
+				<div
+					className='empty container'
+					style={{
+						marginTop: '20vh',
+						display: 'flex',
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center',
+					}}>
+					<img
+						style={{ width: '20%' }}
+						src='http://localhost:8080/assets/cart.jpg'></img>
+					<h5>Your cart is empty</h5>
+					<p>Add items into your shopping cart and they will appear here.</p>
+					<button
+						onClick={() => (window.location.href = 'http://localhost:8080/')}
+						className='btn btn-success btn-sm'>
+						Start Shopping
+					</button>
 				</div>
 			) : (
 				<div className='main container'>

@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class OrderController {
-    @GetMapping("/checkout")
-    public String checkoutPage() {
-        return "checkout-page";
-    }
+//    @GetMapping("/checkout")
+//    public String checkoutPage() {
+//        return "checkout-page";
+//    }
 
-    @GetMapping("/payment")
-    public String paymentPage() {
-        return "payment-page";
-    }
+//    @GetMapping("/payment")
+//    public String paymentPage() {
+//        return "payment-page";
+//    }
 }

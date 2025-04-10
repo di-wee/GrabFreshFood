@@ -37,6 +37,7 @@
         </h5>
     </div>
     <form method="post" style="width: 100%" th:action="@{/payment}">
+        <input type="hidden" name="orderId" th:value="${orderId}">
         <div class="payment-form form-group">
             <label>Card number</label>
             <input class="form-control" name="cardNumber" type="text"/>
@@ -53,12 +54,31 @@
 
             <button class="payment-button btn btn-success" type="submit">Complete Payment</button>
 
+            <!-- Lst error message show-->
+            <div th:if="${error}" id="errorAlert" class="alert alert-danger fade show mt-3" role="alert">
+                <p th:text="${error}"></p>
+            </div>
+
         </div>
 
     </form>
 
 </div>
 
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        const errorAlert = document.getElementById("errorAlert");
+        if (errorAlert){
+            setTimeout(() => {
+                errorAlert.classList.remove("show");
+
+                setTimeout(() => {
+                    errorAlert.style.display = "none";
+                }, 500)
+            }, 3000)
+        }
+    })
+</script>
 
 </body>
 

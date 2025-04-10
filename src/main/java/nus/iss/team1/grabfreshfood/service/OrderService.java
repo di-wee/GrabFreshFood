@@ -10,5 +10,11 @@ import java.util.Map;
 public interface OrderService {
     List<Order> getOrderHistoryForCustomer(String status, Customer customer);
 
-    int createNewOrderAndId(int customerId, Map<Integer, CartItem> cartItems);
+    int createNewOrderAndId(Customer customer, Map<Integer, CartItem> cartItems);
+
+    Order getOrderByOrderId(int orderId);
+
+    void getAndSaveDeliverAddress(int orderId, String address, String floorNumber, String unitNumber);
+
+    void makePayment(int orderId, String cardNumber, String cardExpiry, String cvc);
 }

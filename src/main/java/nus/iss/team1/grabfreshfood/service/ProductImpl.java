@@ -6,6 +6,8 @@ import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ProductImpl implements ProductService {
@@ -24,5 +26,22 @@ public class ProductImpl implements ProductService {
 
         return product;
 
+    }
+
+    @Override
+    public List<Product> findProductByQuery(String query) {
+        return productRepo.findProductByQuery(query);
+    }
+
+    ;
+
+    @Override
+    public List<Product> findProductBySubCategory(String subcategoryName) {
+        return productRepo.findProductBySubCategory(subcategoryName);
+    }
+
+    @Override
+    public List<Product> findAllProduct() {
+        return productRepo.findAll();
     }
 }

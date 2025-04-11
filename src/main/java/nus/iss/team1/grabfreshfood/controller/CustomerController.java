@@ -47,7 +47,7 @@ public class CustomerController {
             }
             session.setAttribute("customer", cust);
             session.setAttribute("customerId", cust.getId());
-            return "redirect:/account";
+            return "landing-page";
         }
         model.addAttribute("error", "Invalid username or password");
         model.addAttribute("username", username);

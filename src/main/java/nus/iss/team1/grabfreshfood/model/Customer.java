@@ -16,7 +16,7 @@ public class Customer {
     private Integer id;           // changed from Long to Integer
 
     @Column(name = "email", nullable = false, unique = true)
-    private String username;
+    private String username;      // used as email
 
     @Column(nullable = false)
     private String password;
@@ -38,14 +38,16 @@ public class Customer {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    //mapped order
+    // mapped orders
     @OneToMany(mappedBy = "customer")
     private List<Order> myOrders;
 
-    public Customer() { }
+    public Customer() {
+        // Automatically set registration date when a customer is created
+        this.registrationDate = LocalDateTime.now();
+    }
 
-    // Getters and setters...
-
+    // Getters and setters
     public Integer getId() {
         return id;
     }
@@ -106,12 +108,9 @@ public class Customer {
         this.isActive = active;
     }
 
-    //myOrders setter and getter
-
     public List<Order> getMyOrders() {
         return myOrders;
     }
-
     public void setMyOrders(List<Order> myOrders) {
         this.myOrders = myOrders;
     }

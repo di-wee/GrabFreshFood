@@ -9,6 +9,7 @@ function ShoppingCart() {
 	const [customerId, setCustomerId] = useState(null);
 	const [cartItems, setCartItems] = useState([]);
 	const [subtotal, setSubTotal] = useState(0);
+	const [itemPrice, setItemPrice] = useState({}); // key value pair to contain id: price
 	const [quantities, setQuantities] = useState({}); //key value pair to contain id: quantity
 	const [selectedItems, setSelectedItems] = useState([]); //array to contain id of selected items
 	//note that on checkout to pass selecteditems and quantities
@@ -39,7 +40,7 @@ function ShoppingCart() {
 			const res = await fetch(url);
 			if (!res.ok) throw new Error('Error getting cart items');
 			const items = await res.json();
-			setCartItems(items);
+
 			console.log('Cart: ', items);
 
 			//to preselect all items in checkbox, first extract out cartItemId into array
@@ -54,15 +55,7 @@ function ShoppingCart() {
 			});
 			setQuantities(initialQuantity);
 
-			//setting subtotal on fetching cartItems
-			let subTotal = 0;
-			for (let cartitem of items) {
-				const itemPrice = cartitem.price * cartitem.quantity;
-				subTotal += itemPrice;
-			}
-			console.log('Subtotal of existing items: ', subTotal);
-			setSubTotal(subTotal);
-
+			setCartItems(items);
 			return items;
 		} catch (err) {
 			console.error('Error fetching cart items:', err);
@@ -137,6 +130,8 @@ function ShoppingCart() {
 												setSubTotal={setSubTotal}
 												subtotal={subtotal}
 												cartItems={cartItems}
+												itemPrice={itemPrice}
+												setItemPrice={setItemPrice}
 											/>
 										))}
 									</div>

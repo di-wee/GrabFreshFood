@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import nus.iss.team1.grabfreshfood.model.CartItem;
 import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Order;
+import nus.iss.team1.grabfreshfood.model.OrderStatus;
 import nus.iss.team1.grabfreshfood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,8 +32,12 @@ public class OrderHistoryController {
         }
 
         List<Order> orders = ohservice.getOrderHistoryForCustomer(type, customer);
+        List<String> orderStatus = List.of("All", OrderStatus.TOPAY, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED,OrderStatus.CANCELED);
+
         model.addAttribute("orders", orders);
         model.addAttribute("selectedType", type);
+        model.addAttribute("orderStatus", orderStatus);
+
         return "orderHistory";
     }
 

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
 import { useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 function ShoppingCart() {
 	//state management
@@ -11,6 +12,9 @@ function ShoppingCart() {
 	const [quantities, setQuantities] = useState({}); //key value pair to contain id: quantity
 	const [selectedItems, setSelectedItems] = useState([]); //array to contain id of selected items
 	//note that on checkout to pass selecteditems and quantities
+
+	const serviceFee = 3.6;
+	const total = (subtotal + serviceFee).toFixed(2);
 
 	//fetching customerId
 	const fetchCustomerId = async () => {
@@ -140,14 +144,24 @@ function ShoppingCart() {
 
 								{/* Subtotal grid */}
 								<div className='col-md-5 pl-md-3'>
-									<CartSummary />
-									<div className='text-right mt-3'>
-										<button
-											className='btn btn-success btn-sm'
-											style={{ width: '100%' }}
+									<CartSummary
+										subtotal={subtotal}
+										setSubTotal={setSubTotal}
+										serviceFee={serviceFee}
+										total={total}
+									/>
+									<div className='pt-0 mt-3'>
+										<Button
+											variant='success'
+											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'
 											type='submit'>
-											Checkout
-										</button>
+											<span>
+												<b>Checkout</b>
+											</span>
+											<span>
+												<b>${total}</b>
+											</span>
+										</Button>
 									</div>
 								</div>
 							</div>

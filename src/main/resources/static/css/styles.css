@@ -106,6 +106,20 @@ body {
     height: 80px;
     background-color: var(--grabfreshfood-light-green);
 }
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu > .dropdown-menu {
+    display: none;
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
  :root {
      --grabfreshfood-green: #0D723B;
      --grabfreshfood-light-green: #E8F5E9;

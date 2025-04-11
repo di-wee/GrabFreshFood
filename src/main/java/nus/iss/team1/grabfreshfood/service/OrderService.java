@@ -17,4 +17,6 @@ public interface OrderService {
     void getAndSaveDeliverAddress(int orderId, String address, String floorNumber, String unitNumber);
 
     void makePayment(int orderId, String cardNumber, String cardExpiry, String cvc);
+
+    void cancelOrder(int orderId, Customer customer);
 }

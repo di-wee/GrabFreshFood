@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -74,7 +75,7 @@ public class OrderImpl implements OrderService {
             if (deliverAddress.length() > 0 ){
                 deliverAddress.append(", ");
             }
-            deliverAddress.append("#" + floorNumber);
+            deliverAddress.append("#").append(floorNumber);
         }
         if (unitNumber != null && !unitNumber.isEmpty()){
             if (deliverAddress.length() > 0 ){
@@ -106,7 +107,7 @@ public class OrderImpl implements OrderService {
     public void cancelOrder(int orderId, Customer customer){
         Order order = getOrderByOrderId(orderId);
 
-        if (order != null && order.getCustomer().getId() == customer.getId() && order.getOrderStatus().equals(OrderStatus.TOPAY)){
+        if (order != null && Objects.equals(order.getCustomer().getId(), customer.getId()) && order.getOrderStatus().equals(OrderStatus.TOPAY)){
             order.setOrderStatus(OrderStatus.CANCELED);
             orderRepo.save(order);
         }

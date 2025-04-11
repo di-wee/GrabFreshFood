@@ -28,7 +28,7 @@ const catalogueEl = document.getElementById('react-catalogue');
 if (catalogueEl) {
 	createRoot(catalogueEl).render(
 		<StrictMode>
-			<ProductCatalogue />
+			<ProductCatalogue keyword={keyword} />
 		</StrictMode>
 	);
 }

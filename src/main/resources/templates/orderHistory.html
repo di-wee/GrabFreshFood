@@ -58,10 +58,31 @@
             <div class="orderTotalAmount">
                 <span class="orderTotal" th:text="'Total: $' + ${order.totalAmount}"></span>
             </div>
+            <div th:if="${order.orderStatus == 'Pending Payment'}" class="orderActions mt-2">
+                <a th:href="@{/payment-page(orderId=${order.id})}" class="btn btn-sm btn-primary mr-2">Go To Payment</a>
+                <button class="btn btn-sm btn-danger" th:attr="data-order-id=${order.id}" onclick="confirmCancel(this)">Cancel</button>
+            </div>
 
         </div>
     </div>
-    
+
 </div>
+
+<script>
+    function confirmCancel(button){
+        const orderId = button.getAttribute("data-order-id");
+        if (confirm("You want to cancel this order?")){
+            fetch("/cancel-order?orderId=" + orderId,{
+                method: "POST"
+            }).then(res => {
+                if (res.ok){
+                    location.reload();
+                }else {
+                    alert("Cancel failed.")
+                }
+            })
+        }
+    }
+</script>
 </body>
 </html>

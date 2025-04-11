@@ -96,5 +96,18 @@ public class OrderHistoryController {
         return "payment-success";
     }
 
+    //for cancel order
+    @PostMapping("/cancel-order")
+    public String cancelOrder(@RequestParam("orderId") int orderId, HttpSession session){
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer == null) {
+            return "redirect:/login";
+        }
+
+        ohservice.cancelOrder(orderId, customer);
+
+        return "redirect:/order-history";
+    }
+
 
 }

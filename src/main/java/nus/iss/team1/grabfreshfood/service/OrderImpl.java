@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Transactional
@@ -40,7 +41,7 @@ public class OrderImpl implements OrderService {
         order.setOrderStatus(OrderStatus.TOPAY);
         order.setOrderDate(LocalDate.now());
 
-        double totalAmount = cartItems.values().stream().filter(CartItem::isCheckout) .mapToDouble(cartItem -> cartItem.getPrice() * cartItem.getQuantity()).sum();
+        double totalAmount = cartItems.values().stream().filter(CartItem::isCheckout) .mapToDouble(cartItem -> productRepo.findProductById(cartItem.getProductId()).getPrice() * cartItem.getQuantity()).sum();
         order.setTotalAmount(totalAmount);
 
         Order saveNewOrder = orderRepo.save(order);
@@ -74,7 +75,7 @@ public class OrderImpl implements OrderService {
             if (deliverAddress.length() > 0 ){
                 deliverAddress.append(", ");
             }
-            deliverAddress.append("#" + floorNumber);
+            deliverAddress.append("#").append(floorNumber);
         }
         if (unitNumber != null && !unitNumber.isEmpty()){
             if (deliverAddress.length() > 0 ){
@@ -100,5 +101,15 @@ public class OrderImpl implements OrderService {
         order.setOrderStatus(OrderStatus.PROCESSING);
 
         orderRepo.save(order);
+    }
+
+    //cancel order by click cancel button on history page
+    public void cancelOrder(int orderId, Customer customer){
+        Order order = getOrderByOrderId(orderId);
+
+        if (order != null && Objects.equals(order.getCustomer().getId(), customer.getId()) && order.getOrderStatus().equals(OrderStatus.TOPAY)){
+            order.setOrderStatus(OrderStatus.CANCELED);
+            orderRepo.save(order);
+        }
     }
 }

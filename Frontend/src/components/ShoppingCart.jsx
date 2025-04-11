@@ -129,7 +129,7 @@ function ShoppingCart() {
 												selectedItems={selectedItems}
 												setSelectedItems={setSelectedItems}
 												setQuantities={setQuantities}
-												quantities={quantities[item.cartItemId]}
+												quantities={quantities}
 												setSubTotal={setSubTotal}
 												subtotal={subtotal}
 												cartItems={cartItems}

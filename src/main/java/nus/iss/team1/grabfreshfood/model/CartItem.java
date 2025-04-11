@@ -32,4 +32,9 @@ public class CartItem {
     public CartItem() {
     }
 
+    @Transient
+    public int getCartId() {
+        return cart.getCartId();
+    }
+
 }

@@ -44,7 +44,6 @@ const ProductCatalogue = ({ keyword }) => {
 	function handleProductOnClick() {
 		//this will need to redirect to Priscilla's spring controller, make sure to
 		// include the id of the product to accomodate for her logic
-
 	}
 
 	return (
@@ -68,7 +67,9 @@ const ProductCatalogue = ({ keyword }) => {
 									onChange={(e) => handleItemQuant(e)}></input>
 							) : (
 								<Button
-									onClick={handleAddCart}
+									onClick={() =>
+										(window.location.href = `http://localhost:8080/product/${id}`)
+									}
 									variant='success'>
 									Add to cart
 								</Button>

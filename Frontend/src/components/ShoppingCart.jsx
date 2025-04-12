@@ -17,7 +17,50 @@ function ShoppingCart() {
 	const serviceFee = 3.6;
 	const total = (subtotal + serviceFee).toFixed(2);
 
-	//fetching customerId
+	const handleEmptyCart = (cartId, itemId) => {
+		//logic for onClick of 'Empty Cart' button goes here.
+		// for this logic, take note that u have to remove ALL items in cart.
+		// so to start off, u can loop through the items in cart via the 'cartItems' variable where i
+		// used to store all the cartitem info into an array.
+		// u open up your dev tools/inspect tools in your browser to check console.logs for references
+		// to what is being pulled.
+		//
+		// call the DEL API, u can either use axios or use fetch to do so, can refer to my codes if anything.
+	};
+
+	//checkout logic while calling POST api and redirecting to checkout page
+	const handleCheckout = async () => {
+		//filter array for only those that have been selected
+		const cartSelected = cartItems.filter((item) =>
+			selectedItems.includes(item.cartItemId)
+		);
+		const reqBody = {
+			customerId,
+			totalAmount: total,
+			cartItems: cartSelected,
+		};
+
+		const url = import.meta.env.VITE_SERVER + 'api/order/create';
+
+		try {
+			const res = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(reqBody),
+			});
+			if (!res.ok) throw new Error('Error creating order!');
+			const data = await res.json(); //retrieving the orderId from response body
+			console.log('Order created with Order ID: ', data);
+			window.location.href =
+				import.meta.env.VITE_SERVER + `checkout-page?orderId=${data}`;
+		} catch (err) {
+			console.error('Error: ', err);
+		}
+	};
+
+	//fetching GET customerId
 	const fetchCustomerId = async () => {
 		try {
 			const url = import.meta.env.VITE_SERVER + 'api/session/customer-id';
@@ -103,7 +146,9 @@ function ShoppingCart() {
 							<h5>Shopping Cart</h5>
 						</div>
 						<div className='col text-right'>
-							<button className='btn btn-outline-danger'>
+							<button
+								onClick={() => handleEmptyCart()}
+								className='btn btn-outline-danger'>
 								<span style={{ marginRight: '5px' }}>
 									<i className='bi bi-trash3'></i>
 								</span>
@@ -147,9 +192,9 @@ function ShoppingCart() {
 									/>
 									<div className='pt-0 mt-3'>
 										<Button
+											onClick={() => handleCheckout()}
 											variant='success'
-											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'
-											type='submit'>
+											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'>
 											<span>
 												<b>Checkout</b>
 											</span>

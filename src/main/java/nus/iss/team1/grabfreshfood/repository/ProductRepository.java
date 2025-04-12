@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p from Product p WHERE " +
@@ -17,6 +18,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.subCategory.name = :subcategory")
     List<Product> findProductBySubCategory(@Param("subcategory") String subcategoryName);
 
-    Product findProductById(int ProductId);
+    //Product findProductById(int ProductId); not sure whose
+    //Done by Pris
+    @Query("SELECT p FROM Product p WHERE p.id = :id")
+    Optional<Product> findProductById(@Param("id") int id);
+
+
 
 }

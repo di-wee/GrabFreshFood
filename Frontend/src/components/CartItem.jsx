@@ -16,6 +16,10 @@ function CartItem({
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
 
+	const handleDeleteItem = (cartId, itemId) => {
+		// your delete item logic goes here
+	};
+
 	//handling of updating of item quantity
 	function handleUpdateQuantity(itemId, newQuantity) {
 		setLocalQuantity(newQuantity);
@@ -80,9 +84,7 @@ function CartItem({
 
 			//setting state to store accurate price of product
 			updateLocalItemPrice(item.cartItemId, data.price);
-			console.log("fetchProduct's itemPrice: ", itemPrice);
 			return data;
-			console.log('product state: ', product);
 		} catch (err) {
 			console.error('Error: ', err);
 		}
@@ -100,10 +102,8 @@ function CartItem({
 				//extract quantities in state via itemId
 				const quant = quantities[item.cartItemId];
 				const price = itemPrice[item.cartItemId];
-				console.log('price', price);
 				const itemTotal = quant * price;
 				total += itemTotal;
-				console.log('current total: ', total);
 			}
 		}
 		setSubTotal(total);
@@ -157,6 +157,7 @@ function CartItem({
 					<b>${product.price}</b>
 				</h6>
 				<i
+					onClick={() => handleDeleteItem()}
 					className='bi bi-trash3'
 					style={{ cursor: 'pointer' }}></i>
 			</div>

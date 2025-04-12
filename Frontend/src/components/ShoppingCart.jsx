@@ -17,6 +17,17 @@ function ShoppingCart() {
 	const serviceFee = 3.6;
 	const total = (subtotal + serviceFee).toFixed(2);
 
+	const handleEmptyCart = (cartId, itemId) => {
+		//logic for onClick of 'Empty Cart' button goes here.
+		// for this logic, take note that u have to remove ALL items in cart.
+		// so to start off, u can loop through the items in cart via the 'cartItems' variable where i
+		// used to store all the cartitem info into an array.
+		// u open up your dev tools/inspect tools in your browser to check console.logs for references
+		// to what is being pulled.
+		//
+		// call the DEL API, u can either use axios or use fetch to do so, can refer to my codes if anything.
+	};
+
 	//fetching customerId
 	const fetchCustomerId = async () => {
 		try {
@@ -103,7 +114,9 @@ function ShoppingCart() {
 							<h5>Shopping Cart</h5>
 						</div>
 						<div className='col text-right'>
-							<button className='btn btn-outline-danger'>
+							<button
+								onClick={() => handleEmptyCart()}
+								className='btn btn-outline-danger'>
 								<span style={{ marginRight: '5px' }}>
 									<i className='bi bi-trash3'></i>
 								</span>
@@ -147,6 +160,7 @@ function ShoppingCart() {
 									/>
 									<div className='pt-0 mt-3'>
 										<Button
+											onClick={() => handleCheckout()}
 											variant='success'
 											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'
 											type='submit'>

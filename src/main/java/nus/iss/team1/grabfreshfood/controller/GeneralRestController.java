@@ -104,8 +104,8 @@ public class GeneralRestController {
         }
     }
 
-    @GetMapping("/search/{query}")
-    public ResponseEntity<List<Product>> searchResult(@PathVariable("query") String query) {
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchResult(@RequestParam("query") String query) {
         List<Product> products = productService.findProductByQuery(query);
         if (products == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -114,7 +114,7 @@ public class GeneralRestController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/category/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.findAllProduct();
         return new ResponseEntity<>(HttpStatus.OK);

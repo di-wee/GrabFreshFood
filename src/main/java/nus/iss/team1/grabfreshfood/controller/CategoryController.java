@@ -12,19 +12,19 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     private ProductService productService;
-    @GetMapping("/all")
+    @GetMapping("/category/all")
     public String categoryAll(Model model) {
-        List<Product>products=productService.findAllProduct();
-        String categoryName="All";
-        model.addAttribute("category", categoryName);
-        model.addAttribute("products", products);
+        //List<Product>products=productService.findAllProduct();
+        //String categoryName="All";
+        //model.addAttribute("category", categoryName);
+        //model.addAttribute("products", products);
         return "category-page";
     }
     @GetMapping("/category/{subcategoryName}")
     public String categorySubcategory(@PathVariable ("subcategoryName")String subcategoryName, Model model) {
-        List<Product> products=productService.findProductBySubCategory(subcategoryName);
-        model.addAttribute("category", subcategoryName);
-        model.addAttribute("products", products);
+        //List<Product> products=productService.findProductBySubCategory(subcategoryName);
+        //model.addAttribute("category", subcategoryName);
+        // /model.addAttribute("products", products);
         return "category-page";
 
     }

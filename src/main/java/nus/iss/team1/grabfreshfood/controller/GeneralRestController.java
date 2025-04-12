@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -79,16 +80,27 @@ public class GeneralRestController {
         
         
     }
-
+    
+    
+	/*
+	 * @GetMapping("/product/{id}") public ResponseEntity<Product>
+	 * getProduct(@PathVariable("id") int id) { Product product =
+	 * productService.findProductById(id); if (product == null) { return new
+	 * ResponseEntity<>(HttpStatus.NOT_FOUND); } else { return new
+	 * ResponseEntity<>(product, HttpStatus.OK); } }
+	 */
+    
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") int id) {
-        Product product = productService.findProductById(id);
-        if (product == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<Product> productOptional = productService.findProductById(id);
+        if (productOptional.isPresent()) {
+            return new ResponseEntity<>(productOptional.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(product, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    
+    
     
     @DeleteMapping("/cart/{cartId}/item/{itemId}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("itemId") int itemId,

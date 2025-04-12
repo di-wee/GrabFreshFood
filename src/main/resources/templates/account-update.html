@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Update My Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
     <script>
-      // Optional: JavaScript to toggle password input visibility
-      window.onload = function() {
-          const toggleBtn = document.getElementById("togglePassword");
-          const passwordInput = document.getElementById("password");
-          toggleBtn.addEventListener("click", function() {
-              const type = passwordInput.type === "password" ? "text" : "password";
-              passwordInput.type = type;
-              toggleBtn.textContent = type === "password" ? "Show" : "Hide";
-          });
-      }
+        // Optional: JavaScript to toggle password input visibility
+        window.onload = function () {
+            const toggleBtn = document.getElementById("togglePassword");
+            const passwordInput = document.getElementById("password");
+            toggleBtn.addEventListener("click", function () {
+                const type = passwordInput.type === "password" ? "text" : "password";
+                passwordInput.type = type;
+                toggleBtn.textContent = type === "password" ? "Show" : "Hide";
+            });
+        }
     </script>
 </head>
 <body>
@@ -23,39 +23,39 @@
 <div class="container mt-5">
     <h2>Update My Profile</h2>
     <!-- Form for updating profile -->
-    <form th:action="@{/account/update}" th:object="${customer}" method="post" class="w-75">
+    <form class="w-75" method="post" th:action="@{/account/update}" th:object="${customer}">
         <!-- Username field appears first -->
         <div class="mb-3">
-            <label for="username" class="form-label">Username (Email)</label>
-            <input type="email" id="username" th:field="*{username}" class="form-control" required>
+            <label class="form-label" for="username">Username (Email)</label>
+            <input class="form-control" id="username" required th:field="*{username}" type="email">
         </div>
         <!-- Password field with show/hide toggle appears second -->
         <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
+            <label class="form-label" for="password">Password</label>
             <div class="input-group">
-                <input type="password" id="password" th:field="*{password}" class="form-control" required>
-                <button class="btn btn-outline-secondary" type="button" id="togglePassword">Show</button>
+                <input class="form-control" id="password" required th:field="*{password}" type="password">
+                <button class="btn btn-outline-secondary" id="togglePassword" type="button">Show</button>
             </div>
         </div>
         <!-- Then the remaining fields -->
         <div class="mb-3">
-            <label for="firstName" class="form-label">First Name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" class="form-control" required>
+            <label class="form-label" for="firstName">First Name</label>
+            <input class="form-control" id="firstName" required th:field="*{firstName}" type="text">
         </div>
         <div class="mb-3">
-            <label for="lastName" class="form-label">Last Name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" class="form-control" required>
+            <label class="form-label" for="lastName">Last Name</label>
+            <input class="form-control" id="lastName" required th:field="*{lastName}" type="text">
         </div>
         <div class="mb-3">
-            <label for="phoneNumber" class="form-label">Phone Number</label>
-            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control">
+            <label class="form-label" for="phoneNumber">Phone Number</label>
+            <input class="form-control" id="phoneNumber" th:field="*{phoneNumber}" type="text">
         </div>
         <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
-            <input type="text" id="address" th:field="*{address}" class="form-control">
+            <label class="form-label" for="address">Address</label>
+            <input class="form-control" id="address" th:field="*{address}" type="text">
         </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-        <a th:href="@{/account}" class="btn btn-secondary ms-2">Cancel</a>
+        <button class="btn btn-primary" type="submit">Save Changes</button>
+        <a class="btn btn-secondary ms-2" th:href="@{/account}">Cancel</a>
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

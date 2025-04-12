@@ -28,6 +28,38 @@ function ShoppingCart() {
 		// call the DEL API, u can either use axios or use fetch to do so, can refer to my codes if anything.
 	};
 
+	//checkout logic while calling POST api and redirecting to checkout page
+	const handleCheckout = async () => {
+		//filter array for only those that have been selected
+		const cartSelected = cartItems.filter((item) =>
+			selectedItems.includes(item.cartId)
+		);
+		const reqBody = {
+			customerId,
+			totalAmount: total,
+			cartItems: cartSelected,
+		};
+
+		const url = import.meta.env.VITE_SERVER + 'api/order/create';
+
+		try {
+			const res = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(reqBody),
+			});
+			if (!res.ok) throw new Error('Error creating order!');
+			const data = await res.json(); //retrieving the orderId from response body
+			console.log('Order created with Order ID: ', data);
+			window.location.href =
+				import.meta.env.VITE_SERVER + `checkout-page?orderId=${data}`;
+		} catch (err) {
+			console.error('Error: ', err);
+		}
+	};
+
 	//fetching GET customerId
 	const fetchCustomerId = async () => {
 		try {
@@ -162,8 +194,7 @@ function ShoppingCart() {
 										<Button
 											onClick={() => handleCheckout()}
 											variant='success'
-											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'
-											type='submit'>
+											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'>
 											<span>
 												<b>Checkout</b>
 											</span>

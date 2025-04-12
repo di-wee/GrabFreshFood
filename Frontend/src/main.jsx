@@ -26,6 +26,9 @@ if (cartEl) {
 
 const catalogueEl = document.getElementById('react-catalogue');
 if (catalogueEl) {
+	//passing keyword attribute from thyme
+	const keyword = catalogueEl.dataset.keyword || null; //null to accomodate for landingpage
+
 	createRoot(catalogueEl).render(
 		<StrictMode>
 			<ProductCatalogue keyword={keyword} />

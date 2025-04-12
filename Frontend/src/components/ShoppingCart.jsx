@@ -28,7 +28,7 @@ function ShoppingCart() {
 		// call the DEL API, u can either use axios or use fetch to do so, can refer to my codes if anything.
 	};
 
-	//fetching customerId
+	//fetching GET customerId
 	const fetchCustomerId = async () => {
 		try {
 			const url = import.meta.env.VITE_SERVER + 'api/session/customer-id';

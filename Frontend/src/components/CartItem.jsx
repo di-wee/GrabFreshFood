@@ -9,10 +9,16 @@ function CartItem({
 	setSubTotal,
 	subTotal,
 	cartItems,
+	itemPrice,
+	setItemPrice,
 }) {
 	//state management
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
+
+	const handleDeleteItem = (cartId, itemId) => {
+		// your delete item logic goes here
+	};
 
 	//handling of updating of item quantity
 	function handleUpdateQuantity(itemId, newQuantity) {
@@ -24,7 +30,6 @@ function CartItem({
 		}));
 
 		console.log(quantities);
-		calculateSubTotal();
 	}
 
 	// handling toggling of checkbox
@@ -32,27 +37,9 @@ function CartItem({
 		if (selectedItems.includes(itemId)) {
 			//if item is already selected, remove it.
 			setSelectedItems(selectedItems.filter((id) => id !== itemId));
-			calculateSubTotal;
 		} else {
 			//or else add the item to state
 			setSelectedItems([...selectedItems, itemId]); // [1, 2 ,4]
-			calculateSubTotal;
-		}
-	}
-
-	function calculateSubTotal() {
-		let total = 0;
-		for (let item of cartItems) {
-			//if selectedItems include the particular cartItemId
-			if (selectedItems.includes(item.cartItemId)) {
-				//extract quantities in state via itemId
-				const quant = quantities[item.cartItemId];
-				const price = item.price;
-				const itemTotal = quant * price;
-				total += itemTotal;
-				console.log('current total: ', total);
-				setSubTotal(total);
-			}
 		}
 	}
 
@@ -77,6 +64,13 @@ function CartItem({
 		}
 	};
 
+	const updateLocalItemPrice = (cartItemId, price) => {
+		setItemPrice((prev) => ({
+			...prev,
+			[cartItemId]: price,
+		}));
+	};
+
 	//fetching product details
 	const fetchProduct = async () => {
 		try {
@@ -87,8 +81,10 @@ function CartItem({
 			const data = await res.json();
 			console.log('Product: ', data);
 			setProduct(data);
+
+			//setting state to store accurate price of product
+			updateLocalItemPrice(item.cartItemId, data.price);
 			return data;
-			console.log('product state: ', product);
 		} catch (err) {
 			console.error('Error: ', err);
 		}
@@ -97,6 +93,21 @@ function CartItem({
 	useEffect(() => {
 		fetchProduct();
 	}, []);
+
+	useEffect(() => {
+		let total = 0;
+		for (let item of cartItems) {
+			//if selectedItems include the particular cartItemId
+			if (selectedItems.includes(item.cartItemId)) {
+				//extract quantities in state via itemId
+				const quant = quantities[item.cartItemId];
+				const price = itemPrice[item.cartItemId];
+				const itemTotal = quant * price;
+				total += itemTotal;
+			}
+		}
+		setSubTotal(total);
+	}, [cartItems, quantities, selectedItems, itemPrice]);
 
 	return (
 		<div className='row border-bottom p-3 align-items-center'>
@@ -146,6 +157,7 @@ function CartItem({
 					<b>${product.price}</b>
 				</h6>
 				<i
+					onClick={() => handleDeleteItem()}
 					className='bi bi-trash3'
 					style={{ cursor: 'pointer' }}></i>
 			</div>

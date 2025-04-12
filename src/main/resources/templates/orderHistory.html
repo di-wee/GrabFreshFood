@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>GrabFreshFood</title>
+    <meta charset="UTF-8"/>
+    <title>GrabFreshFood | Order History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/orderHistory.css">
+    <link href="/orderHistory.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -13,29 +14,18 @@
     <div class="tabbar">
         <section class="tabBar" role="tabList">
             <h2 class="titleHidden">Tab List Section</h2>
-            <a th:href="@{/order-history(type='All')}" th:class="${selectedType == 'All'} ? 'selected' : 'nonSelected'" title="All" role="tab" th:attr="aria-selected=${selectedType == 'All'}">
-                <span class="tabText">All</span>
-            </a>
-            <a th:href="@{/order-history(type='Pending Payment')}" th:class="${selectedType == 'Pending Payment'} ? 'selected' : 'nonSelected'" title="Pending Payment" role="tab" th:attr="aria-selected=${selectedType == 'Pending Payment'}">
-                <span class="tabText">Pending Payment</span>
-            </a>
-            <a th:href="@{/order-history(type='Processing')}" th:class="${selectedType == 'Processing'} ? 'selected' : 'nonSelected'" title="Processing" role="tab" th:attr="aria-selected=${selectedType == 'Processing'}">
-                <span class="tabText">Processing</span>
-            </a>
-            <a th:href="@{/order-history(type='Shipped')}" th:class="${selectedType == 'Shipped'} ? 'selected' : 'nonSelected'" title="Shipped" role="tab" th:attr="aria-selected=${selectedType == 'Shipped'}">
-                <span class="tabText">Shipped</span>
-            </a>
-            <a th:href="@{/order-history(type='Delivered')}" th:class="${selectedType == 'Delivered'} ? 'selected' : 'nonSelected'" title="Delivered" role="tab" th:attr="aria-selected=${selectedType == 'Delivered'}">
-                <span class="tabText">Delivered</span>
-            </a>
-            <a th:href="@{/order-history(type='Canceled')}" th:class="${selectedType == 'Canceled'} ? 'selected' : 'nonSelected'" title="Canceled" role="tab" th:attr="aria-selected=${selectedType == 'Canceled'}">
-                <span class="tabText">Canceled</span>
+            <a role="tab"
+               th:attr="aria-selected=${selectedType == status}"
+               th:class="${selectedType == status} ? 'selected' : 'nonSelected'"
+               th:each="status : ${orderStatus}" th:href="@{/order-history(type=${status})}"
+               title="${status}">
+                <span class="tabText" th:text="${status}"></span>
             </a>
         </section>
     </div>
     <div class="showOrder">
         <h2 class="titleHidden">Order List Section</h2>
-        <div th:each="order : ${orders}" class = "orderCard">
+        <div class="orderCard" th:each="order : ${orders}">
             <div class="orderHeader">
                 <span class="orderId" th:text="'Order Id: ' + ${order.id}"></span>
                 <span class="orderDate" th:text="'Order Date: ' + ${order.orderDate}"></span>
@@ -58,10 +48,36 @@
             <div class="orderTotalAmount">
                 <span class="orderTotal" th:text="'Total: $' + ${order.totalAmount}"></span>
             </div>
+            <div class="orderActions mt-2" th:if="${order.orderStatus == 'Pending Payment'}">
+                <a class="btn btn-sm btn-primary mr-2" th:href="@{/payment-page(orderId=${order.id})}">Go To Payment</a>
+                <button class="btn btn-sm btn-danger" onclick="confirmCancel(this)" th:attr="data-order-id=${order.id}">
+                    Cancel
+                </button>
+            </div>
 
         </div>
     </div>
-    
+
 </div>
+
+<script>
+    function confirmCancel(button) {
+        const orderId = button.getAttribute("data-order-id");
+        if (confirm("You want to cancel this order?")) {
+            fetch("/cancel-order?orderId=" + orderId, {
+                method: "POST"
+            }).then(res => {
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert("Cancel failed.")
+                }
+            })
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
+
 </body>
 </html>

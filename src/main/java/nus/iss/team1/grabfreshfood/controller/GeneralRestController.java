@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -33,22 +34,21 @@ public class GeneralRestController {
     @Autowired
     private OrderService orderService;
 
-    //Done by Dionis
+    // Done by Dionis
     @GetMapping("/cart/customer/{customerId}/items")
     public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
-        //first extract Cart for customer
+        // first extract Cart for customer
         Cart cart = cartService.findCartByCustomerId(customerId);
 
-        //using CartID from Cart obj to get the list of cartitems.
+        // using CartID from Cart obj to get the list of cartitems.
         List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
 
         // possible for list to be empty. no need for exceptions
         return new ResponseEntity<>(items, HttpStatus.OK);
 
-
     }
 
-    //Done by Dionis (tested)
+    // Done by Dionis (tested)
     @PutMapping("/cart/update-quantity")
     public ResponseEntity<CartItem> updateItemQuantity(@RequestBody UpdateCartItemReq req) {
         try {
@@ -56,8 +56,7 @@ public class GeneralRestController {
             CartItem updatedItem = cartService.updateItemQuantity(
                     req.getCartId(),
                     req.getCartItemId(),
-                    req.getQuantity()
-            );
+                    req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -77,22 +76,29 @@ public class GeneralRestController {
             return new ResponseEntity<>(customerId, HttpStatus.OK);
         }
 
-
     }
+
+    /*
+     * @GetMapping("/product/{id}") public ResponseEntity<Product>
+     * getProduct(@PathVariable("id") int id) { Product product =
+     * productService.findProductById(id); if (product == null) { return new
+     * ResponseEntity<>(HttpStatus.NOT_FOUND); } else { return new
+     * ResponseEntity<>(product, HttpStatus.OK); } }
+     */
 
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") int id) {
-        Product product = productService.findProductById(id);
-        if (product == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<Product> productOptional = productService.findProductById(id);
+        if (productOptional.isPresent()) {
+            return new ResponseEntity<>(productOptional.get(), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(product, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/cart/{cartId}/item/{itemId}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("itemId") int itemId,
-                                               @PathVariable("cartId") int cartId) {
+            @PathVariable("cartId") int cartId) {
         try {
             cartService.deleteCartItem(cartId, itemId);
             return new ResponseEntity<>(HttpStatus.OK);

@@ -18,88 +18,87 @@
     <!-- Custom CSS -->
     <!-- Use a relative path (e.g., /styles.css) that maps to your static resource folder -->
     <link rel="stylesheet" href="/css/styles.css" />
+>>>>>>> 179f32f7ae0b8b3249443b47b1e0f27ecd2bb5ff
 
-    <style>
-      body {
-        background-color: #f5f5f5;
-        color: #333;
-        line-height: 1.6;
-      }
-      .product-container {
-        background-color: white;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
-      .product-details {
-        background-color: white;
-        padding: 30px;
-        border-radius: 10px;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Top Notice Banner Fragment -->
-    <div th:replace="~{fragments/topbanner :: topbanner}"></div>
+	<!-- Bootstrap & Icons -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Navbar Fragment -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <div class="container mt-5">
-      <div class="product-container">
-        <div class="row">
-          <!-- Left side - Product Image -->
-          <div class="col-md-6 mb-4">
-            <div
-              class="d-flex justify-content-center align-items-center"
-              style="height: 100%"
-            >
-              <!-- If your product is passed to the template, use th:src -->
-              <img
-                src="/images/Broccoli.jpg"
-                class="img-fluid d-block mx-auto"
-                alt="Broccoli"
-                style="width: 50%; height: auto"
-              />
-            </div>
-          </div>
+	<style>
+		body {
+			background-color: #f5f5f5;
+			color: #333;
+			line-height: 1.6;
+		}
 
-          <!-- Right side - Product Details -->
-          <div class="col-md-6">
-            <div class="product-details">
-              <div class="product-name mb-4">
-                <h3>Broccoli</h3>
-              </div>
-              <div class="product-price mb-5">
-                <h3>$5.50</h3>
-              </div>
-              <div class="mb-5">
-                <form action="#" th:action="@{/fruits/checkout}" method="GET">
-                  <button class="btn btn-grabfreshfood" type="submit">
-                    Add to Cart
-                  </button>
-                </form>
-              </div>
-              <div class="product-description mb-5">
-                <h4>Description</h4>
-                <p>
-                  Premium quality, fresh organic broccoli harvested at peak
-                  ripeness. Our broccoli is grown using sustainable farming
-                  practices and is rich in vitamins, minerals, and antioxidants.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+		.product-container {
+			background-color: white;
+			padding: 30px;
+			border-radius: 10px;
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+		}
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
 
-  </body>
+		.product-details {
+			background-color: white;
+			padding: 30px;
+			border-radius: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Top Notice Banner Fragment -->
+	<div th:replace="~{fragments/topbanner :: topbanner}"></div>
+
+	<!-- Navbar Fragment -->
+	<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+	<div class="container mt-5">
+		<div class="product-container">
+			<div class="row">
+				<!-- Left side - Product Image -->
+				<div class="col-md-6 mb-4">
+					<div class="d-flex justify-content-center align-items-center" style="height: 100%">
+						<!-- If your product is passed to the template, use th:src -->
+						<img th:src="${product.imageURL}" class="img-fluid d-block mx-auto" alt="${product.name}"
+							style="width: 50%; height: auto" />
+					</div>
+				</div>
+
+				<!-- Right side - Product Details -->
+				<div class="col-md-6">
+					<div class="product-details">
+						<div class="product-name mb-4">
+							<h3 th:text="${product.name}">Product Name</h3>
+						</div>
+						<div class="product-price mb-5">
+							<h3 th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">Product Price</h3>
+						</div>
+						<div class="mb-5">
+							<form action="#" th:action="@{/cart}" method="GET">
+								<button class="btn btn-grabfreshfood" type="submit">
+									Add to Cart
+								</button>
+						</div>
+						<div class="product-description mb-5">
+							<h4 >Description</h4>
+							<p th:text="${product.description}">
+
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Bootstrap JS Bundle with Popper -->
+	<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
+</body>
 </html>
+

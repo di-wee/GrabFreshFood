@@ -1,0 +1,23 @@
+<div th:fragment="dropdown-hover-script">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropdowns = document.querySelectorAll('.navbar .dropdown');
+
+            dropdowns.forEach(function (dropdown) {
+                dropdown.addEventListener('mouseenter', function () {
+                    const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+                    if (toggle && !dropdown.classList.contains('show')) {
+                        bootstrap.Dropdown.getOrCreateInstance(toggle).show();
+                    }
+                });
+
+                dropdown.addEventListener('mouseleave', function () {
+                    const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+                    if (toggle && dropdown.classList.contains('show')) {
+                        bootstrap.Dropdown.getOrCreateInstance(toggle).hide();
+                    }
+                });
+            });
+        });
+    </script>
+</div>

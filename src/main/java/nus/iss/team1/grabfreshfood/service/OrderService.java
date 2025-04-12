@@ -10,7 +10,7 @@ import java.util.Map;
 public interface OrderService {
     List<Order> getOrderHistoryForCustomer(String status, Customer customer);
 
-    int createNewOrderAndId(Customer customer, List<CartItem> cartItems, double totalAmount);
+    int createNewOrderAndId(int customerId, List<CartItem> cartItems, double totalAmount);
 
     Order getOrderByOrderId(int orderId);
 

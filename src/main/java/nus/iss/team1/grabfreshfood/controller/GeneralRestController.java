@@ -4,14 +4,16 @@ import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.DTO.CreateOrderRequest;
 import nus.iss.team1.grabfreshfood.DTO.UpdateCartItemReq;
 import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
-import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
+import nus.iss.team1.grabfreshfood.config.CustomerNotFound;
+import nus.iss.team1.grabfreshfood.config.ProductNotFoundException;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
+import nus.iss.team1.grabfreshfood.service.OrderService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
-import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,9 @@ public class GeneralRestController {
     private CartService cartService;
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private OrderService orderService;
 
     //Done by Dionis
     @GetMapping("/cart/customer/{customerId}/items")
@@ -99,5 +104,25 @@ public class GeneralRestController {
         }
     }
 
+    @PostMapping("/order/create")
+    public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
+        try {
+            int newOrderId = orderService.createNewOrderAndId(
+                    req.getCustomerId(),
+                    req.getCartItems(),
+                    req.getTotalAmount()
+
+            );
+
+            return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
+
+        } catch (CustomerNotFound | ProductNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DataAccessException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

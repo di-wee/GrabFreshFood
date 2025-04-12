@@ -32,7 +32,7 @@ function ShoppingCart() {
 	const handleCheckout = async () => {
 		//filter array for only those that have been selected
 		const cartSelected = cartItems.filter((item) =>
-			selectedItems.includes(item.cartId)
+			selectedItems.includes(item.cartItemId)
 		);
 		const reqBody = {
 			customerId,

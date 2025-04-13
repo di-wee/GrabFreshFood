@@ -90,6 +90,31 @@ public class OrderImpl implements OrderService {
         }
     }
 
+    //create new order to DB and get the orderId for address and payment
+//    public int createNewOrderAndId(Customer customer, Map<Integer, CartItem> cartItems) {
+//        Order order = new Order();
+//        order.setCustomer(customer);
+//        order.setOrderStatus(OrderStatus.TOPAY);
+//        order.setOrderDate(LocalDate.now());
+//
+//        double totalAmount = cartItems.values().stream().filter(CartItem::isCheckout).mapToDouble(cartItem -> productRepo.findProductById(cartItem.getProductId()).getPrice() * cartItem.getQuantity()).sum();
+//        order.setTotalAmount(totalAmount);
+//
+//        Order saveNewOrder = orderRepo.save(order);
+//
+//        for (CartItem cartItem : cartItems.values()) {
+//            OrderItems orderItems = new OrderItems();
+//            orderItems.setOrder(saveNewOrder);
+//            orderItems.setPrice(cartItem.getPrice() * cartItem.getQuantity());
+//            orderItems.setQuantity(cartItem.getQuantity());
+//            orderItems.setProduct(productRepo.findProductById(cartItem.getProductId()));
+//
+//            orderItemsRepo.save(orderItems);
+//        }
+//
+//        return saveNewOrder.getId();
+//    }
+
     // find order by orderId
     public Order getOrderByOrderId(int orderId) {
         return orderRepo.findById(orderId);

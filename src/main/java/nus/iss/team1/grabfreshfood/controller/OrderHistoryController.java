@@ -62,6 +62,17 @@ public class OrderHistoryController {
         return "checkout-page";
     }
 
+
+    //temp logic when orders are not created on button click of 'checkout'
+//    @GetMapping("/checkout-page")
+//    public String checkoutPage(@RequestParam("selectedItemsIds") List<Integer> selectedItemsIds, Model model, HttpSession session) {
+//        model.addAttribute("selectedItemsIds", selectedItemsIds);
+//        session.setAttribute("selectedItemsIds", selectedItemsIds);
+//
+//        return "checkout-page";
+//    }
+
+
     //fill and add address to DB by click 'save&continue' button on checkout-page.html
     @PostMapping("/checkout/pay")
     public String getAddress(@RequestParam("orderId") int orderId,

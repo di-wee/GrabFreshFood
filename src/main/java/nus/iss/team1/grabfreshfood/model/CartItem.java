@@ -17,7 +17,6 @@ public class CartItem {
 
     @Column(name = "product_id")
     private int productId;
-    private double price;
 
     @Column(name = "is_checkout")
     private boolean isCheckout;

@@ -36,7 +36,23 @@
     </div>
     <form method="post" style="width: 100%" th:action="@{/checkout/pay}">
         <input name="orderId" th:value="${orderId}" type="hidden">
-        <div class="checkout-form form-group">
+        <!-- Lst error message show-->
+        <div class="alert alert-danger fade show mt-3" id="errorAlert" role="alert" th:if="${error}">
+            <p id="errorMessage" th:text="${error}"></p>
+        </div>
+        <div  th:if="${orderSavedAddress != null}">
+            <h6 class="fw-bold mt-2">Use your saved address</h6>
+            <input type="radio" name="addressOption" value="saved" checked id ="useSaved">
+            <label for="useSaved">
+                <strong  th:text="${orderSavedAddress}"></strong>
+            </label>
+        </div>
+        <hr>
+        <div>
+            <input type="radio" name="addressOption" value="new" id="useNew" th:checked="${orderSavedAddress == null}">
+            <label for="useNew"><strong>Use a new address</strong></label>
+        </div>
+        <div class="checkout-form form-group" id="newAddressField">
             <label>Postal code</label>
             <input class="form-control" name="postalCode" type="text"/>
             <div class="label-row">
@@ -45,17 +61,15 @@
             </div>
             <input class="form-control" name="buildingName" type="text"/>
             <label>Address</label>
-            <input class="form-control" name="address" type="text"/>
+            <input class="form-control" name="address" type="text" required/>
             <div class="row row-cols-2">
                 <div class="col">
                     <label>Floor number</label>
-                    <input class="form-control" name="floorNumber" type="text"/>
-                    <p style="font-size: smaller; font-weight: bold; color: grey">Please enter your floor and unit
-                        number, if applicable.</p>
+                    <input class="form-control" name="floorNumber" type="text" required/>
                 </div>
                 <div class="col">
                     <label>Unit number</label>
-                    <input class="form-control" name="unitNumber" type="text"/>
+                    <input class="form-control" name="unitNumber" type="text" required/>
                 </div>
             </div>
             <h5 style="font-weight: bold; margin-top: 3vh">Recipient's information</h5>
@@ -64,13 +78,53 @@
             <input class="form-control" name="name" type="text"/>
             <label>Phone number</label>
             <input class="form-control" name="phoneNumber" type="text"/>
-            <button class="payment-button btn btn-success" type="submit">Save & continue</button>
 
         </div>
-
+        <div class="checkout-form form-group">
+            <button class="payment-button btn btn-success btn-modify" type="submit">Save & Continue</button>
+        </div>
     </form>
 
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded',function(){
+        const useSaved = document.getElementById("useSaved");
+        const useNew = document.getElementById("useNew");
+        const newAddressField = document.getElementById("newAddressField");
+
+
+        function showFields(){
+            if (useNew.checked){
+                newAddressField.style.display = 'block';
+                newAddressField.querySelectorAll("input").forEach(input => {
+                    input.disabled = false;
+                });
+            } else {
+                newAddressField.style.display = 'none';
+                newAddressField.querySelectorAll("input").forEach(input =>{
+                    input.disabled = true;
+                });
+            }
+        }
+
+        useSaved.addEventListener('change', showFields);
+        useNew.addEventListener('change',showFields);
+
+        showFields();
+    })
+    window.addEventListener("DOMContentLoaded", () => {
+        const errorAlert = document.getElementById("errorAlert");
+        if (errorAlert) {
+            setTimeout(() => {
+                errorAlert.classList.remove("show");
+
+                setTimeout(() => {
+                    errorAlert.style.display = "none";
+                }, 500)
+            }, 3000)
+        }
+    })
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>

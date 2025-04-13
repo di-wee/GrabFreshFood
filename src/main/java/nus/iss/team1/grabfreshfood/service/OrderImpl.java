@@ -58,7 +58,8 @@ public class OrderImpl implements OrderService {
             order.setOrderStatus(OrderStatus.TOPAY);
             order.setOrderDate(LocalDate.now());
             order.setTotalAmount(totalAmount);
-            order.setPaymentMethod(OrderStatus.CREDITCARD);
+//            order.setPaymentMethod(OrderStatus.CREDITCARD);
+            //Lst-paymentMtehod will be set after payment,so I am going to remove this
 
             //we gonna just temporarily save shipping address as customer's existing address,
             //to prepopulate customer's address in the shipping details page. any changes to re-append to db.
@@ -121,7 +122,7 @@ public class OrderImpl implements OrderService {
     }
 
     // get the address and update it to DB
-    public void getAndSaveDeliverAddress(int orderId, String address, String floorNumber, String unitNumber) {
+    public void getAndSaveDeliverAddress(int orderId, String address, String floorNumber, String unitNumber,String postalCode, String buildingName) {
         StringBuilder deliverAddress = new StringBuilder();
 
         if (address != null && !address.isEmpty()) {
@@ -138,6 +139,19 @@ public class OrderImpl implements OrderService {
                 deliverAddress.append(" -");
             }
             deliverAddress.append(unitNumber);
+        }
+        if (buildingName != null && !buildingName.isEmpty()){
+            if (deliverAddress.length() > 0) {
+                deliverAddress.append(", ");
+            }
+            deliverAddress.append(buildingName);
+        }
+        if (postalCode != null && !postalCode.isEmpty()){
+            if (deliverAddress.length() > 0) {
+                deliverAddress.append("(");
+            }
+            deliverAddress.append(postalCode);
+            deliverAddress.append(")");
         }
 
         String shippingAddress = deliverAddress.toString();

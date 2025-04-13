@@ -7,9 +7,12 @@ import java.util.Optional;
 
 public interface ProductService {
     public List<Product> findProductByQuery(String query);
+
     public List<Product> findProductBySubCategory(String subcategoryName);
+
     public List<Product> findAllProduct();
-    //Product findProductById(int id);
-    public Optional<Product> findProductById(int id);
+
+    Product findProductById(int id);
+//    public Optional<Product> findProductById(int id);
 
 }

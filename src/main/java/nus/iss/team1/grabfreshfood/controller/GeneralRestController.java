@@ -35,6 +35,7 @@ public class GeneralRestController {
     private OrderService orderService;
 
     // Done by Dionis
+    //GET call to retrieve Cart based on Customer ID
     @GetMapping("/cart/customer/{customerId}/items")
     public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
         // first extract Cart for customer
@@ -49,6 +50,7 @@ public class GeneralRestController {
     }
 
     // Done by Dionis (tested)
+    //PUT call to update quantity of Cart Item to db.
     @PutMapping("/cart/update-quantity")
     public ResponseEntity<CartItem> updateItemQuantity(@RequestBody UpdateCartItemReq req) {
         try {
@@ -65,6 +67,8 @@ public class GeneralRestController {
         }
     }
 
+    //Done by Dionis (tested)
+    //GET call to retrieve CustomerID from session in Spring.
     @GetMapping("/session/customer-id")
     public ResponseEntity<Integer> getCustomerId(HttpSession session) {
 
@@ -78,27 +82,27 @@ public class GeneralRestController {
 
     }
 
-    /*
-     * @GetMapping("/product/{id}") public ResponseEntity<Product>
-     * getProduct(@PathVariable("id") int id) { Product product =
-     * productService.findProductById(id); if (product == null) { return new
-     * ResponseEntity<>(HttpStatus.NOT_FOUND); } else { return new
-     * ResponseEntity<>(product, HttpStatus.OK); } }
-     */
 
+    //Done by Dionis (tested)
+    //GET call to retrieve product details based on product ID for the shopping cart details in frontend React.
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") int id) {
-        Optional<Product> productOptional = productService.findProductById(id);
-        if (productOptional.isPresent()) {
-            return new ResponseEntity<>(productOptional.get(), HttpStatus.OK);
+        Product product =
+                productService.findProductById(id);
+        if (product == null) {
+            return new
+                    ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new
+                    ResponseEntity<>(product, HttpStatus.OK);
         }
     }
 
+
+    //Done by Lewis
     @DeleteMapping("/cart/{cartId}/item/{itemId}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("itemId") int itemId,
-            @PathVariable("cartId") int cartId) {
+                                               @PathVariable("cartId") int cartId) {
         try {
             cartService.deleteCartItem(cartId, itemId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -110,6 +114,8 @@ public class GeneralRestController {
         }
     }
 
+    //Done by Dionis
+    //POST call for checkout logic for button click of 'checkout' button to create an order based on shopping cart.
     @PostMapping("/order/create")
     public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
         try {

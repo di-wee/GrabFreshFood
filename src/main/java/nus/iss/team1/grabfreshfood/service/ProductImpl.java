@@ -19,16 +19,15 @@ public class ProductImpl implements ProductService {
         this.productRepo = productRepo;
     }
 
-    //done by Dionis
-	/*
-	 * @Override public Product findProductById(int id) { Product product =
-	 * productRepo.findProductById(id); if (product == null) throw new
-	 * ProductNotFoundException("Product does not exist with ID: " + id);
-	 * 
-	 * return product;
-	 * 
-	 * }
-	 */
+
+    @Override
+    public Product findProductById(int id) {
+        Product product = productRepo.findProductById(id);
+        if (product == null) throw new ProductNotFoundException("Product does not exist with ID: " + id);
+        return product;
+
+    }
+
 
     @Override
     public List<Product> findProductByQuery(String query) {
@@ -46,10 +45,10 @@ public class ProductImpl implements ProductService {
     public List<Product> findAllProduct() {
         return productRepo.findAll();
     }
-    
+
     //done by Pris
-    @Override
-    public Optional<Product>findProductById(int id){
-    	return productRepo.findProductById(id);
-    }
+//    @Override
+//    public Optional<Product> findProductById(int id) {
+//        return productRepo.findProductById(id);
+//    }
 }

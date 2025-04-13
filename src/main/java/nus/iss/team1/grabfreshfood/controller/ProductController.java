@@ -15,25 +15,25 @@ import nus.iss.team1.grabfreshfood.service.ProductService;
 public class ProductController {
     // "/product-details
     // "/product/{id}
-	private final ProductService productService;
-	
-	@Autowired
-	public ProductController(ProductService productService) {
-		this.productService = productService;
-	}
-	
-	//receieve product id, image,name, price, description from the browser that customer click on
-	@GetMapping("/product/{id}")
-	public String getProductInfo(@PathVariable("id")int id, Model model) {
-		Optional<Product> product = productService.findProductById(id);
-		if(product.isPresent()) {
-		model.addAttribute("product", product.get());
-		} else {
-			model.addAttribute("errorMessage","Product not found");
-		}
+    private final ProductService productService;
 
-		return "product-details";
-	}
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    //receieve product id, image,name, price, description from the browser that customer click on
+    @GetMapping("/product/{id}")
+    public String getProductInfo(@PathVariable("id") int id, Model model) {
+        Product product = productService.findProductById(id);
+        if (product == null) {
+            model.addAttribute("errorMessage", "Product not found");
+        } else {
+            model.addAttribute("product", product);
+        }
+
+        return "product-details";
+    }
 	
 /*	//have not login yet
 	//redirect to login page

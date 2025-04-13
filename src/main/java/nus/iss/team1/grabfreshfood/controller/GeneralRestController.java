@@ -1,11 +1,10 @@
 package nus.iss.team1.grabfreshfood.controller;
 
 import jakarta.servlet.http.HttpSession;
+import nus.iss.team1.grabfreshfood.DTO.AddItemToCartReq;
 import nus.iss.team1.grabfreshfood.DTO.CreateOrderRequest;
 import nus.iss.team1.grabfreshfood.DTO.UpdateCartItemReq;
-import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
-import nus.iss.team1.grabfreshfood.config.CustomerNotFound;
-import nus.iss.team1.grabfreshfood.config.ProductNotFoundException;
+import nus.iss.team1.grabfreshfood.config.*;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
@@ -38,14 +37,17 @@ public class GeneralRestController {
     //GET call to retrieve Cart based on Customer ID
     @GetMapping("/cart/customer/{customerId}/items")
     public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
-        // first extract Cart for customer
-        Cart cart = cartService.findCartByCustomerId(customerId);
+        try {
+            Cart cart = cartService.findCartByCustomerId(customerId);
+            List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
 
-        // using CartID from Cart obj to get the list of cartitems.
-        List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
+            // possible for list to be empty. no need for exceptions
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error encountered when retrieving shopping cart (Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-        // possible for list to be empty. no need for exceptions
-        return new ResponseEntity<>(items, HttpStatus.OK);
 
     }
 
@@ -61,6 +63,7 @@ public class GeneralRestController {
                     req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
+            logger.error("Error encountered when creating updating quantity of item (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,8 +74,8 @@ public class GeneralRestController {
     //GET call to retrieve CustomerID from session in Spring.
     @GetMapping("/session/customer-id")
     public ResponseEntity<Integer> getCustomerId(HttpSession session) {
-
         Customer customer = (Customer) session.getAttribute("customer");
+
         if (customer == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
@@ -90,11 +93,10 @@ public class GeneralRestController {
         Product product =
                 productService.findProductById(id);
         if (product == null) {
-            return new
-                    ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new
-                    ResponseEntity<>(product, HttpStatus.OK);
+            return new ResponseEntity<>(product, HttpStatus.OK);
         }
     }
 
@@ -129,11 +131,38 @@ public class GeneralRestController {
             return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
 
         } catch (CustomerNotFound | ProductNotFoundException e) {
+            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (DataAccessException e) {
+            logger.error("Error encountered when saving Order to DB (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
+            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Done by Dionis (tested)
+    //POST call to add item to cart
+    @PostMapping("/cart/add")
+    public ResponseEntity<CartItem> addItemTocart(@RequestBody AddItemToCartReq req) {
+        try {
+            CartItem addedItem = cartService.addCartItemToCart(
+                    req.getCustomerId(),
+                    req.getProductId()
+            );
+            return new ResponseEntity<>(addedItem, HttpStatus.CREATED);
+
+        } catch (CartNotFoundException | CartItemCreationException e) {
+            logger.error("Error encountered when adding item to cart (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DataAccessException e) {
+            logger.error("Error encountered when saving cart item to db(Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("Error encountered when adding item to cart (Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
     }
 

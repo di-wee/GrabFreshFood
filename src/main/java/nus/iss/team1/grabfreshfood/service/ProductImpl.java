@@ -34,7 +34,6 @@ public class ProductImpl implements ProductService {
         return productRepo.findProductByQuery(query);
     }
 
-    ;
 
     @Override
     public List<Product> findProductBySubCategory(String subcategoryName) {
@@ -46,9 +45,13 @@ public class ProductImpl implements ProductService {
         return productRepo.findAll();
     }
 
-    //done by Pris
+}
+
+
+//done by Pris
 //    @Override
 //    public Optional<Product> findProductById(int id) {
 //        return productRepo.findProductById(id);
 //    }
-}
+//}
+

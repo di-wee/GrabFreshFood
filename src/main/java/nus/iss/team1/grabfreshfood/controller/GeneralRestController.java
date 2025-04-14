@@ -39,8 +39,12 @@ public class GeneralRestController {
     @GetMapping("/cart/customer/{customerId}/items")
     public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
         try {
+            logger.error("CustomerID: "+ customerId);
             Cart cart = cartService.findCartByCustomerId(customerId);
+            logger.error("CartID: "+ cart.getCartId());
             List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
+            logger.error("Is CartItems list empty?: "+ items.isEmpty());
+
 
             // possible for list to be empty. no need for exceptions
             return new ResponseEntity<>(items, HttpStatus.OK);
@@ -136,6 +140,31 @@ public class GeneralRestController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchResult(@RequestParam("query") String query) {
+        List<Product> products = productService.findProductByQuery(query);
+        if (products == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/category/all")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.findAllProduct();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{subcategoryName}")
+    public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("subcategoryName")String subcategoryName) {
+        List<Product> products = productService.findProductBySubCategory(subcategoryName);
+        if (products == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     //Done by Dionis
     //POST call for checkout logic for button click of 'checkout' button to create an order based on shopping cart.
 //    @PostMapping("/order/create")
@@ -185,5 +214,6 @@ public class GeneralRestController {
 
         }
     }
+
 
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>GrabFreshFood | ${category}</title>
+    <title>GrabFreshFood | <span th:text="${category}"></span></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
     <style>
@@ -82,29 +82,36 @@
     </style>
 </head>
 <body style="background-color: #dee2e6">
+
 <!-- Top Notice Banner Fragment -->
 <div th:replace="~{fragments/topbanner :: topbanner}"></div>
 
 <!-- Navbar Fragment -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container mt-10  style={{ paddingTop: '80px' }}">
-    <div class="row row-cols-2 row-cols-md-5 row-cols-sm-3 g-4">
+<div class="container mt-5" style="padding-top: 80px;">
+
+    <!-- Option 1: React container -->
+    <div id="react-catalogue" th:attr="data-category=${subcategoryName}"></div>
+
+    <!-- Option 2: Thymeleaf-rendered catalogue -->
+    <div class="row row-cols-2 row-cols-md-5 row-cols-sm-3 g-4" th:if="${products != null}">
         <div class="col" th:each="product : ${products}">
             <div class="product-card">
                 <img alt="Product Image" class="product-image" th:src="${product.img}">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${product.name}">Product Name</h5>
                     <p class="card-text" th:text="${product.price}">Product Price</p>
-                    <form action="/product/details/{id}(id=${product.id})" class="d-flex justify-content-center"
-                          method="get">
+                    <form action="/product/details/{id}(id=${product.id})" class="d-flex justify-content-center" method="get">
                         <button class="btn btn-grabfreshfood" type="submit">View Details</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
 

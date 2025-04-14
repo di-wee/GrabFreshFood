@@ -45,3 +45,4 @@ public class CartItem {
         return (cart != null) ? cart.getCartId() : -1;
     }
 
+}

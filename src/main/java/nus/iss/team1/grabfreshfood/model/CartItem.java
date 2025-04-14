@@ -1,6 +1,7 @@
 package nus.iss.team1.grabfreshfood.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "shopping_cart_item")
 public class CartItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
@@ -25,16 +27,21 @@ public class CartItem {
 
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnore // Do not serialize the whole cart to avoid circular references
     private Cart cart;
 
     public CartItem() {
     }
 
+    // This method will still be used internally in the backend
     @Transient
     public int getCartId() {
-        return cart.getCartId();
+        return (cart != null) ? cart.getCartId() : -1;
     }
 
+    // This is the NEW exposed property for the frontend to get cartId
+    @JsonProperty("cartId")
+    public int getCartIdForFrontend() {
+        return (cart != null) ? cart.getCartId() : -1;
+    }
 
-}

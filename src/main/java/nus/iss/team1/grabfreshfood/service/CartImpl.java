@@ -7,8 +7,13 @@ import nus.iss.team1.grabfreshfood.config.CartItemUpdateException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
+import nus.iss.team1.grabfreshfood.model.Customer;
+import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
+
+import nus.iss.team1.grabfreshfood.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +25,12 @@ public class CartImpl implements CartService {
 
     private final CartRepository cartRepo;
     private final CartItemRepository cartItemRepo;
+    private final ProductRepository productRepository;
 
-    public CartImpl(CartRepository cartRepo, CartItemRepository cartItemRepo) {
+    public CartImpl(CartRepository cartRepo, CartItemRepository cartItemRepo, ProductRepository productRepository) {
         this.cartRepo = cartRepo;
         this.cartItemRepo = cartItemRepo;
+        this.productRepository = productRepository;
     }
 
     // Done by Dionis
@@ -31,6 +38,7 @@ public class CartImpl implements CartService {
     public Cart findCartByCustomerId(int customerId) {
         Cart cart = cartRepo.findCartByCustomerId(customerId);
         if (cart == null) {
+
             throw new CartNotFoundException("Cart does not exist for Customer ID: " + customerId);
         }
         return cart;
@@ -49,6 +57,25 @@ public class CartImpl implements CartService {
                 .orElseThrow(() -> new CartItemNotFoundException(
                         "Cart item with id (" + cartItemId + ") not found in cart with id " + cartId));
     }
+    
+    //done by Pris
+//    @Override
+//    public CartItem addProductToCart(int customerId, int productId) {
+//    	CartItem item =cartItemRepo.findCartItemByProduct(customerId,productId);
+//    	if (item == null) {
+//    		CartItem newItem = new CartItem();
+//            newItem.setCart(cartRepo.findCartByCustomerId(customerId));
+//            newItem.setProductId(productId);
+//            newItem.setQuantity(1);
+//
+//            return cartItemRepo.save(newItem);
+//
+//        }
+//    	else {
+//    		item.addQuantity();
+//    		}
+//    	return cartItemRepo.save(item);
+//    }
 
     @Override
     public CartItem updateItemQuantity(int cartId, int cartItemId, int quantity) {

@@ -2,29 +2,36 @@ package nus.iss.team1.grabfreshfood.controller;
 
 import java.util.Optional;
 
+import nus.iss.team1.grabfreshfood.config.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
+import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Product;
+import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
 
 @Controller
 public class ProductController {
     // "/product-details
     // "/product/{id}
-    private final ProductService productService;
+	private final ProductService productService;
 
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+	@Autowired
+	public ProductController(ProductService productService) {
+		this.productService = productService;
+	}
+
 
     //receieve product id, image,name, price, description from the browser that customer click on
     @GetMapping("/product/{id}")
-    public String getProductInfo(@PathVariable("id") int id, Model model) {
+    public String getProductInfo(@PathVariable("id") int id, Model model, HttpSession session) {
         Product product = productService.findProductById(id);
         if (product == null) {
             model.addAttribute("errorMessage", "Product not found");
@@ -34,31 +41,26 @@ public class ProductController {
 
         return "product-details";
     }
-	
-/*	//have not login yet
-	//redirect to login page
+
 	@Autowired
 	private CartService cartService;
-	
+
 	//check if the user is login before allowing usage of add to cart function
-	@PostMapping("/addToCart")
-	public String addToCart(HttpSession session,@RequestParam("product_id") int productId) {
+	@PostMapping("/product/addToCart")
+	public String addToCart(HttpSession session, @RequestParam("productId") int productId) {
 		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer == null) {
-			return "forward:/loginPage";	
+			return "redirect:/login";
 		}
-			
-		cartService.addProductToCart(customer, productId);
-		return "redirect:/shoppingCart";
+		Product product = productService.findProductById(productId);
+		if(product == null){
+			throw new ProductNotFoundException("ProductId not found for productId: " + productId);
+		}
+
+		cartService.addCartItemToCart(customer.getId(), product.getId());
+		return "redirect:/cart";
 	}
-	
-	
-	//is a login customer
-	//if press add to cart goes to shopping cart page 
-	//1. find if there is same item in cart
-	//2. Same item in cart, find the quantity, add + 1 in rest API
-	//3. New item in cart, display the quantity +1
-*/
+
 }
 
 

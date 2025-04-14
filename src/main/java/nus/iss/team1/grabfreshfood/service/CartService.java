@@ -18,4 +18,6 @@ public interface CartService {
     String deleteCartItem(int cartId, int cartItemId);
 
     CartItem addCartItemToCart(int cartId, int productId);
+
+    List<CartItem> updateSelectedItems(List<Integer> selectedIds, int customerId);
 }

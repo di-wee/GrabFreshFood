@@ -7,6 +7,7 @@ import nus.iss.team1.grabfreshfood.config.CartItemUpdateException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
+import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -76,8 +78,38 @@ public class CartImpl implements CartService {
             item.setQuantity(quantity);
             return cartItemRepo.save(item);
         } catch (DataAccessException e) {
-            throw new CartItemUpdateException("Error occured when updating quantity of Cart Item " + e);
+            throw new CartItemUpdateException("Error occurred when updating quantity of Cart Item: " + e);
         }
+    }
+
+    //Done by Dionis
+    @Override
+    public List<CartItem> updateSelectedItems(List<Integer> selectedIds, int customerId) {
+        Cart cart = findCartByCustomerId(customerId);
+        List<CartItem> cartList = findCartItemsByCartId(cart.getCartId());
+        List<CartItem> selectedItems = cartList.stream()
+                .filter(item -> selectedIds.contains(item.getCartItemId()))
+                .toList();
+        List<CartItem> unSelectedItems = cartList.stream()
+                .filter(item -> !selectedIds.contains(item.getCartItemId()))
+                .toList();
+        try {
+            for (CartItem item : selectedItems) {
+                item.setCheckout(true);
+                cartItemRepo.saveAndFlush(item);
+            }
+
+            for (CartItem item : unSelectedItems) {
+                item.setCheckout(false);
+                cartItemRepo.saveAndFlush(item);
+            }
+
+            return selectedItems;
+        } catch (DataAccessException e) {
+            throw new CartItemUpdateException("Error updating boolean isCheckOut for Cart Item: " + e);
+        }
+
+
     }
 
     //Done by Lewis
@@ -121,12 +153,12 @@ public class CartImpl implements CartService {
 
                 cartItemRepo.saveAndFlush(cartItem);
 
-                
+
             } catch (DataAccessException e) {
                 throw new CartItemCreationException("Error while saving Cart Item to DB: " + e);
 
             } catch (Exception e) {
-                throw new CartItemCreationException("Error occured while adding item to cart: " + e);
+                throw new CartItemCreationException("Error occurred while adding item to cart: " + e);
             }
 
             return cartItem;

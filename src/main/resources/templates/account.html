@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>My Account</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <script>
+        // Optional: Toggle password display in the table on user click
+        function togglePassword() {
+            var x = document.getElementById("hiddenPassword");
+            if (x.innerText === "********") {
+                x.innerText = x.getAttribute("data-password");
+            } else {
+                x.innerText = "********";
+            }
+        }
+    </script>
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
@@ -33,14 +43,34 @@
             <td th:text="${customer.address}"></td>
         </tr>
         <tr>
+            <th>Password</th>
+            <td>
+                <span id="hiddenPassword" th:attr="data-password=${customer.password}">********</span>
+                <button class="btn btn-link btn-sm" onclick="togglePassword()">Show/Hide</button>
+            </td>
+        </tr>
+        <tr>
             <th>Registered On</th>
-            <td th:text="${#temporals.format(customer.registrationDate,'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(customer.registrationDate, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
         <tr>
             <th>Active?</th>
             <td th:text="${customer.isActive ? 'Yes' : 'No'}"></td>
         </tr>
     </table>
+    <!-- Link to edit/update page -->
+    <a class="btn btn-primary" th:href="@{/account/update}">Update Profile</a>
+    <!-- Form for deactivating account -->
+    <form method="post" style="display:inline;" th:action="@{/account/deactivate}">
+        <button class="btn btn-danger ms-2" onclick="return confirm('Are you sure you want to deactivate your account?');"
+                type="submit">
+            Deactivate Account
+        </button>
+    </form>
+    <!-- Display messages if any -->
+    <div class="alert alert-success mt-3" th:if="${message}" th:text="${message}"></div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
 </body>
 </html>

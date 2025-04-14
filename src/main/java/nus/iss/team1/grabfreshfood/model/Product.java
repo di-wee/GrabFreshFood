@@ -15,16 +15,24 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id", nullable = false)
     private int id;
+
     @Column(name = "product_name", nullable = false)
     private String name;
-    @Column(name = "information")
+
+    @Column(name = "information", columnDefinition = "TEXT")
     private String description;
+
     private float price;
+
     @Column(name = "stock_quantity")
     private int quantity;
+
     private String unit;
+
+    @Column(name = "image_url")
+    private String imageURL;
+
     private String sku;
-    private String is_active;
 
     @ManyToOne
     private SubCategory subCategory;
@@ -35,8 +43,10 @@ public class Product {
     @JsonIgnore
     private List<OrderItems> myOrderItem;
 
-    public Product() {
+    public Product() { }
 
-    }
+//	/*
+//	 * public int getId() { return 0; }
+//	 */
 
 }

@@ -7,6 +7,7 @@ import nus.iss.team1.grabfreshfood.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,22 +19,21 @@ public class ProductImpl implements ProductService {
         this.productRepo = productRepo;
     }
 
-    //done by Dionis
+
     @Override
     public Product findProductById(int id) {
         Product product = productRepo.findProductById(id);
         if (product == null) throw new ProductNotFoundException("Product does not exist with ID: " + id);
-
         return product;
 
     }
+
 
     @Override
     public List<Product> findProductByQuery(String query) {
         return productRepo.findProductByQuery(query);
     }
 
-    ;
 
     @Override
     public List<Product> findProductBySubCategory(String subcategoryName) {
@@ -44,4 +44,14 @@ public class ProductImpl implements ProductService {
     public List<Product> findAllProduct() {
         return productRepo.findAll();
     }
+
 }
+
+
+    //done by Pris
+//    @Override
+//    public Optional<Product> findProductById(int id) {
+//        return productRepo.findProductById(id);
+//    }
+}
+

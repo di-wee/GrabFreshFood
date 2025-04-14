@@ -6,16 +6,45 @@ function CartItem({
 	setSelectedItems,
 	setQuantities,
 	quantities,
+	setSubTotal,
+	subTotal,
+	cartItems,
+	itemPrice,
+	setItemPrice,
+	// Lewis: Added removeCartItem callback to allow parent state update after deletion
+	removeCartItem,
 }) {
 	//state management
 	const [product, setProduct] = useState({});
+	const [localQuantity, setLocalQuantity] = useState(item.quantity);
+	
+	// delete one item only.
+	const handleDeleteItem = async (cartId, itemId) => {
+		// your delete item logic goes here
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;
+			const res = await fetch(url, { method: 'DELETE' });
+			if (!res.ok) throw new Error('Error deleting cart item');
+			console.log('Deleted cart item: ', itemId);
+			// Lewis: callback to remove the deleted item from parent state
+			if (removeCartItem) {
+				removeCartItem(itemId);
+			}
+		} catch (err) {
+			console.error('Error deleting item: ', err);
+		}
+	};
 
 	//handling of updating of item quantity
 	function handleUpdateQuantity(itemId, newQuantity) {
+		setLocalQuantity(newQuantity);
+
 		setQuantities((prev) => ({
 			...prev,
 			[itemId]: newQuantity,
 		}));
+
+		console.log(quantities);
 	}
 
 	// handling toggling of checkbox
@@ -25,9 +54,37 @@ function CartItem({
 			setSelectedItems(selectedItems.filter((id) => id !== itemId));
 		} else {
 			//or else add the item to state
-			setSelectedItems([...selectedItems, itemId]);
+			setSelectedItems([...selectedItems, itemId]); // [1, 2 ,4]
 		}
 	}
+
+	const updateQuantityDB = async (cartItemId, cartId, quantity) => {
+		try {
+			const url = import.meta.env.VITE_SERVER + 'api/cart/update-quantity';
+			const res = await fetch(url, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					cartId,
+					cartItemId,
+					quantity,
+				}),
+			});
+			if (!res.ok) throw new Error('Error updating quantity to db');
+			console.log('Quantity updated for item: ', cartItemId);
+		} catch (err) {
+			console.error('Error: ', err);
+		}
+	};
+
+	const updateLocalItemPrice = (cartItemId, price) => {
+		setItemPrice((prev) => ({
+			...prev,
+			[cartItemId]: price,
+		}));
+	};
 
 	//fetching product details
 	const fetchProduct = async () => {
@@ -39,8 +96,10 @@ function CartItem({
 			const data = await res.json();
 			console.log('Product: ', data);
 			setProduct(data);
+
+			//setting state to store accurate price of product
+			updateLocalItemPrice(item.cartItemId, data.price);
 			return data;
-			console.log('product state: ', product);
 		} catch (err) {
 			console.error('Error: ', err);
 		}
@@ -49,6 +108,21 @@ function CartItem({
 	useEffect(() => {
 		fetchProduct();
 	}, []);
+
+	useEffect(() => {
+		let total = 0;
+		for (let item of cartItems) {
+			//if selectedItems include the particular cartItemId
+			if (selectedItems.includes(item.cartItemId)) {
+				//extract quantities in state via itemId
+				const quant = quantities[item.cartItemId];
+				const price = itemPrice[item.cartItemId];
+				const itemTotal = quant * price;
+				total += itemTotal;
+			}
+		}
+		setSubTotal(total);
+	}, [cartItems, quantities, selectedItems, itemPrice]);
 
 	return (
 		<div className='row border-bottom p-3 align-items-center'>
@@ -69,19 +143,25 @@ function CartItem({
 			</div>
 			<div className='product-name col-7'>
 				<h6>
-					<b>{product.productName}</b>
+					<b>{product.name}</b>
 				</h6>
 				<p style={{ fontSize: 'smaller' }}>
-					<i>{product.information}</i>
+					<i>{product.description}</i>
 				</p>
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'
 					style={{ width: '80px' }}
 					type='number'
-					value={quantities}
-					onChange={(event) =>
-						handleUpdateQuantity(item.cartItemId, parseInt(event.target.value))
+					value={quantities[item.cartItemId]}
+					onChange={(event) => {
+						setLocalQuantity(parseInt(event.target.value));
+						handleUpdateQuantity(item.cartItemId, parseInt(event.target.value));
+					}}
+					//onBlur used here so as to not overload DB by
+					// updating quantity to DB on every onChange
+					onBlur={() =>
+						updateQuantityDB(item.cartId, item.cartItemId, localQuantity)
 					}
 				/>
 			</div>
@@ -91,7 +171,9 @@ function CartItem({
 				<h6 className='mb-1'>
 					<b>${product.price}</b>
 				</h6>
+				{/* Updated onClick handler to pass proper parameters */}
 				<i
+					onClick={() => handleDeleteItem(item.cartId, item.cartItemId)}
 					className='bi bi-trash3'
 					style={{ cursor: 'pointer' }}></i>
 			</div>

@@ -66,13 +66,7 @@
         if (confirm("You want to cancel this order?")) {
             fetch("/cancel-order?orderId=" + orderId, {
                 method: "POST"
-            }).then(res => {
-                if (res.ok) {
-                    location.reload();
-                } else {
-                    alert("Cancel failed.")
-                }
-            })
+            }).then(() => location.reload())
         }
     }
 </script>

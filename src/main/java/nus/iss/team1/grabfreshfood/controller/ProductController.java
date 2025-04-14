@@ -7,20 +7,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
+import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Product;
+import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
 
 @Controller
 public class ProductController {
     // "/product-details
     // "/product/{id}
-    private final ProductService productService;
+	private final ProductService productService;
+	
+	@Autowired
+	public ProductController(ProductService productService) {
+		this.productService = productService;
+	}
 
-    @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     //receieve product id, image,name, price, description from the browser that customer click on
     @GetMapping("/product/{id}")
@@ -35,30 +41,24 @@ public class ProductController {
         return "product-details";
     }
 	
-/*	//have not login yet
-	//redirect to login page
 	@Autowired
 	private CartService cartService;
 	
 	//check if the user is login before allowing usage of add to cart function
-	@PostMapping("/addToCart")
-	public String addToCart(HttpSession session,@RequestParam("product_id") int productId) {
+	@PostMapping("/product/addToCart")
+	public String addToCart(HttpSession session) {
 		Customer customer = (Customer) session.getAttribute("customer");
+		Product product =(Product)session.getAttribute("product");
 		if (customer == null) {
-			return "forward:/loginPage";	
+			return "redirect:/login-page";	
 		}
 			
-		cartService.addProductToCart(customer, productId);
-		return "redirect:/shoppingCart";
+		int customerId = customer.getId();
+		int productId = product.getId();
+		cartService.addProductToCart(customerId, productId);
+		return "redirect:/shopping-cart";
 	}
 	
-	
-	//is a login customer
-	//if press add to cart goes to shopping cart page 
-	//1. find if there is same item in cart
-	//2. Same item in cart, find the quantity, add + 1 in rest API
-	//3. New item in cart, display the quantity +1
-*/
 }
 
 

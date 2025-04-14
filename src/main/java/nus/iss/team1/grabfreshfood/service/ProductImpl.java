@@ -34,7 +34,6 @@ public class ProductImpl implements ProductService {
         return productRepo.findProductByQuery(query);
     }
 
-    ;
 
     @Override
     public List<Product> findProductBySubCategory(String subcategoryName) {

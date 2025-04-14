@@ -26,4 +26,9 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
 
+	public int getCartId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -45,8 +45,8 @@ public class Product {
 
     public Product() { }
 
-	/*
-	 * public int getId() { return 0; }
-	 */
+//	/*
+//	 * public int getId() { return 0; }
+//	 */
 
 }

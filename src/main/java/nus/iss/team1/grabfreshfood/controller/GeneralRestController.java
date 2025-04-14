@@ -38,8 +38,12 @@ public class GeneralRestController {
     @GetMapping("/cart/customer/{customerId}/items")
     public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
         try {
+            logger.error("CustomerID: "+ customerId);
             Cart cart = cartService.findCartByCustomerId(customerId);
+            logger.error("CartID: "+ cart.getCartId());
             List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
+            logger.error("Is CartItems list empty?: "+ items.isEmpty());
+
 
             // possible for list to be empty. no need for exceptions
             return new ResponseEntity<>(items, HttpStatus.OK);

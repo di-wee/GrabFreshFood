@@ -35,23 +35,6 @@ public class CartItem {
     public int getCartId() {
         return cart.getCartId();
     }
-    public void addQuantity() {
-    	quantity +=1;
-    }
 
-	public void setQuantity(int quantity) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setCart(Cart cartByCustomerId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setProductId(int productId) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

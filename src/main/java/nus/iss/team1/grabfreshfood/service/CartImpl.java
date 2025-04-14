@@ -42,6 +42,7 @@ public class CartImpl implements CartService {
         //if cart is null to throw exception as Cart should be created for customer
         // when customer registers an account
         if (cart == null) {
+
             throw new CartNotFoundException("Cart does not exist for Customer ID: " + customerId);
         }
 
@@ -71,31 +72,23 @@ public class CartImpl implements CartService {
     }
     
     //done by Pris
-    @Override
-    public CartItem addProductToCart(int customerId, int productId) {
-    	CartItem item =cartItemRepo.findCartItemByProduct(customerId,productId);
-    	if (item == null) {
-    		CartItem newItem = new CartItem();
-            newItem.setCart(cartRepo.findCartByCustomerId(customerId));
-            newItem.setProductId(productId);
-            newItem.setQuantity(1);
-            Optional<Product> itemProduct = productRepository.findProductById(productId);
-            if (itemProduct.isPresent()) {
-                newItem.setPrice(itemProduct.get().getPrice());
-            }
-            else {
-                throw new CartItemNotFoundException("Cart item with id (" + newItem.getCartId() + ") not found in product with id " + productId);
-
-            }
-
-            return cartItemRepo.save(newItem);
-
-        }
-    	else {
-    		item.addQuantity();
-    		}
-    	return cartItemRepo.save(item);
-    }
+//    @Override
+//    public CartItem addProductToCart(int customerId, int productId) {
+//    	CartItem item =cartItemRepo.findCartItemByProduct(customerId,productId);
+//    	if (item == null) {
+//    		CartItem newItem = new CartItem();
+//            newItem.setCart(cartRepo.findCartByCustomerId(customerId));
+//            newItem.setProductId(productId);
+//            newItem.setQuantity(1);
+//
+//            return cartItemRepo.save(newItem);
+//
+//        }
+//    	else {
+//    		item.addQuantity();
+//    		}
+//    	return cartItemRepo.save(item);
+//    }
 
 
     @Override

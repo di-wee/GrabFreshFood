@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
-import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 function ShoppingCart() {
@@ -17,7 +16,7 @@ function ShoppingCart() {
 	const serviceFee = 3.6;
 	const total = (subtotal + serviceFee).toFixed(2);
 
-	const handleEmptyCart = (cartId, itemId) => {
+	const handleEmptyCart = async () => {
 		//logic for onClick of 'Empty Cart' button goes here.
 		// for this logic, take note that u have to remove ALL items in cart.
 		// so to start off, u can loop through the items in cart via the 'cartItems' variable where i
@@ -26,6 +25,23 @@ function ShoppingCart() {
 		// to what is being pulled.
 		//
 		// call the DEL API, u can either use axios or use fetch to do so, can refer to my codes if anything.
+		try {
+			await Promise.all(
+				cartItems.map((item) => {
+					const url = import.meta.env.VITE_SERVER + `api/cart/${item.cartId}/item/${item.cartItemId}`;
+					return fetch(url, { method: 'DELETE' });
+				})
+			);
+			// Clear all cart related state after deletion
+			setCartItems([]);
+			setSelectedItems([]);
+			setQuantities({});
+			setItemPrice({});
+			setSubTotal(0);
+			console.log('Empty cart successfully');
+		} catch (err) {
+			console.error('Error emptying cart: ', err);
+		}
 	};
 
 	//checkout logic while calling POST api and redirecting to checkout page
@@ -105,6 +121,22 @@ function ShoppingCart() {
 		}
 	};
 
+	// Lewis: Callback to remove a cart item from local state after deletion
+	const removeCartItem = (itemId) => {
+		setCartItems((prev) => prev.filter((item) => item.cartItemId !== itemId));
+		setSelectedItems((prev) => prev.filter((id) => id !== itemId));
+		setQuantities((prev) => {
+			const newQuantities = { ...prev };
+			delete newQuantities[itemId];
+			return newQuantities;
+		});
+		setItemPrice((prev) => {
+			const newPrices = { ...prev };
+			delete newPrices[itemId];
+			return newPrices;
+		});
+	};
+
 	useEffect(() => {
 		const loadCart = async () => {
 			const id = await fetchCustomerId();
@@ -130,7 +162,9 @@ function ShoppingCart() {
 					}}>
 					<img
 						style={{ width: '20%' }}
-						src='http://localhost:8080/assets/cart.jpg'></img>
+						src='http://localhost:8080/assets/cart.jpg'
+						alt='Empty cart'
+					/>
 					<h5>Your cart is empty</h5>
 					<p>Add items into your shopping cart and they will appear here.</p>
 					<button
@@ -146,9 +180,8 @@ function ShoppingCart() {
 							<h5>Shopping Cart</h5>
 						</div>
 						<div className='col text-right'>
-							<button
-								onClick={() => handleEmptyCart()}
-								className='btn btn-outline-danger'>
+							{/* Updated Empty Cart button to call handleEmptyCart */}
+							<button onClick={() => handleEmptyCart()} className='btn btn-outline-danger'>
 								<span style={{ marginRight: '5px' }}>
 									<i className='bi bi-trash3'></i>
 								</span>
@@ -167,6 +200,7 @@ function ShoppingCart() {
 										style={{ padding: '1vh 1vh 0 1vh' }}>
 										{cartItems.map((item) => (
 											<CartItem
+												key={item.cartItemId}
 												item={item}
 												selectedItems={selectedItems}
 												setSelectedItems={setSelectedItems}
@@ -177,6 +211,8 @@ function ShoppingCart() {
 												cartItems={cartItems}
 												itemPrice={itemPrice}
 												setItemPrice={setItemPrice}
+												// NEW: Pass the removeCartItem callback so that deletion updates the UI
+												removeCartItem={removeCartItem}
 											/>
 										))}
 									</div>

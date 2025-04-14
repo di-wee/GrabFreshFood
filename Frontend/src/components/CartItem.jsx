@@ -11,13 +11,28 @@ function CartItem({
 	cartItems,
 	itemPrice,
 	setItemPrice,
+	// Lewis: Added removeCartItem callback to allow parent state update after deletion
+	removeCartItem,
 }) {
 	//state management
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
-
-	const handleDeleteItem = (cartId, itemId) => {
+	
+	// delete one item only.
+	const handleDeleteItem = async (cartId, itemId) => {
 		// your delete item logic goes here
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;
+			const res = await fetch(url, { method: 'DELETE' });
+			if (!res.ok) throw new Error('Error deleting cart item');
+			console.log('Deleted cart item: ', itemId);
+			// Lewis: callback to remove the deleted item from parent state
+			if (removeCartItem) {
+				removeCartItem(itemId);
+			}
+		} catch (err) {
+			console.error('Error deleting item: ', err);
+		}
 	};
 
 	//handling of updating of item quantity
@@ -156,8 +171,9 @@ function CartItem({
 				<h6 className='mb-1'>
 					<b>${product.price}</b>
 				</h6>
+				{/* Updated onClick handler to pass proper parameters */}
 				<i
-					onClick={() => handleDeleteItem()}
+					onClick={() => handleDeleteItem(item.cartId, item.cartItemId)}
 					className='bi bi-trash3'
 					style={{ cursor: 'pointer' }}></i>
 			</div>

@@ -45,9 +45,13 @@ public class ProductImpl implements ProductService {
         return productRepo.findAll();
     }
 
+}
+
+
     //done by Pris
 //    @Override
 //    public Optional<Product> findProductById(int id) {
 //        return productRepo.findProductById(id);
 //    }
 }
+

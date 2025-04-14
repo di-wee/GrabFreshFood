@@ -27,7 +27,6 @@ CREATE TABLE `shopping_cart_item` (
                                       `item_id` INT NOT NULL AUTO_INCREMENT,
                                       `product_id` INT NOT NULL,
                                       `cart_id` INT NOT NULL,
-                                      `price` DOUBLE NOT NULL,
                                       `is_checkout` TINYINT(1) DEFAULT NULL,
                                       `quantity` INT NOT NULL,
                                       PRIMARY KEY (`item_id`),

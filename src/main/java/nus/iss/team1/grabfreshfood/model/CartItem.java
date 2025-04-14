@@ -44,4 +44,5 @@ public class CartItem {
     public int getCartIdForFrontend() {
         return (cart != null) ? cart.getCartId() : -1;
     }
+}
 

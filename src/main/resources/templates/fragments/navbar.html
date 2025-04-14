@@ -19,7 +19,9 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                             <li th:each="cat : ${categories}" class="dropdown-submenu">
-                                <a class="dropdown-item" href="#" th:text="${cat.name}"></a>
+                                <a class="dropdown-item"
+                                   th:href="@{'/category/' + ${cat.name}}"
+                                   th:text="${cat.name}"></a>
                                 <ul class="dropdown-menu">
                                     <li th:each="sub : ${cat.subCategories}">
                                         <a class="dropdown-item"

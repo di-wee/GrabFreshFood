@@ -28,7 +28,9 @@ function ShoppingCart() {
 		try {
 			await Promise.all(
 				cartItems.map((item) => {
-					const url = import.meta.env.VITE_SERVER + `api/cart/${item.cartId}/item/${item.cartItemId}`;
+					const url =
+						import.meta.env.VITE_SERVER +
+						`api/cart/${item.cartId}/item/${item.cartItemId}`;
 					return fetch(url, { method: 'DELETE' });
 				})
 			);
@@ -47,13 +49,9 @@ function ShoppingCart() {
 	//checkout logic while calling POST api and redirecting to checkout page
 	const handleCheckout = async () => {
 		//filter array for only those that have been selected
-		const cartSelected = cartItems.filter((item) =>
-			selectedItems.includes(item.cartItemId)
-		);
+
 		const reqBody = {
-			customerId,
-			totalAmount: total,
-			cartItems: cartSelected,
+			selectedIds: selectedItems,
 		};
 
 		const url = import.meta.env.VITE_SERVER + 'api/order/create';
@@ -181,7 +179,9 @@ function ShoppingCart() {
 						</div>
 						<div className='col text-right'>
 							{/* Updated Empty Cart button to call handleEmptyCart */}
-							<button onClick={() => handleEmptyCart()} className='btn btn-outline-danger'>
+							<button
+								onClick={() => handleEmptyCart()}
+								className='btn btn-outline-danger'>
 								<span style={{ marginRight: '5px' }}>
 									<i className='bi bi-trash3'></i>
 								</span>

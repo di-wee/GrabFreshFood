@@ -51,7 +51,7 @@
             <div class="orderActions mt-2" th:if="${order.orderStatus == 'Pending Payment'}">
                 <a class="btn btn-sm btn-primary mr-2" th:href="@{/payment-page(orderId=${order.id})}">Go To Payment</a>
                 <button class="btn btn-sm btn-danger" onclick="confirmCancel(this)" th:attr="data-order-id=${order.id}">
-                    Cancel
+                    Cancel Order
                 </button>
             </div>
 
@@ -66,13 +66,7 @@
         if (confirm("You want to cancel this order?")) {
             fetch("/cancel-order?orderId=" + orderId, {
                 method: "POST"
-            }).then(res => {
-                if (res.ok) {
-                    location.reload();
-                } else {
-                    alert("Cancel failed.")
-                }
-            })
+            }).then(() => location.reload())
         }
     }
 </script>

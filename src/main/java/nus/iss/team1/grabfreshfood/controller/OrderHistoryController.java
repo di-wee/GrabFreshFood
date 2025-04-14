@@ -8,6 +8,7 @@ import nus.iss.team1.grabfreshfood.model.Order;
 import nus.iss.team1.grabfreshfood.model.OrderStatus;
 import nus.iss.team1.grabfreshfood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomMapEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +25,20 @@ public class OrderHistoryController {
     @Autowired
     private OrderService ohservice;
 
+    private Customer getLogInCustomer(HttpSession session){
+        return (Customer) session.getAttribute("customer");
+    }
+
+    private boolean isOrderOwnedByThisCustomer(int orderId, HttpSession session){
+        Customer customer = getLogInCustomer(session);
+        if (customer == null) return false;
+        Order order = ohservice.getOrderByOrderId(orderId);
+        return order != null && order.getCustomer().getId() == customer.getId();
+    }
+
     @GetMapping("/order-history")
     public String getOrderHistory(@RequestParam(required = false, defaultValue = "All") String type, Model model, HttpSession session) {
-        Customer customer = (Customer) session.getAttribute("customer");
+        Customer customer = getLogInCustomer(session);
         if (customer == null) {
             return "redirect:/login";
         }
@@ -41,52 +53,65 @@ public class OrderHistoryController {
         return "orderHistory";
     }
 
-    //press 'checkout' button on cart page, create new order to DB then get the orderId,then go to fill in address
-//    @PostMapping("/checkout")
-//    public String checkoutToAddress(HttpSession session, Map<Integer, CartItem> cartItems, Model model){
-//        Customer customer = (Customer) session.getAttribute("customer");
-//        if (customer == null) {
-//            return "redirect:/login";
-//        }
-//
-//        int orderId = ohservice.createNewOrderAndId(customer,cartItems);
-//        model.addAttribute("orderId", orderId);
-//        return "redirect:/checkout-page?orderId=" + orderId;
-//
-//    }
-
     //jump to the address page,add orderId
     @GetMapping("/checkout-page")
-    public String checkoutPage(@RequestParam("orderId") int orderId, Model model) {
+    public String checkoutPage(@RequestParam("orderId") int orderId, Model model, HttpSession session) {
+        if (!isOrderOwnedByThisCustomer(orderId,session)){
+            return "redirect:/order-history";
+        }
+        Order newOrder = ohservice.getOrderByOrderId(orderId);
         model.addAttribute("orderId", orderId);
+
+        String orderSavedAddress = newOrder.getShippingAddress();
+        if (orderSavedAddress == null || orderSavedAddress.isBlank()){
+            orderSavedAddress = null;
+        }
+        model.addAttribute("orderSavedAddress",orderSavedAddress);
         return "checkout-page";
     }
-
-
-    //temp logic when orders are not created on button click of 'checkout'
-//    @GetMapping("/checkout-page")
-//    public String checkoutPage(@RequestParam("selectedItemsIds") List<Integer> selectedItemsIds, Model model, HttpSession session) {
-//        model.addAttribute("selectedItemsIds", selectedItemsIds);
-//        session.setAttribute("selectedItemsIds", selectedItemsIds);
-//
-//        return "checkout-page";
-//    }
-
 
     //fill and add address to DB by click 'save&continue' button on checkout-page.html
     @PostMapping("/checkout/pay")
     public String getAddress(@RequestParam("orderId") int orderId,
-                             @RequestParam("address") String address,
-                             @RequestParam("floorNumber") String floorNumber,
-                             @RequestParam("unitNumber") String unitNumber) {
-        ohservice.getAndSaveDeliverAddress(orderId, address, floorNumber, unitNumber);
+                             @RequestParam(value = "postalCode", required = false) String postalCode,
+                             @RequestParam(value = "buildingName", required = false) String buildingName,
+                             @RequestParam(value = "address", required = false) String address,
+                             @RequestParam(value = "floorNumber", required = false) String floorNumber,
+                             @RequestParam(value = "unitNumber", required = false) String unitNumber,
+                             @RequestParam("addressOption") String addressOption,
+                             Model model,HttpSession session) {
 
-        return "redirect:/payment-page?orderId=" + orderId;
+        if (!isOrderOwnedByThisCustomer(orderId,session)){
+            return  "redirect:/order-history";
+        }
+
+        if ("saved".equals(addressOption)){
+            return "redirect:/payment-page?orderId=" + orderId;
+        } else {
+            if (address.isBlank() || floorNumber.isBlank() || unitNumber.isBlank()){
+                model.addAttribute("error", "Please fill in valid delivery address!");
+                model.addAttribute("orderId", orderId);
+                Order newOrder = ohservice.getOrderByOrderId(orderId);
+                String orderSavedAddress = newOrder.getShippingAddress();
+                if (orderSavedAddress == null || orderSavedAddress.isBlank()){
+                    orderSavedAddress = null;
+                }
+                model.addAttribute("orderSavedAddress",orderSavedAddress);
+                return "checkout-page";
+            }
+
+            ohservice.getAndSaveDeliverAddress(orderId, address, floorNumber, unitNumber, postalCode, buildingName);
+            return "redirect:/payment-page?orderId=" + orderId;
+        }
     }
 
     //for test, make me can run it without receiving cart data, manually enter an existing orderId in the URL
     @GetMapping("/payment-page")
-    public String showPaymentPage(@RequestParam("orderId") int orderId, Model model) {
+    public String showPaymentPage(@RequestParam("orderId") int orderId, Model model, HttpSession session) {
+        if (!isOrderOwnedByThisCustomer(orderId,session)){
+            return  "redirect:/order-history";
+        }
+
         model.addAttribute("orderId", orderId);
         return "payment-page";
     }
@@ -97,7 +122,11 @@ public class OrderHistoryController {
                         @RequestParam("cardNumber") String cardNumber,
                         @RequestParam("cardExpiry") String cardExpiry,
                         @RequestParam("CVC") String cvc,
-                        Model model) {
+                        Model model, HttpSession session) {
+        if (!isOrderOwnedByThisCustomer(orderId,session)){
+            return  "redirect:/order-history";
+        }
+
         if (cardNumber == null || cardExpiry == null || cvc == null || cardNumber.trim().isEmpty() || cardExpiry.trim().isEmpty() || cvc.trim().isEmpty()) {
             model.addAttribute("error", "Please fill in the credit card information!");
             model.addAttribute("orderId", orderId);
@@ -115,7 +144,7 @@ public class OrderHistoryController {
     //for cancel order
     @PostMapping("/cancel-order")
     public String cancelOrder(@RequestParam("orderId") int orderId, HttpSession session) {
-        Customer customer = (Customer) session.getAttribute("customer");
+        Customer customer = getLogInCustomer(session);
         if (customer == null) {
             return "redirect:/login";
         }
@@ -124,6 +153,39 @@ public class OrderHistoryController {
 
         return "redirect:/order-history";
     }
+
+
+
+//Lst: review together, confirm these code no longer needed,then delete them
+
+
+    //press 'checkout' button on cart page, create new order to DB then get the orderId,then go to fill in address
+//    @PostMapping("/checkout")
+//    public String checkoutToAddress(HttpSession session, Map<Integer, CartItem> cartItems, Model model){
+//        Customer customer = (Customer) session.getAttribute("customer");
+//        if (customer == null) {
+//            return "redirect:/login";
+//        }
+//
+//        int orderId = ohservice.createNewOrderAndId(customer,cartItems);
+//        model.addAttribute("orderId", orderId);
+//        return "redirect:/checkout-page?orderId=" + orderId;
+//
+//    }
+
+
+    //temp logic when orders are not created on button click of 'checkout'
+//    @GetMapping("/checkout-page")
+//    public String checkoutPage(@RequestParam("selectedItemsIds") List<Integer> selectedItemsIds, Model model, HttpSession session) {
+//        model.addAttribute("selectedItemsIds", selectedItemsIds);
+//        session.setAttribute("selectedItemsIds", selectedItemsIds);
+//
+//        return "checkout-page";
+//    }
+
+
+
+
 
 
 }

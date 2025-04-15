@@ -86,10 +86,10 @@
 
 <!--Display Each Product-->
 <div class="container mt-10" style="padding-top: 80px;">
-  <h2>Search Results for: <span th:text="${query}">query</span></h2>
+  <h2>Search Results for: <span th:text="${keyword}">keyword</span></h2>
   <!-- React will mount here -->
   <div id="react-catalogue"
-       th:attr="data-keyword=${query}">
+       th:attr="data-keyword=${keyword}">
   </div>
   <!--<div class="row row-cols-2 row-cols-md-5 row-cols-sm-3 g-4">
     <div th:each="product:${products}"  class="col">

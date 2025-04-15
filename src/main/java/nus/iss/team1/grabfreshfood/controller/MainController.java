@@ -22,7 +22,7 @@ public class MainController {
         List<Category>categories=categoryService.getAllCategoriesWithSubcategories();
         model.addAttribute("categories", categories);
 
-        return "landing-page";
+        return "navbar";
 
     }
 

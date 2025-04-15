@@ -86,8 +86,9 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container mt-10  style={{ paddingTop: '80px' }}">
+    <h2>Search Results for: <span th:text="${name}">category/subcategory name</span></h2>
     <div id="react-catalogue"
-         th:attr="data-category=${subcategoryName}">
+         th:attr="data-category=${name}">
         <!--<div class="row row-cols-2 row-cols-md-5 row-cols-sm-3 g-4">
                 <div class="product-card">
                     <img th:src="${product.img}" class="product-image" alt="Product Image">

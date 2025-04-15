@@ -14,7 +14,7 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container mt-4">
-    <div class="carousel slide carousel-fade mb-4 rounded-3 overflow-hidden shadow" data-bs-interval="2000"
+    <div class="carousel slide carousel-fade mb-4 rounded-3 overflow-hidden shadow" data-bs-interval="4000"
          data-bs-ride="carousel" id="heroCarousel">
         <div class="carousel-indicators">
             <button aria-current="true" aria-label="Slide 1" class="active" data-bs-slide-to="0"
@@ -27,36 +27,16 @@
 
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img alt="Banner 1" class="d-block hero-banner-img" src="https://iwillputthislater.com/img/123.png">
-                <div class="carousel-caption">
-                    <h2 class="fw-bold">Eat Fresh and Study Hard</h2>
-                    <p>Save up to 25% on fresh produce for study week!</p>
-                    <button class="btn btn-grabfreshfood">Shop Now</button>
-                </div>
+                <img alt="Banner 1" class="d-block hero-banner-img" th:src="@{/img/hero-banner1.png}">
             </div>
             <div class="carousel-item">
-                <img alt="Banner 2" class="d-block hero-banner-img" src="https://iwillputthislater.com/img/banner2.png">
-                <div class="carousel-caption">
-                    <h2 class="fw-bold">Fresh Deals Weekly</h2>
-                    <p>Get FRESH discounts on meats, dairy, and more.</p>
-                    <button class="btn btn-grabfreshfood">Browse Now</button>
-                </div>
+                <img alt="Banner 2" class="d-block hero-banner-img" src="/img/hero1.webp">
             </div>
             <div class="carousel-item">
-                <img alt="Banner 3" class="d-block hero-banner-img" src="https://iwillputthislater.com/img/banner3.png">
-                <div class="carousel-caption">
-                    <h2 class="fw-bold">Fresh Food, For a Fresh Brain.</h2>
-                    <p>Your daily dose of freshness, just a click away.</p>
-                    <button class="btn btn-grabfreshfood">Order Now</button>
-                </div>
+                <img alt="Banner 3" class="d-block hero-banner-img" src="/img/hero1.webp">
             </div>
             <div class="carousel-item">
-                <img alt="Banner 4" class="d-block hero-banner-img" src="https://iwillputthislater.com/img/banner4.png">
-                <div class="carousel-caption">
-                    <h2 class="fw-bold">Grab Fresh Food, To Grab All As</h2>
-                    <p>Enjoy our Freshest Brain Foods!</p>
-                    <button class="btn btn-grabfreshfood">See Offers</button>
-                </div>
+                <img alt="Banner 4" class="d-block hero-banner-img" src="/img/hero1.webp">
             </div>
         </div>
 

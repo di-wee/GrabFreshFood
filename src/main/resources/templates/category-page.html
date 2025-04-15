@@ -91,9 +91,9 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container mt-5" style="padding-top: 80px;">
-
+    <h2>Search Results for: <span th:text="${keyword}">Subcategory/category name</span></h2>
     <!-- Option 1: React container -->
-    <div id="react-catalogue" th:attr="data-category=${subcategoryName}"></div>
+    <div id="react-catalogue" th:attr="data-category=${keyword}"></div>
 
     <!-- Option 2: Thymeleaf-rendered catalogue -->
     <div class="row row-cols-2 row-cols-md-5 row-cols-sm-3 g-4" th:if="${products != null}">

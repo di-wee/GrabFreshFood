@@ -17,6 +17,12 @@ function ShoppingCart() {
 	const total = (subtotal + serviceFee).toFixed(2);
 
 	const handleEmptyCart = async () => {
+		// Lewis: Added confirmation popup before proceeding to empty the cart
+				const confirmEmpty = window.confirm('Are you sure you want to empty your cart?');
+				if (!confirmEmpty) return;
+
+		
+		
 		//logic for onClick of 'Empty Cart' button goes here.
 		// for this logic, take note that u have to remove ALL items in cart.
 		// so to start off, u can loop through the items in cart via the 'cartItems' variable where i

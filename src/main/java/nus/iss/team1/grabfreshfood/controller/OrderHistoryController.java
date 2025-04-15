@@ -30,6 +30,11 @@ public class OrderHistoryController {
     @Autowired
     private CartService cartService;
 
+    private String formattedServiceFee(){
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(OrderStatus.SERVICEFEE);
+    }
+
     private Customer getLogInCustomer(HttpSession session){
         return (Customer) session.getAttribute("customer");
     }
@@ -55,6 +60,7 @@ public class OrderHistoryController {
         model.addAttribute("orders", orders);
         model.addAttribute("selectedType", type);
         model.addAttribute("orderStatus", orderStatus);
+        model.addAttribute("serviceFee",formattedServiceFee());
 
         return "orderHistory";
     }
@@ -84,8 +90,6 @@ public class OrderHistoryController {
         List<CheckoutItemReq> checkoutItemReqList = cartService.getCheckoutReq(cart.getCartId());
         BigDecimal totalAmount = cartService.calculateCheckoutSum(checkoutItemReqList);
 
-        DecimalFormat df = new DecimalFormat("#.00");
-        String formattedServiceFee = df.format(OrderStatus.SERVICEFEE);
 
         //show the customer saved address on this page
         String orderSavedAddress = customer.getAddress();
@@ -96,7 +100,7 @@ public class OrderHistoryController {
         model.addAttribute("cartId",cart.getCartId());
         model.addAttribute("checkoutItems", checkoutItemReqList);
         model.addAttribute("orderTotalAmount", totalAmount);
-        model.addAttribute("serviceFee",formattedServiceFee);
+        model.addAttribute("serviceFee",formattedServiceFee());
         model.addAttribute("orderSavedAddress",orderSavedAddress);
         return "checkout-page";
     }

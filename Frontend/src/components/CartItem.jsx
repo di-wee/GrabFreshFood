@@ -59,7 +59,7 @@ function CartItem({
 		}
 	}
 
-	const updateQuantityDB = async (cartItemId, cartId, quantity) => {
+	const updateQuantityDB = async (cartId, cartItemId, quantity) => {
 		try {
 			const url = import.meta.env.VITE_SERVER + 'api/cart/update-quantity';
 			const res = await fetch(url, {

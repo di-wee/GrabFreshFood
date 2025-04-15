@@ -5,20 +5,25 @@ import nus.iss.team1.grabfreshfood.config.CartItemCreationException;
 import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
 import nus.iss.team1.grabfreshfood.config.CartItemUpdateException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
+import nus.iss.team1.grabfreshfood.controller.GeneralRestController;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class CartImpl implements CartService {
 
+    private static final Logger logger = LoggerFactory.getLogger(CartImpl.class);
     private final CartRepository cartRepo;
     private final CartItemRepository cartItemRepo;
     private final ProductRepository productRepository;
@@ -49,9 +54,13 @@ public class CartImpl implements CartService {
     // and cartItemId
     @Override
     public CartItem findCartItem(int cartId, int cartItemId) {
-        return cartItemRepo.findByCartCartIdAndCartItemId(cartId, cartItemId)
-                .orElseThrow(() -> new CartItemNotFoundException(
-                        "Cart item with id (" + cartItemId + ") not found in cart with id " + cartId));
+        Optional<CartItem> item = cartItemRepo.findByCartCartIdAndCartItemId(cartId, cartItemId);
+        if (item.isEmpty()) {
+            logger.error("CartItem (ID: " + cartItemId + ") not found in Cart (ID: " + cartId + ")");
+            throw new CartItemNotFoundException("CartItem (ID: " + cartItemId + ") not found in Cart (ID: " + cartId + ")");
+        }
+
+        return item.get();
     }
 
     // done by Pris to add key in numbered

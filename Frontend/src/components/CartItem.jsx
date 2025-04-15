@@ -162,13 +162,14 @@ function CartItem({
 					}}
 					//onBlur used here so as to not overload DB by
 					// updating quantity to DB on every onChange
-					onBlur={() =>
-						updateQuantityDB(
-							item.cartId,
-							item.cartItemId,
-							quantities[item.cartItemId]
-						)
-					}
+					onBlur={() => {
+						const qty = parseInt(localQuantity);
+						if (!isNaN(qty) && qty >= 1 && qty <= 10) {
+							updateQuantityDB(item.cartId, item.cartItemId, qty);
+						} else {
+							console.warn('invalid quantity entered');
+						}
+					}}
 				/>
 			</div>
 			<div

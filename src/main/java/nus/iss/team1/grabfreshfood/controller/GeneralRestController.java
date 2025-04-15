@@ -64,6 +64,9 @@ public class GeneralRestController {
                     req.getCartId(),
                     req.getCartItemId(),
                     req.getQuantity());
+            logger.info("CartID: " + req.getCartId());
+            logger.info("Updated quantity: " + req.getCartItemId());
+            logger.info("Updated quantity: " + req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
             logger.error("Error encountered when updating quantity of item (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);

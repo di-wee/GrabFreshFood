@@ -10,4 +10,3 @@ import java.util.List;
 public interface ProductCategoriesRepository extends JpaRepository<ProductCategories, Integer> {
     List<ProductCategories> findByCategory_Id(int categoryId);
 }
-

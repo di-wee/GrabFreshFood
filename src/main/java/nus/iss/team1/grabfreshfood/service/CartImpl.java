@@ -7,12 +7,9 @@ import nus.iss.team1.grabfreshfood.config.CartItemUpdateException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
-import nus.iss.team1.grabfreshfood.model.Customer;
-import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -100,10 +97,9 @@ public class CartImpl implements CartService {
 
     // Done by Lewis
     @Override
-    public String deleteCartItem(int cartId, int itemId) {
+    public void deleteCartItem(int cartId, int itemId) {
         CartItem item = findCartItem(cartId, itemId);
         cartItemRepo.delete(item);
-        return "Successfully deleted.";
     }
 
     // Done by Dionis
@@ -136,12 +132,12 @@ public class CartImpl implements CartService {
     }
 
     //Lst find the checkout cart item
-    public List<CartItem> getCheckoutCartItems(int cartId){
+    public List<CartItem> getCheckoutCartItems(int cartId) {
         return cartItemRepo.findCheckoutCartItemByCartId(cartId);
     }
 
     //Lst remove checkout item after creating new order
-    public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems){
+    public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems) {
         cartItemRepo.deleteAll(checkoutItems);
     }
 }

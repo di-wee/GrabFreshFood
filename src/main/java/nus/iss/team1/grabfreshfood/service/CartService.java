@@ -18,6 +18,8 @@ public interface CartService {
 
     CartItem addCartItemToCart(int cartId, int productId);
 
+    public void deleteCartItem(int cartId, int itemId);
+
     //added this on 10/4/25
     //    CartItem addProductToCart(int customerId, int productId);
 

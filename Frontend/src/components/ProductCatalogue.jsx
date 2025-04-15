@@ -1,81 +1,128 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-
-//this react component is REUSABLE and will be used for both landing page and search/categories etc.
+import Carousel from 'react-bootstrap/Carousel';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ProductCatalogue = ({ keyword }) => {
 	const [isAddCart, setIsAddCart] = useState(false);
 	const [itemQuant, setItemQuant] = useState(1);
+	const [products, setProducts] = useState([]);
 
-	//call GET REST api to retrieve all products into an array.
-	//if keyword is null (eg. this is for landing page),
-	// retrieve mayb first 10, but backend rest api must configure or cater
+	const fetchProductLandingPage = async () => {
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/search/landingpage`;
+			const res = await fetch(url);
+			if (!res.ok) {
+				throw new Error('Error getting products for landing page');
+			}
+			const data = await res.json();
+			setProducts(data);
+		} catch (err) {
+			console.error('Error retrieving products for LP: ', err);
+		}
+	};
 
-	//else. if keyword NOT null, meaning this component is being used for a search/categories
-	//call GET REST api to retrieve products based on query param eg '/search?category={keyword}',
-
-	//after retrieving, use state management to store your data and then
-	// map your products details to the respective div
+	useEffect(() => {
+		fetchProductLandingPage();
+	}, []);
 
 	function handleAddCart() {
-		//add to cart logic goes here
-		//call a POST API to add item to cart.
-
-		//to toggle visibility
 		setIsAddCart(true);
 	}
 
-	//to handle functionality of increasing/decreasing item quantity
-	//u might have to reconfigure the useState for item quantity to accomodate to an array
-	//and change the logic accordingly
 	function handleItemQuant(e) {
 		const quant = parseInt(e.target.value);
-
-		//if quantity === 0, then it will set boolean flag isAddCart to false to trigger visibility
-		if (quant === 0) {
-			setIsAddCart(false);
-			console.log('isAddCart: ' + isAddCart);
-			console.log('itemQuant: ' + quant);
-		}
+		if (quant === 0) setIsAddCart(false);
 		setItemQuant(quant);
 	}
 
 	function handleProductOnClick() {
-		//this will need to redirect to Priscilla's spring controller, make sure to
-		// include the id of the product to accomodate for her logic
+		// redirect to spring product page
 	}
 
+	//to 'paginate' product carousell
+	const sliceProducts = (arr, size) => {
+		let result = [];
+		//if arr.length is 10, size = 5, it will slice
+		//[ [a,b,c,d,e], [f,g,h,j] ]
+		for (let i = 0; i < arr.length; i += size) {
+			result.push(arr.slice(i, i + size));
+		}
+		return result;
+	};
+
+	const productChunks = sliceProducts(products, 5);
+
 	return (
-		<div className='container'>
-			<div className='row justify-content-center align-items-center'>
-				<div className='col-md-4'>
-					<Card>
-						<Card.Img
-							variant='top'
-							src='https://via.placeholder.com/150'
-						/>
-						<Card.Body style={{ width: '250vh' }}>
-							<Card.Title>Product Title</Card.Title>
-							<Card.Text>Product Description</Card.Text>
-							<Card.Text>$ProductPrice</Card.Text>
-							{isAddCart ? (
-								<input
-									type='number'
-									min={0}
-									value={itemQuant}
-									onChange={(e) => handleItemQuant(e)}></input>
-							) : (
-								<Button
-									onClick={handleAddCart}
-									variant='success'>
-									Add to cart
-								</Button>
-							)}
-						</Card.Body>
-					</Card>
-				</div>
-			</div>
+		<div className='container mt-4'>
+			<style>
+				{`
+					.carousel-control-prev,
+					.carousel-control-next {
+						opacity: 1 !important;
+					}
+					.carousel-control-prev-icon,
+					.carousel-control-next-icon {
+						background-color: rgba(0, 0, 0, 0.5);
+						border-radius: 50%;
+						padding: 10px;
+						
+					}
+				`}
+			</style>
+
+			{productChunks.length > 0 ? (
+				<Carousel indicators={false}>
+					{productChunks.map((chunk, index) => (
+						<Carousel.Item
+							key={index}
+							interval={1500}>
+							<div className='d-flex justify-content-center flex-wrap gap-3'>
+								{chunk.map((product) => (
+									<Card
+										key={product.id}
+										style={{ width: '14rem', flex: '1 0 auto' }}>
+										<Card.Img
+											variant='top'
+											src='https://via.placeholder.com/150'
+										/>
+										<Card.Body>
+											<Card.Title title={product.name}>
+												{product.name}
+											</Card.Title>
+
+											<Card.Text>
+												$
+												{product.price !== undefined
+													? product.price.toFixed(2)
+													: product.price}
+											</Card.Text>
+											{isAddCart ? (
+												<input
+													type='number'
+													min={0}
+													value={itemQuant}
+													onChange={(e) => handleItemQuant(e)}
+													className='form-control'
+												/>
+											) : (
+												<Button
+													onClick={handleAddCart}
+													variant='success'>
+													Add to cart
+												</Button>
+											)}
+										</Card.Body>
+									</Card>
+								))}
+							</div>
+						</Carousel.Item>
+					))}
+				</Carousel>
+			) : (
+				<p>Loading products...</p>
+			)}
 		</div>
 	);
 };

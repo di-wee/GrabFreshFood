@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface ProductCategoriesRepository extends JpaRepository<ProductCategories, Integer> {
-    List<ProductCategories> findByCategory_Id(int categoryId);
+    List<ProductCategories> findByCategory_CategoryId(int categoryId);
 }
-

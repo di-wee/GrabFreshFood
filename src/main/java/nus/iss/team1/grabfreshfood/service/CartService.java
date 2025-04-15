@@ -20,6 +20,8 @@ public interface CartService {
 
     CartItem addNumberQuantity(int customerId, int productId, int quantity);
 
+    void deleteCartItem(int cartId, int itemId);
+
     // Lst
     List<CartItem> getCheckoutCartItems(int cartId);
 

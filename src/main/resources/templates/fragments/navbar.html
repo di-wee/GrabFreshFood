@@ -19,7 +19,9 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
                             <li th:each="cat : ${categories}" class="dropdown-submenu">
-                                <a class="dropdown-item" href="#" th:text="${cat.name}"></a>
+                                <a class="dropdown-item"
+                                   th:href="@{'/category/' + ${cat.name}}"
+                                   th:text="${cat.name}"></a>
                                 <ul class="dropdown-menu">
                                     <li th:each="sub : ${cat.subCategories}">
                                         <a class="dropdown-item"
@@ -52,18 +54,20 @@
                         </a>
                     </span>
                     <span th:if="${session.customer != null}" class="d-flex">
-                        <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/account}">
-                            <div class="position-relative">
-                                <i class="bi bi-person fs-5"></i>
-                            </div>
-                            <span class="d-none d-md-inline small">Account</span>
-                        </a>
-                        <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/logout}">
-                            <div class="position-relative">
-                                <i class="bi bi-box-arrow-right fs-5"></i>
-                            </div>
-                            <span class="d-none d-md-inline small">Logout</span>
-                        </a>
+                        <div class="nav-item dropdown mx-2 hover-dropdown">
+                            <a class="nav-link dropdown-toggle d-flex flex-column align-items-center" href="#" id="accountDropdown"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="position-relative">
+                                    <i class="bi bi-person fs-5"></i>
+                                </div>
+                                <span class="d-none d-md-inline small">Account</span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                                <li><a class="dropdown-item" th:href="@{/account}">Account</a></li>
+                                <li><a class="dropdown-item" th:href="@{/order-history}">Orders</a></li>
+                                <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                            </ul>
+                        </div>
                     </span>
 
                     <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/cart}">

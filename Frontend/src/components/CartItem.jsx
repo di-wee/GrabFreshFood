@@ -20,7 +20,12 @@ function CartItem({
 
 	// delete one item only.
 	const handleDeleteItem = async (cartId, itemId) => {
-		// your delete item logic goes here
+		// Lewis: Added confirmation prompt before deletion
+		const confirmDelete = window.confirm(
+			'Are you sure you want to remove this item from your cart?'
+		);
+		if (!confirmDelete) return;
+
 		try {
 			const url =
 				import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;

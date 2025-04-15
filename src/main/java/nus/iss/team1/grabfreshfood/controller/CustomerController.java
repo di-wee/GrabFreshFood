@@ -1,7 +1,9 @@
 //Done by Lewis Huang
 package nus.iss.team1.grabfreshfood.controller;
 
+import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.Customer;
+import nus.iss.team1.grabfreshfood.repository.CartRepository;
 import nus.iss.team1.grabfreshfood.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -17,6 +20,10 @@ public class CustomerController {
 
     @Autowired
     private CustomerRepository customerRepo;
+
+    // Added to create cart when a customer registers
+    @Autowired
+    private CartRepository cartRepo;
 
     /**
      * Display the login form.
@@ -77,6 +84,7 @@ public class CustomerController {
      * Process the registration of a new customer.
      * This method sets default values (for registration date and active status),
      * saves the new customer record in the SQL database, and logs the customer in.
+     * It also creates a new empty Cart for the customer upon registration.
      */
     @PostMapping("/register")
     public String processRegister(@ModelAttribute Customer customer,
@@ -86,6 +94,13 @@ public class CustomerController {
         customer.setIsActive(true);
         // Save the customer to the database
         Customer savedCustomer = customerRepo.save(customer);
+
+        // Create a new Cart for the customer after successful registration
+        Cart cart = new Cart();
+        cart.setCustomerId(savedCustomer.getId());
+        cart.setCreationDate(LocalDate.now());
+        cartRepo.save(cart);
+
         // Log in the newly registered customer by storing them in session
         session.setAttribute("customer", savedCustomer);
         session.setAttribute("customerId", savedCustomer.getId());

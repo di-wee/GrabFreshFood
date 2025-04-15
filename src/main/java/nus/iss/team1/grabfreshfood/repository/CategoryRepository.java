@@ -7,16 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-
-
-    @Query("SELECT DISTINCT c FROM Category c LEFT JOIN FETCH c.subCategories s ORDER BY c.name")
-    List<Category> findDistinctCategoriesWithSubcategories();
-
-    List<Category> findById(int categoryId);
-
     Category findByName(String name);
 
-
+    @Query("SELECT DISTINCT c FROM Category c WHERE c.subCategories IS NOT EMPTY")
+    List<Category> findDistinctCategoriesWithSubcategories();
+    
 }
-

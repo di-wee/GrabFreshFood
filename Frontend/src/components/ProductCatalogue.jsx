@@ -45,9 +45,10 @@ const ProductCatalogue = ({ keyword }) => {
 	const sliceProducts = (arr, size) => {
 		let result = [];
 		//if arr.length is 10, size = 5, it will slice
-		//[ [a,b,c,d,e], [f,g,h,j] ]
+		//[ [a,b,c,d,e], [f,g,h,j] ] i = i + size
 		for (let i = 0; i < arr.length; i += size) {
-			result.push(arr.slice(i, i + size));
+			let sliced = arr.slice(i, i + size); //arr.slice(0, 5), arr.slice(5, 10)
+			result.push(sliced);
 		}
 		return result;
 	};
@@ -77,18 +78,49 @@ const ProductCatalogue = ({ keyword }) => {
 					{productChunks.map((chunk, index) => (
 						<Carousel.Item
 							key={index}
-							interval={1500}>
-							<div className='d-flex justify-content-center flex-wrap gap-3'>
+							interval={3000}>
+							<div className='d-flex justify-content-around w-100 overflow-hidden'>
 								{chunk.map((product) => (
 									<Card
 										key={product.id}
-										style={{ width: '14rem', flex: '1 0 auto' }}>
+										style={{
+											width: '14rem',
+											height: '100%',
+											minHeight: '360px',
+											flex: '0 0 auto',
+											margin: '0 0.5rem',
+										}}>
 										<Card.Img
 											variant='top'
-											src='https://via.placeholder.com/150'
+											src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
+											style={{
+												height: '180px',
+												objectFit: 'contain',
+												padding: '10px',
+												cursor: 'pointer',
+											}}
+											onClick={() =>
+												(window.location.href =
+													import.meta.env.VITE_SERVER + `product/${product.id}`)
+											}
 										/>
-										<Card.Body>
-											<Card.Title title={product.name}>
+										<Card.Body
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												justifyContent: 'space-between',
+												height: '100%',
+											}}>
+											<Card.Title
+												title={product.name}
+												style={{
+													fontSize: '1rem',
+													fontWeight: 'bold',
+													marginBottom: '0.5rem',
+													whiteSpace: 'normal',
+													overflow: 'visible',
+													textOverflow: 'unset',
+												}}>
 												{product.name}
 											</Card.Title>
 

@@ -2,10 +2,10 @@ package nus.iss.team1.grabfreshfood.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
-import nus.iss.team1.grabfreshfood.model.CartItem;
-import nus.iss.team1.grabfreshfood.model.Customer;
-import nus.iss.team1.grabfreshfood.model.Order;
-import nus.iss.team1.grabfreshfood.model.OrderStatus;
+import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
+import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
+import nus.iss.team1.grabfreshfood.model.*;
+import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomMapEditor;
@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -25,17 +27,21 @@ public class OrderHistoryController {
     @Autowired
     private OrderService ohservice;
 
+    @Autowired
+    private CartService cartService;
+
     private Customer getLogInCustomer(HttpSession session){
         return (Customer) session.getAttribute("customer");
     }
 
-    private boolean isOrderOwnedByThisCustomer(int orderId, HttpSession session){
+    private boolean isOrderOwnedByThisCustomer(int orderId, HttpSession session) {
         Customer customer = getLogInCustomer(session);
         if (customer == null) return false;
         Order order = ohservice.getOrderByOrderId(orderId);
         return order != null && order.getCustomer().getId() == customer.getId();
     }
 
+    //Lst: show order-history
     @GetMapping("/order-history")
     public String getOrderHistory(@RequestParam(required = false, defaultValue = "All") String type, Model model, HttpSession session) {
         Customer customer = getLogInCustomer(session);
@@ -53,63 +59,94 @@ public class OrderHistoryController {
         return "orderHistory";
     }
 
-    //jump to the address page,add orderId
+    //after clicking "checkout" button, go to checkout-page to fill in address, after fill in, then create order and remove checkout cart item
     @GetMapping("/checkout-page")
-    public String checkoutPage(@RequestParam("orderId") int orderId, Model model, HttpSession session) {
-        if (!isOrderOwnedByThisCustomer(orderId,session)){
-            return "redirect:/order-history";
+    public String checkoutPage(Model model, HttpSession session) {
+        Customer customer = getLogInCustomer(session);
+        if (customer == null) {
+            return "redirect:/login";
         }
-        Order newOrder = ohservice.getOrderByOrderId(orderId);
-        model.addAttribute("orderId", orderId);
 
-        String orderSavedAddress = newOrder.getShippingAddress();
+        //ger cartItems from DB by cartId
+        Cart cart;
+        try {
+            cart = cartService.findCartByCustomerId(customer.getId());
+        } catch (CartNotFoundException e){
+            log.error("Cart not found for customer ID: {}",  customer.getId());
+            return "redirect:/cart";
+        }
+
+        List<CartItem> checkoutItems = cartService.getCheckoutCartItems(cart.getCartId());
+        if (checkoutItems == null || checkoutItems.isEmpty()){
+            return "redirect:/cart";
+        }
+
+        List<CheckoutItemReq> checkoutItemReqList = cartService.getCheckoutReq(cart.getCartId());
+        BigDecimal totalAmount = cartService.calculateCheckoutSum(checkoutItemReqList);
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        String formattedServiceFee = df.format(OrderStatus.SERVICEFEE);
+
+        //show the customer saved address on this page
+        String orderSavedAddress = customer.getAddress();
         if (orderSavedAddress == null || orderSavedAddress.isBlank()){
             orderSavedAddress = null;
         }
+
+        model.addAttribute("cartId",cart.getCartId());
+        model.addAttribute("checkoutItems", checkoutItemReqList);
+        model.addAttribute("orderTotalAmount", totalAmount);
+        model.addAttribute("serviceFee",formattedServiceFee);
         model.addAttribute("orderSavedAddress",orderSavedAddress);
         return "checkout-page";
     }
 
+
     //fill and add address to DB by click 'save&continue' button on checkout-page.html
     @PostMapping("/checkout/pay")
-    public String getAddress(@RequestParam("orderId") int orderId,
-                             @RequestParam(value = "postalCode", required = false) String postalCode,
+    public String getAddress(@RequestParam(value = "postalCode", required = false) String postalCode,
                              @RequestParam(value = "buildingName", required = false) String buildingName,
                              @RequestParam(value = "address", required = false) String address,
                              @RequestParam(value = "floorNumber", required = false) String floorNumber,
                              @RequestParam(value = "unitNumber", required = false) String unitNumber,
                              @RequestParam("addressOption") String addressOption,
+                             @RequestParam("cartId")int cartId,
                              Model model,HttpSession session) {
 
-        if (!isOrderOwnedByThisCustomer(orderId,session)){
-            return  "redirect:/order-history";
+        Customer customer = getLogInCustomer(session);
+        if (customer == null) {
+            return "redirect:/login";
         }
 
+        List<CartItem> checkoutItems = cartService.getCheckoutCartItems(cartId);
+        if (checkoutItems == null || checkoutItems.isEmpty()){
+            return "redirect:/cart";
+        }
+
+        String shippingAddress;
         if ("saved".equals(addressOption)){
-            return "redirect:/payment-page?orderId=" + orderId;
+            shippingAddress = customer.getAddress();
         } else {
-            if (address.isBlank() || floorNumber.isBlank() || unitNumber.isBlank()){
+            if (address.isBlank() || floorNumber.isBlank() || unitNumber.isBlank()) {
                 model.addAttribute("error", "Please fill in valid delivery address!");
-                model.addAttribute("orderId", orderId);
-                Order newOrder = ohservice.getOrderByOrderId(orderId);
-                String orderSavedAddress = newOrder.getShippingAddress();
-                if (orderSavedAddress == null || orderSavedAddress.isBlank()){
-                    orderSavedAddress = null;
-                }
-                model.addAttribute("orderSavedAddress",orderSavedAddress);
+                model.addAttribute("cartId",cartId);
                 return "checkout-page";
             }
-
-            ohservice.getAndSaveDeliverAddress(orderId, address, floorNumber, unitNumber, postalCode, buildingName);
-            return "redirect:/payment-page?orderId=" + orderId;
+            shippingAddress = ohservice.saveDeliverAddress(address, floorNumber, unitNumber, postalCode, buildingName);
         }
+
+        int orderId = ohservice.createNewOrderAndGetNewOrderId(customer, shippingAddress, checkoutItems);
+
+        cartService.removeCheckoutItemsFromCart(checkoutItems);
+
+        return "redirect:/payment-page?orderId=" + orderId;
     }
 
     //for test, make me can run it without receiving cart data, manually enter an existing orderId in the URL
     @GetMapping("/payment-page")
     public String showPaymentPage(@RequestParam("orderId") int orderId, Model model, HttpSession session) {
-        if (!isOrderOwnedByThisCustomer(orderId,session)){
-            return  "redirect:/order-history";
+        if (!isOrderOwnedByThisCustomer(orderId, session)) {
+            return "redirect:/order-history";
         }
 
         model.addAttribute("orderId", orderId);
@@ -123,8 +160,8 @@ public class OrderHistoryController {
                         @RequestParam("cardExpiry") String cardExpiry,
                         @RequestParam("CVC") String cvc,
                         Model model, HttpSession session) {
-        if (!isOrderOwnedByThisCustomer(orderId,session)){
-            return  "redirect:/order-history";
+        if (!isOrderOwnedByThisCustomer(orderId, session)) {
+            return "redirect:/order-history";
         }
 
         if (cardNumber == null || cardExpiry == null || cvc == null || cardNumber.trim().isEmpty() || cardExpiry.trim().isEmpty() || cvc.trim().isEmpty()) {
@@ -155,9 +192,16 @@ public class OrderHistoryController {
     }
 
 
-
 //Lst: review together, confirm these code no longer needed,then delete them
 
+    //temp logic when orders are not created on button click of 'checkout'
+//    @GetMapping("/checkout-page")
+//    public String checkoutPage(@RequestParam("selectedItemsIds") List<Integer> selectedItemsIds, Model model, HttpSession session) {
+//        model.addAttribute("selectedItemsIds", selectedItemsIds);
+//        session.setAttribute("selectedItemsIds", selectedItemsIds);
+//
+//        return "checkout-page";
+//    }
 
     //press 'checkout' button on cart page, create new order to DB then get the orderId,then go to fill in address
 //    @PostMapping("/checkout")
@@ -172,20 +216,4 @@ public class OrderHistoryController {
 //        return "redirect:/checkout-page?orderId=" + orderId;
 //
 //    }
-
-
-    //temp logic when orders are not created on button click of 'checkout'
-//    @GetMapping("/checkout-page")
-//    public String checkoutPage(@RequestParam("selectedItemsIds") List<Integer> selectedItemsIds, Model model, HttpSession session) {
-//        model.addAttribute("selectedItemsIds", selectedItemsIds);
-//        session.setAttribute("selectedItemsIds", selectedItemsIds);
-//
-//        return "checkout-page";
-//    }
-
-
-
-
-
-
 }

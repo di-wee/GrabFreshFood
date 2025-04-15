@@ -1,5 +1,7 @@
 package nus.iss.team1.grabfreshfood.model;
 
+import java.math.BigDecimal;
+
 public class OrderStatus {
     //for order status
     public static final String PROCESSING = "Processing";
@@ -10,4 +12,8 @@ public class OrderStatus {
 
     //for payment method
     public static final String CREDITCARD = "Credit Card";
+    public static final String NOTPAY = "Not Pay";
+
+    //for service fee
+    public static final BigDecimal SERVICEFEE = BigDecimal.valueOf(3.60);
 }

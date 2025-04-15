@@ -15,9 +15,10 @@ public class GlobalCategoryAdvice {
     @Autowired
     private CategoryService categoryService;
 
-    @ModelAttribute
-    public void addCategoriesToModel(Model model) {
-        List<Category> categories = categoryService.getAllCategoriesWithSubcategories();
-        model.addAttribute("categories", categories);
+    @ModelAttribute("categories")
+    public List<Category> addCategoriesToModel(Model model) {
+        System.out.println(">>> Populating categories in model");
+        return categoryService.getAllCategoriesWithSubcategories();
+
     }
 }

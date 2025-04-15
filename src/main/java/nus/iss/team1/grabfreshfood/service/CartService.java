@@ -18,13 +18,11 @@ public interface CartService {
 
     CartItem addCartItemToCart(int cartId, int productId);
 
-    public void deleteCartItem(int cartId, int itemId);
+    CartItem addNumberQuantity(int customerId, int productId, int quantity);
 
-    //added this on 10/4/25
-    //    CartItem addProductToCart(int customerId, int productId);
-
-    //Lst
+    // Lst
     List<CartItem> getCheckoutCartItems(int cartId);
 
     void removeCheckoutItemsFromCart(List<CartItem> checkoutItems);
+
 }

@@ -47,7 +47,9 @@ public class ProductController {
 
 	//check if the user is login before allowing usage of add to cart function
 	@PostMapping("/product/addToCart")
-	public String addToCart(HttpSession session, @RequestParam("productId") int productId) {
+	public String addToCart(HttpSession session,
+							@RequestParam("productId") int productId,
+							@RequestParam("quantity") int quantity) {
 		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer == null) {
 			return "redirect:/login";
@@ -57,7 +59,7 @@ public class ProductController {
 			throw new ProductNotFoundException("ProductId not found for productId: " + productId);
 		}
 
-		cartService.addCartItemToCart(customer.getId(), product.getId());
+		cartService.addNumberQuantity(customer.getId(), product.getId(), quantity);
 		return "redirect:/cart";
 	}
 

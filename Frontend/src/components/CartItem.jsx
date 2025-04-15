@@ -11,28 +11,21 @@ function CartItem({
 	cartItems,
 	itemPrice,
 	setItemPrice,
-	// Lewis: Added removeCartItem callback to allow parent state update after deletion
 	removeCartItem,
+	itemSubtotal, // ✅ receives computed subtotal from parent
 }) {
-	//state management
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
 
-	// delete one item only.
 	const handleDeleteItem = async (cartId, itemId) => {
-		// Lewis: Added confirmation prompt before deletion
-		const confirmDelete = window.confirm(
-			'Are you sure you want to remove this item from your cart?'
-		);
+		const confirmDelete = window.confirm('Are you sure you want to remove this item from your cart?');
 		if (!confirmDelete) return;
 
 		try {
-			const url =
-				import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;
+			const url = import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;
 			const res = await fetch(url, { method: 'DELETE' });
 			if (!res.ok) throw new Error('Error deleting cart item');
 			console.log('Deleted cart item: ', itemId);
-			// Lewis: callback to remove the deleted item from parent state
 			if (removeCartItem) {
 				removeCartItem(itemId);
 			}
@@ -41,26 +34,19 @@ function CartItem({
 		}
 	};
 
-	//handling of updating of item quantity
 	function handleUpdateQuantity(itemId, newQuantity) {
 		setLocalQuantity(newQuantity);
-
 		setQuantities((prev) => ({
 			...prev,
 			[itemId]: newQuantity,
 		}));
-
-		console.log(quantities);
 	}
 
-	// handling toggling of checkbox
 	function handleToggleCheckBox(itemId) {
 		if (selectedItems.includes(itemId)) {
-			//if item is already selected, remove it.
 			setSelectedItems(selectedItems.filter((id) => id !== itemId));
 		} else {
-			//or else add the item to state
-			setSelectedItems([...selectedItems, itemId]); // [1, 2 ,4]
+			setSelectedItems([...selectedItems, itemId]);
 		}
 	}
 
@@ -72,11 +58,7 @@ function CartItem({
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({
-					cartId,
-					cartItemId,
-					quantity,
-				}),
+				body: JSON.stringify({ cartId, cartItemId, quantity }),
 			});
 			if (!res.ok) throw new Error('Error updating quantity to db');
 			console.log('Quantity updated for item: ', cartItemId);
@@ -92,18 +74,14 @@ function CartItem({
 		}));
 	};
 
-	//fetching product details
 	const fetchProduct = async () => {
 		try {
 			const url = import.meta.env.VITE_SERVER + `api/product/${item.productId}`;
-
 			const res = await fetch(url);
 			if (!res.ok) throw new Error('Error getting product details!');
 			const data = await res.json();
 			console.log('Product: ', data);
 			setProduct(data);
-
-			//setting state to store accurate price of product
 			updateLocalItemPrice(item.cartItemId, data.price);
 			return data;
 		} catch (err) {
@@ -118,13 +96,10 @@ function CartItem({
 	useEffect(() => {
 		let total = 0;
 		for (let item of cartItems) {
-			//if selectedItems include the particular cartItemId
 			if (selectedItems.includes(item.cartItemId)) {
-				//extract quantities in state via itemId
 				const quant = quantities[item.cartItemId];
 				const price = itemPrice[item.cartItemId];
-				const itemTotal = quant * price;
-				total += itemTotal;
+				total += quant * price;
 			}
 		}
 		setSubTotal(total);
@@ -141,19 +116,24 @@ function CartItem({
 				/>
 			</div>
 			<div className='product-image col-2'>
-				<img
-					alt='Product'
-					className='img-fluid'
-					src=''
-				/>
+				<img alt='Product' className='img-fluid' src='' />
 			</div>
 			<div className='product-name col-7'>
 				<h6>
 					<b>{product.name}</b>
 				</h6>
-				<p style={{ fontSize: 'smaller' }}>
+
+				{/* ✅ Description */}
+				<p style={{ fontSize: 'smaller', marginBottom: '0.5rem' }}>
 					<i>{product.description}</i>
 				</p>
+
+				{/* ✅ Unit price styled same as description */}
+				<p style={{ fontSize: 'smaller', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+					${product.price !== undefined ? product.price.toFixed(2) : product.price}
+				</p>
+
+				{/* Quantity input */}
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'
@@ -165,8 +145,6 @@ function CartItem({
 						setLocalQuantity(parseInt(event.target.value));
 						handleUpdateQuantity(item.cartItemId, parseInt(event.target.value));
 					}}
-					//onBlur used here so as to not overload DB by
-					// updating quantity to DB on every onChange
 					onBlur={() => {
 						const qty = parseInt(localQuantity);
 						if (!isNaN(qty) && qty >= 1 && qty <= 10) {
@@ -177,19 +155,12 @@ function CartItem({
 					}}
 				/>
 			</div>
-			<div
-				className='price-delete col-1 d-flex flex-column align-items-center'
-				style={{ marginLeft: '3vh' }}>
-				<h6 className='mb-1'>
-					<b>
-						{/* to cater for async nature of product due to it being fetched from api */}
-						$
-						{product.price !== undefined
-							? product.price.toFixed(2)
-							: product.price}
-					</b>
-				</h6>
-				{/* Updated onClick handler to pass proper parameters */}
+
+			{/* ✅ Subtotal and delete icon */}
+			<div className='price-delete col-1 d-flex flex-column align-items-center' style={{ marginLeft: '3vh' }}>
+				<p style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '5px' }}>
+					${itemSubtotal}
+				</p>
 				<i
 					onClick={() => handleDeleteItem(item.cartId, item.cartItemId)}
 					className='bi bi-trash3'

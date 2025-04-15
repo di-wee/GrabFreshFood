@@ -16,13 +16,18 @@ function ShoppingCart() {
 	const serviceFee = 3.6;
 	const total = (subtotal + serviceFee).toFixed(2);
 
+	// helper function to calculate subtotal per item
+	const calculateItemSubtotal = (id) => {
+		const quantity = quantities[id] || 0;
+		const price = itemPrice[id] || 0;
+		return (quantity * price).toFixed(2);
+	};
+
 	const handleEmptyCart = async () => {
 		// Lewis: Added confirmation popup before proceeding to empty the cart
-				const confirmEmpty = window.confirm('Are you sure you want to empty your cart?');
-				if (!confirmEmpty) return;
+		const confirmEmpty = window.confirm('Are you sure you want to empty your cart?');
+		if (!confirmEmpty) return;
 
-		
-		
 		//logic for onClick of 'Empty Cart' button goes here.
 		// for this logic, take note that u have to remove ALL items in cart.
 		// so to start off, u can loop through the items in cart via the 'cartItems' variable where i
@@ -217,8 +222,9 @@ function ShoppingCart() {
 												cartItems={cartItems}
 												itemPrice={itemPrice}
 												setItemPrice={setItemPrice}
-												// NEW: Pass the removeCartItem callback so that deletion updates the UI
 												removeCartItem={removeCartItem}
+												// ✅ NEW: Pass calculated item subtotal to each cart item
+												itemSubtotal={calculateItemSubtotal(item.cartItemId)}
 											/>
 										))}
 									</div>

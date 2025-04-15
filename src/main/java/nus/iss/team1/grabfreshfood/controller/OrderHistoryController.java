@@ -55,7 +55,7 @@ public class OrderHistoryController {
         }
 
         List<Order> orders = ohservice.getOrderHistoryForCustomer(type, customer);
-        List<String> orderStatus = List.of("All", OrderStatus.TOPAY, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.CANCELED);
+        List<String> orderStatus = List.of("All", OrderStatus.TOPAY, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.CANCELLED);
 
         model.addAttribute("orders", orders);
         model.addAttribute("selectedType", type);

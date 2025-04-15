@@ -5,13 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-
 import java.util.List;
 
+@Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
+    Category findByName(String name);
 
-    List<ProductCategories> findById(int categoryId);
-    @Query("SELECT DISTINCT c FROM Category c LEFT JOIN FETCH c.subCategories s ORDER BY c.name")
+    @Query("SELECT DISTINCT c FROM Category c WHERE c.subCategories IS NOT EMPTY")
     List<Category> findDistinctCategoriesWithSubcategories();
     
+
 }
+

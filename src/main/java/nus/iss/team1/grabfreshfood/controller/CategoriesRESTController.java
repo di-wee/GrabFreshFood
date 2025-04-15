@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -17,7 +18,10 @@ public class CategoriesRESTController {
     private ProductCategoriesService productCategoriesService;
 
     @GetMapping("/{categoryId}/products")
+
     public List<Product> getProductsByCategory(@PathVariable int categoryId) {
         return productCategoriesService.getProductsByCategoryId(categoryId);
     }
+
+
 }

@@ -9,6 +9,7 @@ import nus.iss.team1.grabfreshfood.config.*;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
+import nus.iss.team1.grabfreshfood.service.ProductCategoriesService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,9 @@ public class GeneralRestController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ProductCategoriesService productCategoriesService;
 
     // Done by Dionis
     //GET call to retrieve Cart based on Customer ID
@@ -213,6 +217,41 @@ public class GeneralRestController {
             logger.error("Error encountered when adding item to cart (Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    //Done by Ben
+    //Change Return type to ResponseEntity<{data type of what is to be returned alongside HttpStatus>
+    @GetMapping("/{categoryId}/products")
+    public List<Product> getProductsByCategory(@PathVariable int categoryId) {
+        //try to add some exception handling if possible,
+        // so if the List<Product> manages to return successfully,
+        // return ResponseEntity<[variable holding list<Product>], HttpStatus.OK> else return
+        //ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR)
+        //ideally, i would want u to retrieve by name of category(double check category model)
+        // cos what is being passed over by shiying's category/search feature is '/search?category={keyword}'
+        //so you'll be ingesting the keyword which will be the name
+
+        return productCategoriesService.getProductsByCategoryId(categoryId);
+    }
+
+    //get api for landing page products done by Dionis (tested)
+    @GetMapping("/search/landingpage")
+    public ResponseEntity<List<Product>> getProductsForLandingPage() {
+        try {
+            List<Product> productList = productService.findAllProduct();
+            List<Product> first10products = productList
+                    .stream()
+                    .limit(10)
+                    .toList();
+
+            return new ResponseEntity<>(first10products, HttpStatus.OK);
+        } catch (ProductNotFoundException e) {
+            logger.error("Error retrieving product list for landing page: ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Internal server error retrieving product list for landing page: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

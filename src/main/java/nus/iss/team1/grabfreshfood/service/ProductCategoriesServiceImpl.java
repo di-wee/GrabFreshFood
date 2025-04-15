@@ -30,7 +30,7 @@ public class ProductCategoriesServiceImpl implements ProductCategoriesService {
         if (category == null) {
             return java.util.Collections.emptyList(); // Or throw an exception
         }
-        List<ProductCategories> productCategories = productCategoriesRepository.findByCategory_CategoryId(category.getId()); // Use categoryId
+        List<ProductCategories> productCategories = productCategoriesRepository.findByCategory_Id(category.getId()); // Use categoryId
         List<Integer> productIds = productCategories.stream()
                 .map(pc -> pc.getProduct().getId())
                 .collect(Collectors.toList());

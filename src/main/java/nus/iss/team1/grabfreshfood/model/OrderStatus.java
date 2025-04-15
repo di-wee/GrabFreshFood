@@ -10,4 +10,5 @@ public class OrderStatus {
 
     //for payment method
     public static final String CREDITCARD = "Credit Card";
+    public static final String NOTPAY = "Not Pay";
 }

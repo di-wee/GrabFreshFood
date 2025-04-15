@@ -16,7 +16,13 @@ public interface CartService {
 
     List<CartItem> updateSelectedItems(List<Integer> selectedIds, int customerId);
 
-    String deleteCartItem(int cartId, int itemId);
+    CartItem addCartItemToCart(int cartId, int productId);
 
-    CartItem addCartItemToCart(int customerId, int productId);
+    //added this on 10/4/25
+    //    CartItem addProductToCart(int customerId, int productId);
+
+    //Lst
+    List<CartItem> getCheckoutCartItems(int cartId);
+
+    void removeCheckoutItemsFromCart(List<CartItem> checkoutItems);
 }

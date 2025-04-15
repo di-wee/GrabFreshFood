@@ -134,4 +134,14 @@ public class CartImpl implements CartService {
             return cartItem;
         }
     }
+
+    //Lst find the checkout cart item
+    public List<CartItem> getCheckoutCartItems(int cartId){
+        return cartItemRepo.findCheckoutCartItemByCartId(cartId);
+    }
+
+    //Lst remove checkout item after creating new order
+    public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems){
+        cartItemRepo.deleteAll(checkoutItems);
+    }
 }

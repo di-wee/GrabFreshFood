@@ -21,6 +21,7 @@ public interface CartService {
 
     CartItem addCartItemToCart(int cartId, int productId);
 
+    CartItem addNumberQuantity(int customerId, int productId, int quantity);
 //    //added this on 10/4/25
 //    CartItem addProductToCart(int customerId, int productId);
     

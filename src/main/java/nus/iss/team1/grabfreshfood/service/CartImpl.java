@@ -58,24 +58,36 @@ public class CartImpl implements CartService {
                         "Cart item with id (" + cartItemId + ") not found in cart with id " + cartId));
     }
     
-    //done by Pris
-//    @Override
-//    public CartItem addProductToCart(int customerId, int productId) {
-//    	CartItem item =cartItemRepo.findCartItemByProduct(customerId,productId);
-//    	if (item == null) {
-//    		CartItem newItem = new CartItem();
-//            newItem.setCart(cartRepo.findCartByCustomerId(customerId));
-//            newItem.setProductId(productId);
-//            newItem.setQuantity(1);
-//
-//            return cartItemRepo.save(newItem);
-//
-//        }
-//    	else {
-//    		item.addQuantity();
-//    		}
-//    	return cartItemRepo.save(item);
-//    }
+    //done by Pris to add key in numbered
+    @Override
+    public CartItem addNumberQuantity(int customerId, int productId, int quantity) {
+        Cart cart = findCartByCustomerId(customerId);
+        int cartId = cart.getCartId();
+
+        CartItem item = cartItemRepo.findCartItemsByProductId(cartId, productId);
+
+        if (item != null) {
+            //Add to existing quantity
+            int newQuantity = item.getQuantity() + quantity;
+            return updateItemQuantity(cartId, item.getCartItemId(), newQuantity);
+        } else {
+            CartItem cartItem = new CartItem();
+            try {
+                cartItem.setCart(cart);
+                cartItem.setCheckout(true);
+                cartItem.setQuantity(quantity);
+                cartItem.setProductId(productId);
+
+                cartItemRepo.saveAndFlush(cartItem);
+            } catch (DataAccessException e) {
+                throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
+            } catch (Exception e) {
+                throw new CartItemCreationException("Unexpected error occurred while adding item to cart: " + e.getMessage());
+            }
+
+            return cartItem;
+        }
+    }
 
     @Override
     public CartItem updateItemQuantity(int cartId, int cartItemId, int quantity) {

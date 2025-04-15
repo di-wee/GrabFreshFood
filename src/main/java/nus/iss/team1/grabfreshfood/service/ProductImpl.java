@@ -39,12 +39,15 @@ public class ProductImpl implements ProductService {
     public List<Product> findProductBySubCategory(String subcategoryName) {
         return productRepo.findProductBySubCategory(subcategoryName);
     }
+    @Override
+    public List<Product> findProductByCategory(String categoryName) {
+        return productRepo.findProductByCategory(categoryName);
+    }
 
     @Override
     public List<Product> findAllProduct() {
         try {
-            List<Product> productList = productRepo.findAll();
-            return productList;
+            return productRepo.findAll();
         } catch (Exception e) {
             throw new ProductNotFoundException("Error retrieving products...");
         }

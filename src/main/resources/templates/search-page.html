@@ -21,10 +21,10 @@
 
 <!-- React Container and Heading -->
 <div class="container mt-10" style="padding-top: 80px;">
-  <h2>Search Results for: <span th:text="${query}">query</span></h2>
+  <h2>Search Results for: <span th:text="${keyword}">keyword</span></h2>
 
   <!-- Option A: React renders here -->
-  <div id="root" th:attr="data-keyword=${query}"></div>
+  <div id="root" th:attr="data-keyword=${keyword}"></div>
 </div>
 
 <!-- React and Babel Setup -->

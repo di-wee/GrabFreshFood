@@ -161,10 +161,11 @@ public class GeneralRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/category/{subcategoryName}")
-    public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("subcategoryName") String subcategoryName) {
-        List<Product> products = productService.findProductBySubCategory(subcategoryName);
+    @GetMapping("/category/{keyword}")
+    public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("keyword") String keyword) {
+        List<Product> products = productService.findProductBySubCategory(keyword);
         if (products == null) {
+            products = productService.findProductByCategory(keyword);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(products, HttpStatus.OK);

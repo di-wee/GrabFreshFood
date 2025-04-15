@@ -20,10 +20,10 @@ public class CategoryController {
         //model.addAttribute("products", products);
         return "category-page";
     }
-    @GetMapping("/category/{subcategoryName}")
-    public String categorySubcategory(@PathVariable ("subcategoryName")String subcategoryName, Model model) {
+    @GetMapping("/category/{keyword}")
+    public String categorySubcategory(@PathVariable ("keyword")String keyword, Model model) {
         //List<Product> products=productService.findProductBySubCategory(subcategoryName);
-        //model.addAttribute("category", subcategoryName);
+        model.addAttribute("keyword", keyword);
         // /model.addAttribute("products", products);
         return "category-page";
 

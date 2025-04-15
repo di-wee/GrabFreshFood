@@ -20,14 +20,15 @@ import java.util.List;
 public class MainController {
     @Autowired
     private CategoryService categoryService;
+
     // Main landing page
     @GetMapping("/")
     public String landingPage(Model model) {
 
-        List<Category>categories=categoryService.getAllCategoriesWithSubcategories();
+        List<Category> categories = categoryService.getAllCategoriesWithSubcategories();
         model.addAttribute("categories", categories);
 
-        return "navbar";
+        return "landing-page";
 
 
     }

@@ -19,6 +19,8 @@ public class Category {
     private String name;
     @Column(name = "information")
     private String description;
+
+
     @OneToMany(mappedBy = "category")
     private List<SubCategory> subCategories;
 

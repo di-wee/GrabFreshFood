@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ProductService {
     public List<Product> findProductByQuery(String query);
 
-    public List<Product> findProductBySubCategory(String subcategoryName);
+    List<Product> findProductByCategoryOrSubCategory(String name);
 
     public List<Product> findAllProduct();
 

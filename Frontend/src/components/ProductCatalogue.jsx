@@ -67,9 +67,7 @@ const ProductCatalogue = ({ keyword }) => {
 									onChange={(e) => handleItemQuant(e)}></input>
 							) : (
 								<Button
-									onClick={() =>
-										(window.location.href = `http://localhost:8080/product/${id}`)
-									}
+									onClick={handleAddCart}
 									variant='success'>
 									Add to cart
 								</Button>

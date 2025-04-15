@@ -149,6 +149,12 @@ function CartItem({
 				<p style={{ fontSize: 'smaller' }}>
 					<i>{product.description}</i>
 				</p>
+				<p style={{ fontSize: 'smaller' }}>
+					$
+					{product.price !== undefined
+						? product.price.toFixed(2)
+						: product.price}
+				</p>
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'

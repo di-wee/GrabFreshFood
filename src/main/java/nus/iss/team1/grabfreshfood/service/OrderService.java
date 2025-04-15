@@ -1,5 +1,6 @@
 package nus.iss.team1.grabfreshfood.service;
 
+import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
 import nus.iss.team1.grabfreshfood.model.Customer;
@@ -22,8 +23,7 @@ public interface OrderService {
 
     int createNewOrderAndGetNewOrderId(Customer customer, String shippingAddress, List<CartItem> checkoutItems);
 
-    //
-    int createNewOrderAndId(int customerId, List<CartItem> cartItems, double totalAmount);
+//    int createNewOrderAndId(int customerId, List<CartItem> cartItems, double totalAmount);
 
 
 }

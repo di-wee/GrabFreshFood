@@ -83,3 +83,34 @@ label {
     max-width: 100%;
     padding: 0.5rem 1.5rem;
 }
+
+/*Lst*/
+
+.titleHidden {
+    display: none;
+}
+
+.checkout-grid-wide {
+    margin-top: 4vh;
+    margin-bottom: 9vh;
+    width: 70%;
+    padding: 7vh 5vh 5vh 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px 0px #b5b6b7;
+    position: relative;
+}
+
+.top-banner-order {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2vh;
+    height: 6vh;
+}
+.top-banner-order h5{
+    margin:0;
+    line-height: 6vh;
+}

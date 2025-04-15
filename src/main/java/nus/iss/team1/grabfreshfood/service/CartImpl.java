@@ -1,18 +1,24 @@
 package nus.iss.team1.grabfreshfood.service;
 
 import jakarta.transaction.Transactional;
+import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
 import nus.iss.team1.grabfreshfood.config.CartItemCreationException;
 import nus.iss.team1.grabfreshfood.config.CartItemNotFoundException;
 import nus.iss.team1.grabfreshfood.config.CartItemUpdateException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
+import nus.iss.team1.grabfreshfood.model.OrderStatus;
+import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -173,5 +179,31 @@ public class CartImpl implements CartService {
     // Lst remove checkout item after creating new order
     public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems) {
         cartItemRepo.deleteAll(checkoutItems);
+    }
+
+    public List<CheckoutItemReq> getCheckoutReq (int cartId){
+        List<CartItem> checkoutItems = getCheckoutCartItems(cartId);
+        List<CheckoutItemReq> showList = new ArrayList<>();
+
+        for (CartItem cartItem : checkoutItems){
+            Product product = productRepository.findProductById(cartItem.getProductId());
+            BigDecimal unitPrice = BigDecimal.valueOf(product.getPrice()).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
+            BigDecimal perItemTotal = unitPrice.multiply(quantity).setScale(2, RoundingMode.HALF_UP);
+
+            CheckoutItemReq ciReq = new CheckoutItemReq();
+            ciReq.setProductName(product.getName());
+            ciReq.setUnitPrice(unitPrice);
+            ciReq.setQuantity(cartItem.getQuantity());
+            ciReq.setPerProductTotalAmount(perItemTotal);
+
+            showList.add(ciReq);
+        }
+
+        return showList;
+    }
+
+    public BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList){
+        return checkoutItemReqList.stream().map(CheckoutItemReq::getPerProductTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add).add(OrderStatus.SERVICEFEE).setScale(2,RoundingMode.HALF_UP);
     }
 }

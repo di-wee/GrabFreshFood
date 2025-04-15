@@ -29,6 +29,43 @@
     </div>
 </div>
 
+<!--show checkout detail-->
+<div class="checkout-grid-wide wide-checkout container-fluid bg-light px-4">
+    <h2 class="titleHidden">Checkout List Section</h2>
+    <div class="top-banner top-banner-order mb-3">
+        <h5 class="fw-bold text-white m-0">
+            <i class="bi bi-basket-fill me-2"></i>Review Your Order
+        </h5>
+        <h5 class="text-white" th:text="'Cart Id: ' + ${cartId}"></h5>
+    </div>
+    <div class="checkoutCard w-100">
+        <div class="checkoutItems table-responsive rounded-3 shadow-sm overflow-hidden">
+            <table class="table text-center align-middle mb-0">
+                <thead class = "table-light">
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${checkoutItems}">
+                    <td th:text="${item.productName}"></td>
+                    <td th:text="'x' + ${item.quantity}"></td>
+                    <td th:text="'$' + ${item.unitPrice}"></td>
+                    <td th:text="'$' + ${item.perProductTotalAmount}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 text-end">
+            <p class="mb-2"><strong>Service Fee: </strong><span th:text="'$' + ${serviceFee}"></span></p>
+            <h5><strong>Total: </strong> <span th:text="'$' + ${orderTotalAmount}"></span></h5>
+        </div>
+    </div>
+</div>
+
 <!--Checkout grid-->
 <div class="checkout-grid container bg-light">
     <div class="top-banner">

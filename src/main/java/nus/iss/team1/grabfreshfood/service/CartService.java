@@ -1,8 +1,10 @@
 package nus.iss.team1.grabfreshfood.service;
 
+import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CartService {
@@ -22,9 +24,12 @@ public interface CartService {
 
     void deleteCartItem(int cartId, int itemId);
 
-    // Lst
+    //Lst
     List<CartItem> getCheckoutCartItems(int cartId);
 
     void removeCheckoutItemsFromCart(List<CartItem> checkoutItems);
 
+    List<CheckoutItemReq> getCheckoutReq (int cartId);
+
+    BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList);
 }

@@ -11,6 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -85,11 +88,19 @@ public class CustomerController {
      * This method sets default values (for registration date and active status),
      * saves the new customer record in the SQL database, and logs the customer in.
      * It also creates a new empty Cart for the customer upon registration.
+     * Now includes validation.
      */
     @PostMapping("/register")
-    public String processRegister(@ModelAttribute Customer customer,
+    public String processRegister(@Valid @ModelAttribute Customer customer,
+                                  BindingResult result,
                                   HttpSession session,
                                   Model model) {
+        // Check for validation errors
+        if (result.hasErrors()) {
+            // Return back to registration form with error messages
+            return "register";
+        }
+
         customer.setRegistrationDate(LocalDateTime.now());
         customer.setIsActive(true);
         // Save the customer to the database

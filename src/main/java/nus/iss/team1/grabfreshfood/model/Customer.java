@@ -3,6 +3,7 @@
 package nus.iss.team1.grabfreshfood.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,9 +16,15 @@ public class Customer {
     @Column(name = "customer_id")
     private Integer id;           // changed from Long to Integer
 
+    @NotBlank(message = "Email is required")
+    @Pattern(
+        regexp = "^[\\w.-]+@[\\w.-]+\\.com$",
+        message = "Email must be a valid address ending with .com"
+    )
     @Column(name = "email", nullable = false, unique = true)
     private String username;      // used as email
 
+    @NotBlank(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
@@ -27,6 +34,11 @@ public class Customer {
     @Column(name = "last_name")
     private String lastName;
 
+    @NotBlank(message = "Phone number is required")
+    @Pattern(
+        regexp = "\\d+",
+        message = "Phone number must contain only digits"
+    )
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -47,7 +59,7 @@ public class Customer {
         this.registrationDate = LocalDateTime.now();
     }
 
-    // Getters and setters
+    // Getters and setters...
     public Integer getId() {
         return id;
     }

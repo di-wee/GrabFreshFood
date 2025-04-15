@@ -39,7 +39,7 @@ public class OrderImpl implements OrderService {
     @Override
     //show customer order list
     public List<Order> getOrderHistoryForCustomer(String status, Customer customer) {
-        if (status.equals(OrderStatus.PROCESSING) || status.equals(OrderStatus.SHIPPED) || status.equals(OrderStatus.DELIVERED)) {
+        if (!status.equals("All")) {
             return orderRepo.findByOrderStatusAndCustomer(status, customer);
         }
         return orderRepo.findByCustomer(customer);
@@ -143,7 +143,7 @@ public class OrderImpl implements OrderService {
         Order order = getOrderByOrderId(orderId);
 
         if (order != null && Objects.equals(order.getCustomer().getId(), customer.getId()) && order.getOrderStatus().equals(OrderStatus.TOPAY)) {
-            order.setOrderStatus(OrderStatus.CANCELED);
+            order.setOrderStatus(OrderStatus.CANCELLED);
             orderRepo.save(order);
         }
     }

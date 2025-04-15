@@ -52,13 +52,14 @@ function ShoppingCart() {
 
 		const reqBody = {
 			selectedIds: selectedItems,
+			customerId,
 		};
 
-		const url = import.meta.env.VITE_SERVER + 'api/order/create';
+		const url = import.meta.env.VITE_SERVER + 'api/cart/update-selected';
 
 		try {
 			const res = await fetch(url, {
-				method: 'POST',
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -66,9 +67,8 @@ function ShoppingCart() {
 			});
 			if (!res.ok) throw new Error('Error creating order!');
 			const data = await res.json(); //retrieving the orderId from response body
-			console.log('Order created with Order ID: ', data);
-			window.location.href =
-				import.meta.env.VITE_SERVER + `checkout-page?orderId=${data}`;
+			console.log('Selected items: ', data);
+			window.location.href = import.meta.env.VITE_SERVER + `checkout-page`;
 		} catch (err) {
 			console.error('Error: ', err);
 		}

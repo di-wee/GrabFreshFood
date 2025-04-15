@@ -28,7 +28,9 @@ function ShoppingCart() {
 		try {
 			await Promise.all(
 				cartItems.map((item) => {
-					const url = import.meta.env.VITE_SERVER + `api/cart/${item.cartId}/item/${item.cartItemId}`;
+					const url =
+						import.meta.env.VITE_SERVER +
+						`api/cart/${item.cartId}/item/${item.cartItemId}`;
 					return fetch(url, { method: 'DELETE' });
 				})
 			);
@@ -47,20 +49,17 @@ function ShoppingCart() {
 	//checkout logic while calling POST api and redirecting to checkout page
 	const handleCheckout = async () => {
 		//filter array for only those that have been selected
-		const cartSelected = cartItems.filter((item) =>
-			selectedItems.includes(item.cartItemId)
-		);
+
 		const reqBody = {
+			selectedIds: selectedItems,
 			customerId,
-			totalAmount: total,
-			cartItems: cartSelected,
 		};
 
-		const url = import.meta.env.VITE_SERVER + 'api/order/create';
+		const url = import.meta.env.VITE_SERVER + 'api/cart/update-selected';
 
 		try {
 			const res = await fetch(url, {
-				method: 'POST',
+				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -68,9 +67,8 @@ function ShoppingCart() {
 			});
 			if (!res.ok) throw new Error('Error creating order!');
 			const data = await res.json(); //retrieving the orderId from response body
-			console.log('Order created with Order ID: ', data);
-			window.location.href =
-				import.meta.env.VITE_SERVER + `checkout-page?orderId=${data}`;
+			console.log('Selected items: ', data);
+			window.location.href = import.meta.env.VITE_SERVER + `checkout-page`;
 		} catch (err) {
 			console.error('Error: ', err);
 		}
@@ -181,7 +179,9 @@ function ShoppingCart() {
 						</div>
 						<div className='col text-right'>
 							{/* Updated Empty Cart button to call handleEmptyCart */}
-							<button onClick={() => handleEmptyCart()} className='btn btn-outline-danger'>
+							<button
+								onClick={() => handleEmptyCart()}
+								className='btn btn-outline-danger'>
 								<span style={{ marginRight: '5px' }}>
 									<i className='bi bi-trash3'></i>
 								</span>

@@ -31,7 +31,7 @@ public class OrderHistoryController {
         return (Customer) session.getAttribute("customer");
     }
 
-    private boolean isOrderOwnedByThisCustomer(int orderId, HttpSession session){
+    private boolean isOrderOwnedByThisCustomer(int orderId, HttpSession session) {
         Customer customer = getLogInCustomer(session);
         if (customer == null) return false;
         Order order = ohservice.getOrderByOrderId(orderId);
@@ -90,6 +90,7 @@ public class OrderHistoryController {
         return "checkout-page";
     }
 
+
     //fill and add address to DB by click 'save&continue' button on checkout-page.html
     @PostMapping("/checkout/pay")
     public String getAddress(@RequestParam(value = "postalCode", required = false) String postalCode,
@@ -115,7 +116,7 @@ public class OrderHistoryController {
         if ("saved".equals(addressOption)){
             shippingAddress = customer.getAddress();
         } else {
-            if (address.isBlank() || floorNumber.isBlank() || unitNumber.isBlank()){
+            if (address.isBlank() || floorNumber.isBlank() || unitNumber.isBlank()) {
                 model.addAttribute("error", "Please fill in valid delivery address!");
                 model.addAttribute("cartId",cartId);
                 return "checkout-page";
@@ -133,8 +134,8 @@ public class OrderHistoryController {
     //for test, make me can run it without receiving cart data, manually enter an existing orderId in the URL
     @GetMapping("/payment-page")
     public String showPaymentPage(@RequestParam("orderId") int orderId, Model model, HttpSession session) {
-        if (!isOrderOwnedByThisCustomer(orderId,session)){
-            return  "redirect:/order-history";
+        if (!isOrderOwnedByThisCustomer(orderId, session)) {
+            return "redirect:/order-history";
         }
 
         model.addAttribute("orderId", orderId);
@@ -148,8 +149,8 @@ public class OrderHistoryController {
                         @RequestParam("cardExpiry") String cardExpiry,
                         @RequestParam("CVC") String cvc,
                         Model model, HttpSession session) {
-        if (!isOrderOwnedByThisCustomer(orderId,session)){
-            return  "redirect:/order-history";
+        if (!isOrderOwnedByThisCustomer(orderId, session)) {
+            return "redirect:/order-history";
         }
 
         if (cardNumber == null || cardExpiry == null || cvc == null || cardNumber.trim().isEmpty() || cardExpiry.trim().isEmpty() || cvc.trim().isEmpty()) {
@@ -178,7 +179,6 @@ public class OrderHistoryController {
 
         return "redirect:/order-history";
     }
-
 
 
 //Lst: review together, confirm these code no longer needed,then delete them

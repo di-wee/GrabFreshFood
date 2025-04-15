@@ -11,7 +11,6 @@ import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
-
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -38,7 +37,6 @@ public class CartImpl implements CartService {
     public Cart findCartByCustomerId(int customerId) {
         Cart cart = cartRepo.findCartByCustomerId(customerId);
         if (cart == null) {
-
             throw new CartNotFoundException("Cart does not exist for Customer ID: " + customerId);
         }
         return cart;
@@ -57,25 +55,6 @@ public class CartImpl implements CartService {
                 .orElseThrow(() -> new CartItemNotFoundException(
                         "Cart item with id (" + cartItemId + ") not found in cart with id " + cartId));
     }
-    
-    //done by Pris
-//    @Override
-//    public CartItem addProductToCart(int customerId, int productId) {
-//    	CartItem item =cartItemRepo.findCartItemByProduct(customerId,productId);
-//    	if (item == null) {
-//    		CartItem newItem = new CartItem();
-//            newItem.setCart(cartRepo.findCartByCustomerId(customerId));
-//            newItem.setProductId(productId);
-//            newItem.setQuantity(1);
-//
-//            return cartItemRepo.save(newItem);
-//
-//        }
-//    	else {
-//    		item.addQuantity();
-//    		}
-//    	return cartItemRepo.save(item);
-//    }
 
     @Override
     public CartItem updateItemQuantity(int cartId, int cartItemId, int quantity) {
@@ -85,6 +64,37 @@ public class CartImpl implements CartService {
             return cartItemRepo.save(item);
         } catch (DataAccessException e) {
             throw new CartItemUpdateException("Error occurred when updating quantity of Cart Item: " + e.getMessage());
+        }
+    }
+
+    // Done by Dionis
+    @Override
+    public List<CartItem> updateSelectedItems(List<Integer> selectedIds, int customerId) {
+        Cart cart = findCartByCustomerId(customerId);
+        List<CartItem> cartList = findCartItemsByCartId(cart.getCartId());
+
+        List<CartItem> selectedItems = cartList.stream()
+                .filter(item -> selectedIds.contains(item.getCartItemId()))
+                .toList();
+
+        List<CartItem> unSelectedItems = cartList.stream()
+                .filter(item -> !selectedIds.contains(item.getCartItemId()))
+                .toList();
+
+        try {
+            for (CartItem item : selectedItems) {
+                item.setCheckout(true);
+                cartItemRepo.saveAndFlush(item);
+            }
+
+            for (CartItem item : unSelectedItems) {
+                item.setCheckout(false);
+                cartItemRepo.saveAndFlush(item);
+            }
+
+            return selectedItems;
+        } catch (DataAccessException e) {
+            throw new CartItemUpdateException("Error updating boolean isCheckOut for Cart Item: " + e.getMessage());
         }
     }
 

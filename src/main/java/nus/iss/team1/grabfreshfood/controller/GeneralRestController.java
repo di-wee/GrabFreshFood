@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.DTO.AddItemToCartReq;
 import nus.iss.team1.grabfreshfood.DTO.CreateOrderRequest;
 import nus.iss.team1.grabfreshfood.DTO.UpdateCartItemReq;
+import nus.iss.team1.grabfreshfood.DTO.UpdateSelectedItemsReq;
 import nus.iss.team1.grabfreshfood.config.*;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
@@ -67,12 +68,31 @@ public class GeneralRestController {
                     req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
-            logger.error("Error encountered when creating updating quantity of item (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
+            logger.error("Error encountered when updating quantity of item (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //Done by Dionis
+    @PutMapping("/cart/update-selected")
+    public ResponseEntity<List<CartItem>> updateItemsSelected(@RequestBody UpdateSelectedItemsReq req) {
+        try {
+            List<CartItem> selectedItems = cartService.updateSelectedItems(
+                    req.getSelectedIds(),
+                    req.getCustomerId()
+            );
+            return new ResponseEntity<>(selectedItems, HttpStatus.OK);
+        } catch (DataAccessException e) {
+            logger.error("Error encountered when updating bool isCheckOut for item (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("Error encountered when updating bool isCheckOut for item (Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     //Done by Dionis (tested)
     //GET call to retrieve CustomerID from session in Spring.
@@ -147,29 +167,29 @@ public class GeneralRestController {
 
     //Done by Dionis
     //POST call for checkout logic for button click of 'checkout' button to create an order based on shopping cart.
-    @PostMapping("/order/create")
-    public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
-        try {
-            int newOrderId = orderService.createNewOrderAndId(
-                    req.getCustomerId(),
-                    req.getCartItems(),
-                    req.getTotalAmount()
-
-            );
-
-            return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
-
-        } catch (CustomerNotFound | ProductNotFoundException e) {
-            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (DataAccessException e) {
-            logger.error("Error encountered when saving Order to DB (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/order/create")
+//    public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
+//        try {
+//            int newOrderId = orderService.createNewOrderAndId(
+//                    req.getCustomerId(),
+//                    req.getCartItems(),
+//                    req.getTotalAmount()
+//
+//            );
+//
+//            return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
+//
+//        } catch (CustomerNotFound | ProductNotFoundException e) {
+//            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } catch (DataAccessException e) {
+//            logger.error("Error encountered when saving Order to DB (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        } catch (Exception e) {
+//            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     //Done by Dionis (tested)
     //POST call to add item to cart

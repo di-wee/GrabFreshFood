@@ -6,7 +6,6 @@ import nus.iss.team1.grabfreshfood.model.CartItem;
 import java.util.List;
 
 public interface CartService {
-
     Cart findCartByCustomerId(int customerId);
 
     List<CartItem> findCartItemsByCartId(int cartId);
@@ -15,7 +14,7 @@ public interface CartService {
 
     CartItem updateItemQuantity(int cartId, int cartItemId, int quantity);
 
-    String deleteCartItem(int cartId, int cartItemId);
+    List<CartItem> updateSelectedItems(List<Integer> selectedIds, int customerId);
 
     CartItem addCartItemToCart(int cartId, int productId);
 

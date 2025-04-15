@@ -23,9 +23,10 @@ DROP TABLE IF EXISTS `product_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_categories` (
+`id` int NOT NULL AUTO_INCREMENT,
   `product_id` int NOT NULL,
   `category_id` int NOT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
+
   PRIMARY KEY (`id`),
   KEY `fk_cat_pro_category_idx` (`category_id`),
   KEY `fk_cat_pro_product_idx` (`product_id`),

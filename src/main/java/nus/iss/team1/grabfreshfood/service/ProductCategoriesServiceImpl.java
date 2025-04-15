@@ -20,7 +20,7 @@ public class ProductCategoriesServiceImpl implements ProductCategoriesService {
 
     @Override
     public List<Product> getProductsByCategoryId(int categoryId) {
-        List<ProductCategories> productCategories = productCategoriesRepository.findByCategory_CategoryId(categoryId);
+        List<ProductCategories> productCategories = productCategoriesRepository.findByCategory_Id(categoryId);
         List<Integer> productIds = productCategories.stream()
                 .map(pc -> pc.getProduct().getId())
                 .collect(Collectors.toList());

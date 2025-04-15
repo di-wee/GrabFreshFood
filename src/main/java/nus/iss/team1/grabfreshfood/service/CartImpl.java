@@ -7,13 +7,9 @@ import nus.iss.team1.grabfreshfood.config.CartItemUpdateException;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.CartItem;
-import nus.iss.team1.grabfreshfood.model.Customer;
-import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.repository.CartItemRepository;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
-
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +34,6 @@ public class CartImpl implements CartService {
     public Cart findCartByCustomerId(int customerId) {
         Cart cart = cartRepo.findCartByCustomerId(customerId);
         if (cart == null) {
-
             throw new CartNotFoundException("Cart does not exist for Customer ID: " + customerId);
         }
         return cart;
@@ -50,15 +45,16 @@ public class CartImpl implements CartService {
         return cartItemRepo.findCartItemsByCartId(cartId);
     }
 
-    // Updated to use Spring Data JPA derived method to strictly match both cartId and cartItemId
+    // Updated to use Spring Data JPA derived method to strictly match both cartId
+    // and cartItemId
     @Override
     public CartItem findCartItem(int cartId, int cartItemId) {
         return cartItemRepo.findByCartCartIdAndCartItemId(cartId, cartItemId)
                 .orElseThrow(() -> new CartItemNotFoundException(
                         "Cart item with id (" + cartItemId + ") not found in cart with id " + cartId));
     }
-    
-    //done by Pris to add key in numbered
+
+    // done by Pris to add key in numbered
     @Override
     public CartItem addNumberQuantity(int customerId, int productId, int quantity) {
         Cart cart = findCartByCustomerId(customerId);
@@ -67,7 +63,7 @@ public class CartImpl implements CartService {
         CartItem item = cartItemRepo.findCartItemsByProductId(cartId, productId);
 
         if (item != null) {
-            //Add to existing quantity
+            // Add to existing quantity
             int newQuantity = item.getQuantity() + quantity;
             return updateItemQuantity(cartId, item.getCartItemId(), newQuantity);
         } else {
@@ -82,7 +78,8 @@ public class CartImpl implements CartService {
             } catch (DataAccessException e) {
                 throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
             } catch (Exception e) {
-                throw new CartItemCreationException("Unexpected error occurred while adding item to cart: " + e.getMessage());
+                throw new CartItemCreationException(
+                        "Unexpected error occurred while adding item to cart: " + e.getMessage());
             }
 
             return cartItem;
@@ -100,12 +97,42 @@ public class CartImpl implements CartService {
         }
     }
 
+    // Done by Dionis
+    @Override
+    public List<CartItem> updateSelectedItems(List<Integer> selectedIds, int customerId) {
+        Cart cart = findCartByCustomerId(customerId);
+        List<CartItem> cartList = findCartItemsByCartId(cart.getCartId());
+
+        List<CartItem> selectedItems = cartList.stream()
+                .filter(item -> selectedIds.contains(item.getCartItemId()))
+                .toList();
+
+        List<CartItem> unSelectedItems = cartList.stream()
+                .filter(item -> !selectedIds.contains(item.getCartItemId()))
+                .toList();
+
+        try {
+            for (CartItem item : selectedItems) {
+                item.setCheckout(true);
+                cartItemRepo.saveAndFlush(item);
+            }
+
+            for (CartItem item : unSelectedItems) {
+                item.setCheckout(false);
+                cartItemRepo.saveAndFlush(item);
+            }
+
+            return selectedItems;
+        } catch (DataAccessException e) {
+            throw new CartItemUpdateException("Error updating boolean isCheckOut for Cart Item: " + e.getMessage());
+        }
+    }
+
     // Done by Lewis
     @Override
-    public String deleteCartItem(int cartId, int itemId) {
+    public void deleteCartItem(int cartId, int itemId) {
         CartItem item = findCartItem(cartId, itemId);
         cartItemRepo.delete(item);
-        return "Successfully deleted.";
     }
 
     // Done by Dionis
@@ -130,10 +157,21 @@ public class CartImpl implements CartService {
             } catch (DataAccessException e) {
                 throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
             } catch (Exception e) {
-                throw new CartItemCreationException("Unexpected error occurred while adding item to cart: " + e.getMessage());
+                throw new CartItemCreationException(
+                        "Unexpected error occurred while adding item to cart: " + e.getMessage());
             }
 
             return cartItem;
         }
+    }
+
+    // Lst find the checkout cart item
+    public List<CartItem> getCheckoutCartItems(int cartId) {
+        return cartItemRepo.findCheckoutCartItemByCartId(cartId);
+    }
+
+    // Lst remove checkout item after creating new order
+    public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems) {
+        cartItemRepo.deleteAll(checkoutItems);
     }
 }

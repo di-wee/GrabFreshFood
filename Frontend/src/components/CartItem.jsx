@@ -17,12 +17,13 @@ function CartItem({
 	//state management
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
-	
+
 	// delete one item only.
 	const handleDeleteItem = async (cartId, itemId) => {
 		// your delete item logic goes here
 		try {
-			const url = import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;
+			const url =
+				import.meta.env.VITE_SERVER + `api/cart/${cartId}/item/${itemId}`;
 			const res = await fetch(url, { method: 'DELETE' });
 			if (!res.ok) throw new Error('Error deleting cart item');
 			console.log('Deleted cart item: ', itemId);
@@ -151,6 +152,7 @@ function CartItem({
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'
+					max='10'
 					style={{ width: '80px' }}
 					type='number'
 					value={quantities[item.cartItemId]}
@@ -161,7 +163,11 @@ function CartItem({
 					//onBlur used here so as to not overload DB by
 					// updating quantity to DB on every onChange
 					onBlur={() =>
-						updateQuantityDB(item.cartId, item.cartItemId, localQuantity)
+						updateQuantityDB(
+							item.cartId,
+							item.cartItemId,
+							quantities[item.cartItemId]
+						)
 					}
 				/>
 			</div>
@@ -169,7 +175,13 @@ function CartItem({
 				className='price-delete col-1 d-flex flex-column align-items-center'
 				style={{ marginLeft: '3vh' }}>
 				<h6 className='mb-1'>
-					<b>${product.price}</b>
+					<b>
+						{/* to cater for async nature of product due to it being fetched from api */}
+						$
+						{product.price !== undefined
+							? product.price.toFixed(2)
+							: product.price}
+					</b>
 				</h6>
 				{/* Updated onClick handler to pass proper parameters */}
 				<i

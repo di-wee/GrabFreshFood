@@ -28,6 +28,7 @@
         </div>
     </div>
 </div>
+
 <!--Checkout grid-->
 <div class="checkout-grid container bg-light">
     <div class="top-banner">
@@ -35,7 +36,7 @@
             address</h5>
     </div>
     <form method="post" style="width: 100%" th:action="@{/checkout/pay}">
-        <input name="orderId" th:value="${orderId}" type="hidden">
+        <input name="cartId" th:value="${cartId}" type="hidden">
         <!-- Lst error message show-->
         <div class="alert alert-danger fade show mt-3" id="errorAlert" role="alert" th:if="${error}">
             <p id="errorMessage" th:text="${error}"></p>

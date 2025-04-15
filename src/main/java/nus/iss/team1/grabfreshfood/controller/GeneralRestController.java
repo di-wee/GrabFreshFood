@@ -4,10 +4,12 @@ import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.DTO.AddItemToCartReq;
 import nus.iss.team1.grabfreshfood.DTO.CreateOrderRequest;
 import nus.iss.team1.grabfreshfood.DTO.UpdateCartItemReq;
+import nus.iss.team1.grabfreshfood.DTO.UpdateSelectedItemsReq;
 import nus.iss.team1.grabfreshfood.config.*;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
+import nus.iss.team1.grabfreshfood.service.ProductCategoriesService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,16 +35,17 @@ public class GeneralRestController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private ProductCategoriesService productCategoriesService;
+
     // Done by Dionis
     //GET call to retrieve Cart based on Customer ID
     @GetMapping("/cart/customer/{customerId}/items")
     public ResponseEntity<List<CartItem>> getCustomerCartItems(@PathVariable("customerId") int customerId) {
         try {
-            logger.error("CustomerID: "+ customerId);
             Cart cart = cartService.findCartByCustomerId(customerId);
-            logger.error("CartID: "+ cart.getCartId());
+
             List<CartItem> items = cartService.findCartItemsByCartId(cart.getCartId());
-            logger.error("Is CartItems list empty?: "+ items.isEmpty());
 
 
             // possible for list to be empty. no need for exceptions
@@ -67,12 +70,31 @@ public class GeneralRestController {
                     req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
-            logger.error("Error encountered when creating updating quantity of item (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
+            logger.error("Error encountered when updating quantity of item (Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //Done by Dionis
+    @PutMapping("/cart/update-selected")
+    public ResponseEntity<List<CartItem>> updateItemsSelected(@RequestBody UpdateSelectedItemsReq req) {
+        try {
+            List<CartItem> selectedItems = cartService.updateSelectedItems(
+                    req.getSelectedIds(),
+                    req.getCustomerId()
+            );
+            return new ResponseEntity<>(selectedItems, HttpStatus.OK);
+        } catch (DataAccessException e) {
+            logger.error("Error encountered when updating bool isCheckOut for item (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("Error encountered when updating bool isCheckOut for item (Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     //Done by Dionis (tested)
     //GET call to retrieve CustomerID from session in Spring.
@@ -137,7 +159,7 @@ public class GeneralRestController {
     }
 
     @GetMapping("/category/{subcategoryName}")
-    public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("subcategoryName")String subcategoryName) {
+    public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("subcategoryName") String subcategoryName) {
         List<Product> products = productService.findProductBySubCategory(subcategoryName);
         if (products == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -147,29 +169,29 @@ public class GeneralRestController {
 
     //Done by Dionis
     //POST call for checkout logic for button click of 'checkout' button to create an order based on shopping cart.
-    @PostMapping("/order/create")
-    public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
-        try {
-            int newOrderId = orderService.createNewOrderAndId(
-                    req.getCustomerId(),
-                    req.getCartItems(),
-                    req.getTotalAmount()
-
-            );
-
-            return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
-
-        } catch (CustomerNotFound | ProductNotFoundException e) {
-            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (DataAccessException e) {
-            logger.error("Error encountered when saving Order to DB (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/order/create")
+//    public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
+//        try {
+//            int newOrderId = orderService.createNewOrderAndId(
+//                    req.getCustomerId(),
+//                    req.getCartItems(),
+//                    req.getTotalAmount()
+//
+//            );
+//
+//            return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
+//
+//        } catch (CustomerNotFound | ProductNotFoundException e) {
+//            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        } catch (DataAccessException e) {
+//            logger.error("Error encountered when saving Order to DB (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
+//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+//        } catch (Exception e) {
+//            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     //Done by Dionis (tested)
     //POST call to add item to cart
@@ -192,6 +214,41 @@ public class GeneralRestController {
             logger.error("Error encountered when adding item to cart (Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 
+        }
+    }
+
+    //Done by Ben
+    //Change Return type to ResponseEntity<{data type of what is to be returned alongside HttpStatus>
+    @GetMapping("/{categoryId}/products")
+    public List<Product> getProductsByCategory(@PathVariable int categoryId) {
+        //try to add some exception handling if possible,
+        // so if the List<Product> manages to return successfully,
+        // return ResponseEntity<[variable holding list<Product>], HttpStatus.OK> else return
+        //ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR)
+        //ideally, i would want u to retrieve by name of category(double check category model)
+        // cos what is being passed over by shiying's category/search feature is '/search?category={keyword}'
+        //so you'll be ingesting the keyword which will be the name
+
+        return productCategoriesService.getProductsByCategoryId(categoryId);
+    }
+
+    //get api for landing page products done by Dionis (tested)
+    @GetMapping("/search/landingpage")
+    public ResponseEntity<List<Product>> getProductsForLandingPage() {
+        try {
+            List<Product> productList = productService.findAllProduct();
+            List<Product> first10products = productList
+                    .stream()
+                    .limit(10)
+                    .toList();
+
+            return new ResponseEntity<>(first10products, HttpStatus.OK);
+        } catch (ProductNotFoundException e) {
+            logger.error("Error retrieving product list for landing page: ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Internal server error retrieving product list for landing page: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

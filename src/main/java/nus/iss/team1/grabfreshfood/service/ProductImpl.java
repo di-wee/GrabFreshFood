@@ -42,7 +42,12 @@ public class ProductImpl implements ProductService {
 
     @Override
     public List<Product> findAllProduct() {
-        return productRepo.findAll();
+        try {
+            List<Product> productList = productRepo.findAll();
+            return productList;
+        } catch (Exception e) {
+            throw new ProductNotFoundException("Error retrieving products...");
+        }
     }
 
 }

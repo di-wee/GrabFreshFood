@@ -22,16 +22,22 @@ public class Product {
     @Column(name = "information", columnDefinition = "TEXT")
     private String description;
 
-    private float price;
+    @Column(name = "price", nullable = false)
+    private double price;
 
-    @Column(name = "stock_quantity")
+    @Column(name = "stock_quantity", nullable = false)
     private int quantity;
 
+    @Column(name = "package_size", nullable = false)
+    private double packageSize;
+
+    @Column(name = "unit", nullable = false)
     private String unit;
 
     @Column(name = "image_url")
     private String imageURL;
 
+    @Column(name = "sku", nullable = false, unique = true)
     private String sku;
 
     @ManyToOne

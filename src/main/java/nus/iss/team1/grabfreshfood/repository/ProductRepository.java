@@ -1,6 +1,5 @@
 package nus.iss.team1.grabfreshfood.repository;
 
-import nus.iss.team1.grabfreshfood.model.Category;
 import nus.iss.team1.grabfreshfood.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -22,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findProductBySubCategory(@Param("subcategory") String subcategoryName);
 
     @Query("SELECT p FROM Product p WHERE p.category.name = :category")
-    List<Product> findProductByCategory(@Param("category") String category);
+    List<Product> findProductByCategory(@Param("category") String categoryName);
 
     Product findProductById(int ProductId);
 

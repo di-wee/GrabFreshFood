@@ -222,17 +222,15 @@ public class GeneralRestController {
 
     //Done by Ben
     //Change Return type to ResponseEntity<{data type of what is to be returned alongside HttpStatus>
-    @GetMapping("/{categoryId}/products")
-    public List<Product> getProductsByCategory(@PathVariable int categoryId) {
-        //try to add some exception handling if possible,
-        // so if the List<Product> manages to return successfully,
-        // return ResponseEntity<[variable holding list<Product>], HttpStatus.OK> else return
-        //ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR)
-        //ideally, i would want u to retrieve by name of category(double check category model)
-        // cos what is being passed over by shiying's category/search feature is '/search?category={keyword}'
-        //so you'll be ingesting the keyword which will be the name
-
-        return productCategoriesService.getProductsByCategoryId(categoryId);
+    @GetMapping("/{categoryName}/products")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String categoryName) {
+        try {
+            List<Product> products = productCategoriesService.getProductsByCategoryName(categoryName);
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     //get api for landing page products done by Dionis (tested)

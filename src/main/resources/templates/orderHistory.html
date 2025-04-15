@@ -46,6 +46,7 @@
                 </div>
             </div>
             <div class="orderTotalAmount">
+                <p class="serviceFee mb-1" th:text="'Service Fee: $' + ${serviceFee}"></p>
                 <span class="orderTotal" th:text="'Total: $' + ${order.totalAmount}"></span>
             </div>
             <div class="orderActions mt-2" th:if="${order.orderStatus == 'Pending Payment'}">

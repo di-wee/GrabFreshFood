@@ -158,3 +158,9 @@ a[role="tab"][aria-selected="false"]:hover {
     margin-right: 5px;
 }
 
+.serviceFee{
+    font-weight: normal;
+    color: black;
+    font-size: medium;
+}
+

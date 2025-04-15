@@ -115,9 +115,20 @@ function CartItem({
 					onChange={() => handleToggleCheckBox(item.cartItemId)}
 				/>
 			</div>
+
+			{/* ✅ Product Image Display with dynamic VITE_SERVER */}
 			<div className='product-image col-2'>
-				<img alt='Product' className='img-fluid' src='' />
+				<img
+					alt={product.name}
+					className='img-fluid rounded'
+					src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
+					onError={(e) => {
+						e.target.onerror = null;
+						e.target.src = `${import.meta.env.VITE_SERVER}assets/placeholder.jpg`;
+					}}
+				/>
 			</div>
+
 			<div className='product-name col-7'>
 				<h6>
 					<b>{product.name}</b>
@@ -137,7 +148,7 @@ function CartItem({
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'
-					max='10'
+					max='30' // ✅ updated from 10 to 30
 					style={{ width: '80px' }}
 					type='number'
 					value={quantities[item.cartItemId]}
@@ -147,7 +158,7 @@ function CartItem({
 					}}
 					onBlur={() => {
 						const qty = parseInt(localQuantity);
-						if (!isNaN(qty) && qty >= 1 && qty <= 10) {
+						if (!isNaN(qty) && qty >= 1 && qty <= 30) {
 							updateQuantityDB(item.cartId, item.cartItemId, qty);
 						} else {
 							console.warn('invalid quantity entered');

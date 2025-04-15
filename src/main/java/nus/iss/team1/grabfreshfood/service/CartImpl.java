@@ -45,12 +45,45 @@ public class CartImpl implements CartService {
         return cartItemRepo.findCartItemsByCartId(cartId);
     }
 
-    // Updated to use Spring Data JPA derived method to strictly match both cartId and cartItemId
+    // Updated to use Spring Data JPA derived method to strictly match both cartId
+    // and cartItemId
     @Override
     public CartItem findCartItem(int cartId, int cartItemId) {
         return cartItemRepo.findByCartCartIdAndCartItemId(cartId, cartItemId)
                 .orElseThrow(() -> new CartItemNotFoundException(
                         "Cart item with id (" + cartItemId + ") not found in cart with id " + cartId));
+    }
+
+    // done by Pris to add key in numbered
+    @Override
+    public CartItem addNumberQuantity(int customerId, int productId, int quantity) {
+        Cart cart = findCartByCustomerId(customerId);
+        int cartId = cart.getCartId();
+
+        CartItem item = cartItemRepo.findCartItemsByProductId(cartId, productId);
+
+        if (item != null) {
+            // Add to existing quantity
+            int newQuantity = item.getQuantity() + quantity;
+            return updateItemQuantity(cartId, item.getCartItemId(), newQuantity);
+        } else {
+            CartItem cartItem = new CartItem();
+            try {
+                cartItem.setCart(cart);
+                cartItem.setCheckout(true);
+                cartItem.setQuantity(quantity);
+                cartItem.setProductId(productId);
+
+                cartItemRepo.saveAndFlush(cartItem);
+            } catch (DataAccessException e) {
+                throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
+            } catch (Exception e) {
+                throw new CartItemCreationException(
+                        "Unexpected error occurred while adding item to cart: " + e.getMessage());
+            }
+
+            return cartItem;
+        }
     }
 
     @Override
@@ -124,19 +157,20 @@ public class CartImpl implements CartService {
             } catch (DataAccessException e) {
                 throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
             } catch (Exception e) {
-                throw new CartItemCreationException("Unexpected error occurred while adding item to cart: " + e.getMessage());
+                throw new CartItemCreationException(
+                        "Unexpected error occurred while adding item to cart: " + e.getMessage());
             }
 
             return cartItem;
         }
     }
 
-    //Lst find the checkout cart item
+    // Lst find the checkout cart item
     public List<CartItem> getCheckoutCartItems(int cartId) {
         return cartItemRepo.findCheckoutCartItemByCartId(cartId);
     }
 
-    //Lst remove checkout item after creating new order
+    // Lst remove checkout item after creating new order
     public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems) {
         cartItemRepo.deleteAll(checkoutItems);
     }

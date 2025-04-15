@@ -146,7 +146,7 @@ public class GeneralRestController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchResult(@RequestParam("query") String query) {
+    public ResponseEntity<List<Product>> searchResult(@RequestParam("keyword") String query) {
         List<Product> products = productService.findProductByQuery(query);
         if (products == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

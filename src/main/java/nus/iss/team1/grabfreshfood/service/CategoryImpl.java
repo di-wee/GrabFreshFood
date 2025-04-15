@@ -24,7 +24,8 @@ public class CategoryImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategoriesWithSubcategories() {
-        return categoryRepository.findAll(); // JPA auto fetches subcategories if LAZY is changed to EAGER
+        // JPA auto fetches subcategories if LAZY is changed to EAGER
+        return categoryRepository.findDistinctCategoriesWithSubcategories();
     }
 
    

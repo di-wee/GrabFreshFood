@@ -2,6 +2,7 @@
 
 package nus.iss.team1.grabfreshfood.controller;
 
+import nus.iss.team1.grabfreshfood.model.SubCategory;
 import nus.iss.team1.grabfreshfood.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +18,12 @@ public class MainController {
     private CategoryService categoryService;
     // Main landing page
     @GetMapping("/")
-    public String landingPage() {
+    public String landingPage(Model model) {
+        List<Category>categories=categoryService.getAllCategoriesWithSubcategories();
+        model.addAttribute("categories", categories);
+
         return "landing-page";
+
     }
 
 }

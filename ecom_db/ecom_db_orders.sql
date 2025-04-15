@@ -34,6 +34,9 @@ CREATE TABLE `orders` (
   KEY `customer_id_idx` (`customer_id`),
   CONSTRAINT `customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `orders` AUTO_INCREMENT = 1; 
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +45,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` VALUES (1,1,'2024-03-10',14.1,'456 Orchard Rd, #10-02','Credit Card','Shipped'),(2,1,'2024-03-15',21.6,'789 Kallang Bahru, #02-06','Nets','Delivered'),(3,1,'2024-03-20',14.38,'456 Clementi Rd, #08-12','Bank Transfer','Processing'),(4,1,'2024-03-25',21.1,'789 Sengkang East Ave, #12-11','Not Pay','Pending Payment'),(5,1,'2024-03-30',21.6,'789 Toa Payoh Ctrl, #02-03','Not Pay','Cancelled'),(6,1,'2024-04-02',19.1,'789 Bedok Reservoir Rd, #03-07','Bank Transfer','Delivered'),(7,1,'2024-04-05',9.85,'123 Ang Mo Kio Ave 10, #13-08','Credit Card','Processing'),(8,1,'2024-04-08',37.85,'123 Tampines Ave 1, #09-11','Nets','Shipped'),(9,1,'2024-04-12',31.6,'123 Queenstown Rd, #04-12','Bank Transfer','Shipped'),(10,1,'2024-04-15',16.6,'1212 Tampines Ave 1, #03-01','Credit Card','Delivered');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -166,7 +166,6 @@ public class GeneralRestController {
         List<Product> products = productService.findProductBySubCategory(keyword);
         if (products == null) {
             products = productService.findProductByCategory(keyword);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }

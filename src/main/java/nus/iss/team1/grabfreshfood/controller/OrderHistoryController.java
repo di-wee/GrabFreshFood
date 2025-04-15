@@ -2,6 +2,7 @@ package nus.iss.team1.grabfreshfood.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
+import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +81,12 @@ public class OrderHistoryController {
             return "redirect:/cart";
         }
 
+        List<CheckoutItemReq> checkoutItemReqList = cartService.getCheckoutReq(cart.getCartId());
+        BigDecimal totalAmount = cartService.calculateCheckoutSum(checkoutItemReqList);
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        String formattedServiceFee = df.format(OrderStatus.SERVICEFEE);
+
         //show the customer saved address on this page
         String orderSavedAddress = customer.getAddress();
         if (orderSavedAddress == null || orderSavedAddress.isBlank()){
@@ -85,7 +94,9 @@ public class OrderHistoryController {
         }
 
         model.addAttribute("cartId",cart.getCartId());
-        model.addAttribute("checkoutItems", checkoutItems);
+        model.addAttribute("checkoutItems", checkoutItemReqList);
+        model.addAttribute("orderTotalAmount", totalAmount);
+        model.addAttribute("serviceFee",formattedServiceFee);
         model.addAttribute("orderSavedAddress",orderSavedAddress);
         return "checkout-page";
     }

@@ -34,6 +34,9 @@ CREATE TABLE `order_item` (
   CONSTRAINT `order_id` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+ALTER TABLE `order_item` AUTO_INCREMENT = 1; 
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,6 +45,7 @@ CREATE TABLE `order_item` (
 
 LOCK TABLES `order_item` WRITE;
 /*!40000 ALTER TABLE `order_item` DISABLE KEYS */;
+INSERT INTO `order_item` VALUES (1,1,15,2,5),(2,1,3,1,5.5),(3,2,2,3,12),(4,2,8,2,6),(5,3,19,1,2.8),(6,3,23,2,7.98),(7,4,31,1,8.5),(8,4,4,2,9),(9,5,5,3,9),(10,5,10,2,9),(11,6,17,1,3.5),(12,6,7,2,12),(13,7,33,1,1.25),(14,7,14,2,5),(15,8,25,3,29.25),(16,8,1,1,5),(17,9,50,1,6),(18,9,29,2,22),(19,10,12,1,4),(20,10,4,2,9);
 /*!40000 ALTER TABLE `order_item` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

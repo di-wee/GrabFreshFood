@@ -190,11 +190,11 @@ public class CartImpl implements CartService {
         cartItemRepo.deleteAll(checkoutItems);
     }
 
-    public List<CheckoutItemReq> getCheckoutReq (int cartId){
+    public List<CheckoutItemReq> getCheckoutReq(int cartId) {
         List<CartItem> checkoutItems = getCheckoutCartItems(cartId);
         List<CheckoutItemReq> showList = new ArrayList<>();
 
-        for (CartItem cartItem : checkoutItems){
+        for (CartItem cartItem : checkoutItems) {
             Product product = productRepository.findProductById(cartItem.getProductId());
             BigDecimal unitPrice = BigDecimal.valueOf(product.getPrice()).setScale(2, RoundingMode.HALF_UP);
             BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
@@ -212,7 +212,13 @@ public class CartImpl implements CartService {
         return showList;
     }
 
-    public BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList){
-        return checkoutItemReqList.stream().map(CheckoutItemReq::getPerProductTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add).add(OrderStatus.SERVICEFEE).setScale(2,RoundingMode.HALF_UP);
+    public BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList) {
+        return checkoutItemReqList.stream().map(CheckoutItemReq::getPerProductTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add).add(OrderStatus.SERVICEFEE).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public int getCartItemCount(int customerId) {
+        Cart cart = findCartByCustomerId(customerId);
+        List<CartItem> cartItems = findCartItemsByCartId(cart.getCartId());
+        return cartItems.size();
     }
 }

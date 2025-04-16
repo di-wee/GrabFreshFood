@@ -29,7 +29,9 @@ public interface CartService {
 
     void removeCheckoutItemsFromCart(List<CartItem> checkoutItems);
 
-    List<CheckoutItemReq> getCheckoutReq (int cartId);
+    List<CheckoutItemReq> getCheckoutReq(int cartId);
 
     BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList);
+
+    int getCartItemCount(int customerId);
 }

@@ -199,7 +199,7 @@ public class GeneralRestController {
     //Done by Dionis (tested)
     //POST call to add item to cart
     @PostMapping("/cart/add")
-    public ResponseEntity<CartItem> addItemTocart(@RequestBody AddItemToCartReq req) {
+    public ResponseEntity<CartItem> addItemToCart(@RequestBody AddItemToCartReq req) {
         try {
             CartItem addedItem = cartService.addCartItemToCart(
                     req.getCustomerId(),

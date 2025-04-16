@@ -5,11 +5,13 @@ import Carousel from 'react-bootstrap/Carousel';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Spinner from 'react-bootstrap/Spinner';
 
+//done by dionis
 const ProductCatalogue = ({ keyword }) => {
 	const [cartState, setCartState] = useState({}); // setState to track global produc state eg.
 	// { 1: { quantity: 1, addToCart: true} }
 	const [itemQuant, setItemQuant] = useState(1);
 	const [products, setProducts] = useState([]);
+	const [customerId, setCustomerId] = useState(0);
 
 	//fetching products for landing page
 	const fetchProductLandingPage = async () => {
@@ -34,12 +36,35 @@ const ProductCatalogue = ({ keyword }) => {
 			if (res.status === 404) return null;
 			if (!res.ok) throw new Error('Customer is not a registered user');
 			const data = await res.json();
+			setCustomerId(data);
 			//checking
 			console.log('Customer ID: ', data);
 
 			return data;
 		} catch (err) {
 			console.error('Error fetching customer ID: ', err);
+		}
+	};
+
+	const fetchAddToCart = async (customerId, productId) => {
+		try {
+			const url = import.meta.env.VITE_SERVER + 'api/cart/add';
+			const res = await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					customerId,
+					productId,
+				}),
+			});
+			if (!res.ok)
+				throw new Error(`Error adding item (id: ${productId}) to cart`);
+			const data = await res.json();
+			return data;
+		} catch (err) {
+			console.error(err);
 		}
 	};
 
@@ -50,6 +75,7 @@ const ProductCatalogue = ({ keyword }) => {
 		console.log('keyword: ', keyword);
 	}, []);
 
+	//to re-render DOM on ever change of cartState for change in quantity/addtocart etc
 	useEffect(() => {
 		console.log('updated cartstate: ', cartState);
 	}, [cartState]);
@@ -68,6 +94,7 @@ const ProductCatalogue = ({ keyword }) => {
 			[productId]: { quantity: 1, addToCart: true },
 		}));
 		//to call api to add to cart
+		await fetchAddToCart(custId, productId);
 
 		console.log(cartState);
 	}
@@ -191,7 +218,7 @@ const ProductCatalogue = ({ keyword }) => {
 				<div
 					className='product-header'
 					style={{ margin: '1rem 0' }}>
-					<h5>Top 10 recommended products</h5>
+					<h5 style={{ color: 'darkgreen' }}>Top 10 recommended products</h5>
 				</div>
 			)}
 			{productChunks.length > 0 ? (

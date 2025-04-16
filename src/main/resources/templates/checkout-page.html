@@ -53,8 +53,8 @@
                 <tr th:each="item : ${checkoutItems}">
                     <td th:text="${item.productName}"></td>
                     <td th:text="'x' + ${item.quantity}"></td>
-                    <td th:text="'$' + ${item.unitPrice}"></td>
-                    <td th:text="'$' + ${item.perProductTotalAmount}"></td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.unitPrice, 1, 2)}"></td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(item.perProductTotalAmount, 1, 2)}"></td>
                 </tr>
                 </tbody>
             </table>

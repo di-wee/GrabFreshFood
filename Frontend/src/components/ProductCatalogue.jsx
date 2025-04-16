@@ -157,6 +157,10 @@ const ProductCatalogue = ({ keyword }) => {
 						
 					}
 
+					.out-of-stock-btn {
+						cursor: not-allowed !important;
+					}
+
 				
 				`}
 			</style>
@@ -231,8 +235,15 @@ const ProductCatalogue = ({ keyword }) => {
 														: product.price}
 												</p>
 											</Card.Text>
-											{/* productId is fetched by API and is async */}
-											{cartState[product.id]?.addToCart ? (
+
+											{product.quantity == 0 ? (
+												<button
+													className='btn btn-secondary'
+													disabled>
+													Out of Stock
+												</button>
+											) : //product is fetched via api and is async
+											cartState[product.id]?.addToCart ? (
 												<div
 													class='input-group'
 													style={{ maxWidth: '140px' }}>

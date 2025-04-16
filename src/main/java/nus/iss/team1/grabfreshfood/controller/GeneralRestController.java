@@ -69,7 +69,7 @@ public class GeneralRestController {
                     req.getCartItemId(),
                     req.getQuantity());
             logger.info("CartID: " + req.getCartId());
-            logger.info("Updated quantity: " + req.getCartItemId());
+            logger.info("Updated CartItemID: " + req.getCartItemId());
             logger.info("Updated quantity: " + req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {

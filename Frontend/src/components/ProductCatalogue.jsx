@@ -12,6 +12,7 @@ const ProductCatalogue = ({ keyword }) => {
 	const [itemQuant, setItemQuant] = useState(1);
 	const [products, setProducts] = useState([]);
 	const [customerId, setCustomerId] = useState(0);
+	const [cartItems, setCartItems] = useState([]);
 
 	//fetching products for landing page
 	const fetchProductLandingPage = async () => {
@@ -46,6 +47,39 @@ const ProductCatalogue = ({ keyword }) => {
 		}
 	};
 
+	//fetch GET api to retrieve existing cart items in cart
+	const fetchCartItems = async (id) => {
+		try {
+			const url = import.meta.env.VITE_SERVER + `api/cart/customer/${id}/items`;
+			const res = await fetch(url);
+			if (!res.ok) throw new Error('Error getting cart items');
+			const items = await res.json();
+
+			console.log('Cart: ', items);
+
+			setCartItems(items);
+
+			//updating state based on existing cart items
+			const updatedState = {};
+
+			for (let item of items) {
+				updatedState[item.productId] = {
+					quantity: item.quantity,
+					addToCart: true,
+				};
+			}
+			setCartState((prev) => ({
+				...prev,
+				...updatedState,
+			}));
+
+			return items;
+		} catch (err) {
+			console.error('Error fetching cart items:', err);
+		}
+	};
+
+	//POST api to add item to cart
 	const fetchAddToCart = async (customerId, productId) => {
 		try {
 			const url = import.meta.env.VITE_SERVER + 'api/cart/add';
@@ -68,24 +102,69 @@ const ProductCatalogue = ({ keyword }) => {
 		}
 	};
 
+	const updateQuantityDB = async (productId) => {
+		try {
+			const item = cartItems.find((item) => item.productId === productId);
+			if (!item) {
+				console.warn(`Cart item not found for productId: ${productId}`);
+				return;
+			}
+			const url = import.meta.env.VITE_SERVER + 'api/cart/update-quantity';
+			const reqBody = {
+				cartId: item.cartId,
+				cartItemId: item.cartItemId,
+				quantity: cartState[productId].quantity,
+			};
+
+			const res = await fetch(url, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(reqBody),
+			});
+
+			if (!res.ok) throw new Error('Error commiting data to db');
+			const data = await res.json();
+			console.log('updated to db!');
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	//on first render of page to fetch products to component
 	useEffect(() => {
 		//to add if/else statement to check for keyword later to accomodate for search/category
 		fetchProductLandingPage();
-		console.log('keyword: ', keyword);
+		const loadCart = async () => {
+			const id = await fetchCustomerId();
+			console.log('id: ', id);
+			if (id) {
+				await fetchCartItems(id);
+			}
+		};
+		loadCart();
+		console.log('cartState updated from existing cart items: ', cartState);
 	}, []);
 
 	//to re-render DOM on ever change of cartState for change in quantity/addtocart etc
 	useEffect(() => {
 		console.log('updated cartstate: ', cartState);
+		console.log('added to cart, current cart: ', cartItems);
+
+		Object.entries(cartState).forEach(([productId, content]) => {
+			//only if addToCart == true and quantity > 0 to update to db
+			if (content.addToCart && content.quantity > 0) {
+				updateQuantityDB(parseInt(productId));
+			}
+		});
 	}, [cartState]);
 
 	//add on button click of addtoCart
 	async function handleAddCart(productId) {
 		//checking if user is a registered user, else redirect to login
-		const custId = await fetchCustomerId();
 
-		if (!custId) {
+		if (!customerId) {
 			window.location.href = import.meta.env.VITE_SERVER + `login`;
 			return;
 		}
@@ -94,7 +173,8 @@ const ProductCatalogue = ({ keyword }) => {
 			[productId]: { quantity: 1, addToCart: true },
 		}));
 		//to call api to add to cart
-		await fetchAddToCart(custId, productId);
+		const newItems = await fetchAddToCart(customerId, productId);
+		setCartItems((prev) => [...prev, newItems]);
 
 		console.log(cartState);
 	}
@@ -107,45 +187,51 @@ const ProductCatalogue = ({ keyword }) => {
 			if (currentQuantity >= 30 || currentQuantity >= stock) return prev;
 
 			// { 1 : {quantity: 1, addTocart: true}, 2: {quantity: 1, addToCart:true}}
-			return {
+			const updated = {
 				...prev,
 				[productId]: {
 					...prev[productId],
 					quantity: currentQuantity + 1,
 				},
 			};
+
+			return updated;
 		});
 	}
 
 	function decreaseQuantity(productId) {
 		setCartState((prev) => {
 			const currentQuantity = prev[productId]?.quantity;
-			if (currentQuantity <= 1) {
-				// { 1 : {quantity: 1, addTocart: true}, 2: {quantity: 1, addToCart:true}}
-				return {
-					...prev,
-					[productId]: {
-						...prev[productId],
-						quantity: 0,
-						addToCart: false,
-					},
-				};
-			} else {
-				return {
-					...prev,
-					[productId]: {
-						...prev[productId],
-						quantity: currentQuantity - 1,
-					},
-				};
-			}
+			// { 1 : {quantity: 1, addTocart: true}, 2: {quantity: 1, addToCart:true}}
+			const updated = {
+				...prev,
+				[productId]: {
+					...prev[productId],
+					quantity: currentQuantity <= 1 ? 0 : currentQuantity - 1,
+					addToCart: currentQuantity <= 1 ? false : true,
+				},
+			};
+
+			return updated;
 		});
 	}
 
-	function handleItemQuant(e) {
-		const quant = parseInt(e.target.value);
-		if (quant === 0) setIsAddCart(false);
-		setItemQuant(quant);
+	function handleQuantityChange(e, productId, stock) {
+		const newQuantity = parseInt(e.target.value);
+		//applying clamping
+		const validQuant = Math.max(1, Math.min(newQuantity, stock, 30));
+
+		setCartState((prev) => {
+			const updated = {
+				...prev,
+				[productId]: {
+					...prev[productId],
+					quantity: validQuant,
+				},
+			};
+
+			return updated;
+		});
 	}
 
 	//to 'paginate' product carousell
@@ -160,7 +246,7 @@ const ProductCatalogue = ({ keyword }) => {
 		return result;
 	};
 
-	const productChunks = sliceProducts(products, 5);
+	const productChunks = sliceProducts(products, 4);
 
 	return (
 		<div className='container mt-4'>
@@ -211,6 +297,16 @@ const ProductCatalogue = ({ keyword }) => {
 						cursor: not-allowed !important;
 					}
 
+					.quantity-input input[type=number]::-webkit-inner-spin-button,
+					.quantity-input input[type=number]::-webkit-outer-spin-button {
+						-webkit-appearance: none;
+						margin: 0;
+					}
+
+					.quantity-input  input[type=number] {
+						-moz-appearance: textfield;
+					}
+
 				
 				`}
 			</style>
@@ -229,16 +325,20 @@ const ProductCatalogue = ({ keyword }) => {
 						<Carousel.Item
 							key={index}
 							interval={3000}>
-							<div className='d-flex justify-content-around w-100 overflow-hidden'>
+							<div
+								className='d-flex justify-content-center flex-wrap'
+								style={{
+									gap: '3rem',
+									padding: '0 1rem',
+								}}>
 								{chunk.map((product) => (
 									<Card
 										key={product.id}
 										style={{
 											width: '16rem',
-											height: '100%',
 											minHeight: '365px',
 											flex: '0 0 auto',
-											margin: '0 0.5rem',
+											scrollSnapAlign: 'start',
 										}}>
 										<Card.Img
 											variant='top'
@@ -309,17 +409,27 @@ const ProductCatalogue = ({ keyword }) => {
 														onClick={() => decreaseQuantity(product.id)}>
 														−
 													</button>
-													<input
-														type='number'
-														id='quantity'
-														name='quantity'
-														class='form-control text-center'
-														value={cartState[product.id]?.quantity}
-														min='1'
-														max='30'
-														required
-														style={{ maxWidth: '50px' }}
-													/>
+													<div className='quantity-input'>
+														<input
+															type='number'
+															id='quantity'
+															name='quantity'
+															class='form-control text-center'
+															value={cartState[product.id]?.quantity}
+															min='1'
+															max='30'
+															required
+															style={{ maxWidth: '50px' }}
+															onChange={(e) =>
+																handleQuantityChange(
+																	e,
+																	product.id,
+																	product.quantity
+																)
+															}
+														/>
+													</div>
+
 													<button
 														class='btn btn-outline-secondary'
 														type='button'

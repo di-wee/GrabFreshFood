@@ -1,6 +1,8 @@
 //Done by Lewis Huang
 package nus.iss.team1.grabfreshfood.controller;
 
+import nus.iss.team1.grabfreshfood.DTO.CustomerRegisterDTO;
+import nus.iss.team1.grabfreshfood.DTO.CustomerUpdateDTO;
 import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
@@ -77,9 +79,10 @@ public class CustomerController {
      * Display the registration form for new customers.
      */
     @GetMapping("/register")
-    public String showRegisterForm(Model model) {
-        // Add an empty Customer object so that the registration form can be bound to it.
-        model.addAttribute("customer", new Customer());
+        public String showRegisterForm(Model model) {
+        System.out.println("==== Register endpoint reached ====");
+    	// Add an empty DTO object so that the registration form can be bound to it.
+        model.addAttribute("customer", new CustomerRegisterDTO());
         return "register";
     }
 
@@ -88,21 +91,36 @@ public class CustomerController {
      * This method sets default values (for registration date and active status),
      * saves the new customer record in the SQL database, and logs the customer in.
      * It also creates a new empty Cart for the customer upon registration.
-     * Now includes validation.
+     * Now includes validation with DTO.
      */
     @PostMapping("/register")
-    public String processRegister(@Valid @ModelAttribute Customer customer,
+    public String processRegister(@Valid @ModelAttribute("customer") CustomerRegisterDTO customerDTO,
                                   BindingResult result,
                                   HttpSession session,
                                   Model model) {
-        // Check for validation errors
-        if (result.hasErrors()) {
-            // Return back to registration form with error messages
-            return "register";
+    	 System.out.println("==== POST /register endpoint triggered ====");
+        // Username uniqueness check
+        if (customerRepo.findByUsername(customerDTO.getUsername()) != null) {
+            result.rejectValue("username", "error.username", "Username already exists");
         }
 
+        // If there are validation errors, return to form
+        if (result.hasErrors()) {
+        	 result.getAllErrors().forEach(error -> System.out.println("Validation error: " + error));
+            return "register";
+        }
+        
+        // Map DTO to Customer entity
+        Customer customer = new Customer();
+        customer.setUsername(customerDTO.getUsername());
+        customer.setPassword(customerDTO.getPassword());
+        customer.setFirstName(customerDTO.getFirstName());
+        customer.setLastName(customerDTO.getLastName());
+        customer.setPhoneNumber(customerDTO.getPhoneNumber());
+        customer.setAddress(customerDTO.getAddress());
         customer.setRegistrationDate(LocalDateTime.now());
         customer.setIsActive(true);
+
         // Save the customer to the database
         Customer savedCustomer = customerRepo.save(customer);
 
@@ -153,8 +171,18 @@ public class CustomerController {
             session.invalidate();
             return "redirect:/login";
         }
-        // Pre-populate the account update form with the current customer details.
-        model.addAttribute("customer", opt.get());
+
+        // Pre-fill the DTO for display in the form
+        Customer c = opt.get();
+        CustomerUpdateDTO dto = new CustomerUpdateDTO();
+        dto.setUsername(c.getUsername());
+        dto.setPassword(c.getPassword());
+        dto.setFirstName(c.getFirstName());
+        dto.setLastName(c.getLastName());
+        dto.setPhoneNumber(c.getPhoneNumber());
+        dto.setAddress(c.getAddress());
+
+        model.addAttribute("customer", dto);
         return "account-update";
     }
 
@@ -162,31 +190,39 @@ public class CustomerController {
      * Process account (profile) update.
      * This endpoint updates the personal details of the logged-in customer.
      * The update includes the username (email), first name, last name, phone number, address, and password.
+     * Now uses DTO for server-side validation.
      */
     @PostMapping("/account/update")
-    public String updateAccount(@ModelAttribute Customer customer,
+    public String updateAccount(@Valid @ModelAttribute("customer") CustomerUpdateDTO customerDTO,
+                                BindingResult result,
                                 HttpSession session,
                                 Model model) {
         Customer sessionCust = (Customer) session.getAttribute("customer");
         if (sessionCust == null) {
             return "redirect:/login";
         }
+
+        if (result.hasErrors()) {
+            return "account-update";
+        }
+
         Optional<Customer> opt = customerRepo.findById(sessionCust.getId());
         if (opt.isPresent()) {
             Customer current = opt.get();
             // Update personal details
-            current.setUsername(customer.getUsername());
-            current.setFirstName(customer.getFirstName());
-            current.setLastName(customer.getLastName());
-            current.setPhoneNumber(customer.getPhoneNumber());
-            current.setAddress(customer.getAddress());
-            current.setPassword(customer.getPassword());
+            current.setUsername(customerDTO.getUsername());
+            current.setPassword(customerDTO.getPassword());
+            current.setFirstName(customerDTO.getFirstName());
+            current.setLastName(customerDTO.getLastName());
+            current.setPhoneNumber(customerDTO.getPhoneNumber());
+            current.setAddress(customerDTO.getAddress());
+
             // Save the updated customer record
             customerRepo.save(current);
+
             // Update session with the new customer data
             session.setAttribute("customer", current);
             model.addAttribute("message", "Profile updated successfully");
-            model.addAttribute("customer", current);
             return "redirect:/account";
         } else {
             session.invalidate();

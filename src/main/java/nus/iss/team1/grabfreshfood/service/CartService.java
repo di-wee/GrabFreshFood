@@ -20,11 +20,13 @@ public interface CartService {
 
     CartItem addCartItemToCart(int cartId, int productId);
 
+    // Overloaded method to support quantity and stock validation
+    CartItem addCartItemToCart(int customerId, int productId, int quantity);
+
     CartItem addNumberQuantity(int customerId, int productId, int quantity);
 
     void deleteCartItem(int cartId, int itemId);
 
-    //Lst
     List<CartItem> getCheckoutCartItems(int cartId);
 
     void removeCheckoutItemsFromCart(List<CartItem> checkoutItems);

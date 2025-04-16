@@ -25,6 +25,24 @@ const ProductCatalogue = ({ keyword }) => {
 			console.error('Error retrieving products for LP: ', err);
 		}
 	};
+
+	//check if user is a registered user
+	const fetchCustomerId = async () => {
+		try {
+			const url = import.meta.env.VITE_SERVER + 'api/session/customer-id';
+			const res = await fetch(url);
+			if (res.status === 404) return null;
+			if (!res.ok) throw new Error('Customer is not a registered user');
+			const data = await res.json();
+			//checking
+			console.log('Customer ID: ', data);
+
+			return data;
+		} catch (err) {
+			console.error('Error fetching customer ID: ', err);
+		}
+	};
+
 	//on first render of page to fetch products to component
 	useEffect(() => {
 		//to add if/else statement to check for keyword later to accomodate for search/category
@@ -37,7 +55,14 @@ const ProductCatalogue = ({ keyword }) => {
 	}, [cartState]);
 
 	//add on button click of addtoCart
-	function handleAddCart(productId) {
+	async function handleAddCart(productId) {
+		//checking if user is a registered user, else redirect to login
+		const custId = await fetchCustomerId();
+
+		if (!custId) {
+			window.location.href = import.meta.env.VITE_SERVER + `login`;
+			return;
+		}
 		setCartState((prev) => ({
 			...prev,
 			[productId]: { quantity: 1, addToCart: true },

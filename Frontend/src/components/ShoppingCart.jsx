@@ -25,7 +25,9 @@ function ShoppingCart() {
 
 	const handleEmptyCart = async () => {
 		// Lewis: Added confirmation popup before proceeding to empty the cart
-		const confirmEmpty = window.confirm('Are you sure you want to empty your cart?');
+		const confirmEmpty = window.confirm(
+			'Are you sure you want to empty your cart?'
+		);
 		if (!confirmEmpty) return;
 
 		//logic for onClick of 'Empty Cart' button goes here.
@@ -204,7 +206,7 @@ function ShoppingCart() {
 					<div className='container'>
 						<form>
 							<div className='row mt-4'>
-								{/* Shopping cart grid */}
+								{/* shopping cart grid */}
 								<div className='col-md-7 pr-md-3'>
 									<div
 										className='border bg-light rounded overflow-hidden mb-2'

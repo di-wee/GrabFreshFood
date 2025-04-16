@@ -1,18 +1,23 @@
-/*for the TabBar*/
-.tabbar{
+/* for the tab bar */
+.tabbar {
     background-color: #f7f7f7;
     width: 100%;
+    padding: 0.75rem 0;
+    margin-bottom: 1.5rem;
 }
 
 .tabBar {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
-    background-color: #f7f7f7;
-    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     width: 80%;
     margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .titleHidden {
@@ -20,56 +25,44 @@
 }
 
 a[role="tab"] {
-    flex-grow: 1;
-    display: flex;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
+    flex-grow: 0;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
     color: #333;
     background-color: transparent;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    margin: 5px 0;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 40px;
-}
-
-a[role="tab"]:not(:last-child)::after{
-    content: '';
-    position: absolute;top: 0;
-    right: 0;
-    width: 2px;
-    height: 100%;
-    background-color: #ddd;
+    border: 1px solid #0D723B;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    margin: 0;
+    text-align: center;
+    text-decoration: none;
 }
 
 a[role="tab"].nonSelected {
-    color: #666;
-    background-color: #f7f7f7;
+    color: #0D723B;
+    background-color: white;
 }
 
 a[role="tab"].selected {
-    color: #0D723B;
-    font-weight: bold;
-
+    color: white;
+    background-color: #0D723B;
+    font-weight: 500;
 }
 
 a[role="tab"]:hover {
-    color:#0D723B;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 500;
+    background-color: #E8F5E9;
+    color: #0D723B;
 }
 
 .tabText {
-    font-weight: normal;
     text-transform: capitalize;
 }
 
 a[role="tab"][aria-selected="true"] {
-    color: #0D723B;
+    color: white;
+    background-color: #0D723B;
 }
 
 a[role="tab"][aria-selected="false"]:hover {
@@ -77,90 +70,92 @@ a[role="tab"][aria-selected="false"]:hover {
     font-weight: bold;
 }
 
-/*for Order List*/
-
+/* Order Card */
 .orderCard {
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 1.5rem;
     border-radius: 10px;
     width: 80%;
-    margin: 10px auto;
+    margin: 0 auto 1.5rem;
 }
 
 .orderHeader {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    background-color:#E8F5E9;
-    padding-bottom: 10px;
-    padding-top: 10px;
+    align-items: center;
+    background-color: #E8F5E9;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
 }
 
-.orderHeader span{
+.orderHeader span {
+    font-weight: 500;
     text-transform: capitalize;
+}
+
+.orderStatus {
+    color: #0D723B;
     font-weight: bold;
+    background-color: #C8E6C9;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
 }
 
-.orderStatus{
-    color:#0D723B;
+.orderItems {
+    margin-bottom: 1rem;
 }
 
-.itemName{
+.itemHeader,
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.itemHeader {
+    font-weight: bold;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.itemName {
     flex-basis: 30%;
+    margin-left: 5px;
 }
 
 .itemQuantity,
-.itemUnitPrice{
+.itemUnitPrice {
     flex-basis: 20%;
     text-align: center;
 }
 
-.itemTotalPrice{
+.itemTotalPrice {
     flex-basis: 30%;
     text-align: right;
-}
-
-.orderItems {
-    margin-bottom: 10px;
-}
-
-.item,
-.itemHeader{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
+    margin-right: 5px;
 }
 
 .orderTotalAmount {
-    margin-top: 10px;
-    font-size: 18px;
+    font-size: 1rem;
     font-weight: bold;
     color: #0D723B;
     text-align: right;
 }
 
-.itemHeader{
-    font-weight: bold;
-    padding-bottom: 10px;
-}
-
-.orderId,
-.itemName{
-    margin-left: 5px;
-}
-
-.orderStatus,
-.itemTotalPrice,
-.orderTotalAmount{
-    margin-right: 5px;
-}
-
-.serviceFee{
+.serviceFee {
     font-weight: normal;
-    color: black;
-    font-size: medium;
+    color: #000;
+    font-size: 0.9rem;
 }
 
+.orderActions {
+    text-align: right;
+    margin-top: 1rem;
+}

@@ -189,22 +189,14 @@ body {
     transform: translate(30%, -30%);
 }
 
-.dropdown-submenu {
-    position: relative;
-}
-
-.dropdown-submenu > .dropdown-menu {
-    display: none;
-    top: 0;
-    left: 100%;
-    margin-top: -1px;
-}
-
-.dropdown-submenu:hover > .dropdown-menu {
-    display: block;
-}
 /* account dropdown */
 .hover-dropdown:hover .dropdown-menu {
     display: block;
     margin-top: 0;
 }
+/* remove the downarrow */
+.hover-dropdown .dropdown-toggle::after {
+    display: none;
+}
+
+

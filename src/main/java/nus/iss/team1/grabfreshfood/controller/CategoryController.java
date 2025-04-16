@@ -1,4 +1,5 @@
 package nus.iss.team1.grabfreshfood.controller;
+
 import nus.iss.team1.grabfreshfood.model.Product;
 import nus.iss.team1.grabfreshfood.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     private ProductService productService;
+
     @GetMapping("/category/all")
     public String categoryAll(Model model) {
         //List<Product>products=productService.findAllProduct();
@@ -20,11 +22,11 @@ public class CategoryController {
         //model.addAttribute("products", products);
         return "category-page";
     }
+
     @GetMapping("/category/{keyword}")
-    public String categorySubcategory(@PathVariable ("keyword")String keyword, Model model) {
-        //List<Product> products=productService.findProductBySubCategory(subcategoryName);
+    public String categorySubcategory(@PathVariable("keyword") String keyword, Model model) {
         model.addAttribute("keyword", keyword);
-        // /model.addAttribute("products", products);
+        model.addAttribute("type", "category");
         return "category-page";
 
     }

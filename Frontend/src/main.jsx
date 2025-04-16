@@ -28,10 +28,14 @@ const catalogueEl = document.getElementById('react-catalogue');
 if (catalogueEl) {
 	//passing keyword attribute from thyme
 	const keyword = catalogueEl.dataset.keyword || null; //null to accomodate for landingpage
+	const type = catalogueEl.dataset.type;
 
 	createRoot(catalogueEl).render(
 		<StrictMode>
-			<ProductCatalogue keyword={keyword} />
+			<ProductCatalogue
+				keyword={keyword}
+				type={type}
+			/>
 		</StrictMode>
 	);
 }

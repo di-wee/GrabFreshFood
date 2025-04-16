@@ -18,7 +18,8 @@ public class SearchController {
     @GetMapping("/search/result")
     public String queryProducts(@RequestParam("keyword") String keyword, Model model) {
         //List<Product>products=productService.findProductByQuery(query);
-        model.addAttribute("keyword",keyword);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("type", "search");
         return "search-page";
     }
 }

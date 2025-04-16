@@ -6,7 +6,6 @@ import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
-import nus.iss.team1.grabfreshfood.service.CategoryService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomMapEditor;
@@ -31,8 +30,10 @@ public class OrderHistoryController {
     @Autowired
     private CartService cartService;
 
-    @Autowired
-    private CategoryService categoryService;
+    private String formattedServiceFee(){
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(OrderStatus.SERVICEFEE);
+    }
 
     private Customer getLogInCustomer(HttpSession session){
         return (Customer) session.getAttribute("customer");
@@ -45,15 +46,6 @@ public class OrderHistoryController {
         return order != null && order.getCustomer().getId() == customer.getId();
     }
 
-    private static final Map<String, String> STATUS_COLOR_MAP = Map.of(
-            OrderStatus.TOPAY, "warning",
-            OrderStatus.PROCESSING, "primary",
-            OrderStatus.SHIPPED, "info",
-            OrderStatus.DELIVERED, "success",
-            OrderStatus.CANCELLED, "danger",
-            "All", "secondary"
-    );
-
     //Lst: show order-history
     @GetMapping("/order-history")
     public String getOrderHistory(@RequestParam(required = false, defaultValue = "All") String type, Model model, HttpSession session) {
@@ -63,16 +55,18 @@ public class OrderHistoryController {
         }
 
         List<Order> orders = ohservice.getOrderHistoryForCustomer(type, customer);
+
         List<String> orderStatus = List.of("All", OrderStatus.TOPAY, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.CANCELLED);
 
-        model.addAttribute("statusColorMap", STATUS_COLOR_MAP);
         model.addAttribute("orders", orders);
         model.addAttribute("selectedType", type);
         model.addAttribute("orderStatus", orderStatus);
-        model.addAttribute("serviceFee",OrderStatus.SERVICEFEE);
+        model.addAttribute("serviceFee", formattedServiceFee());
 
         return "orderHistory";
     }
+
+
 
     //after clicking "checkout" button, go to checkout-page to fill in address, after fill in, then create order and remove checkout cart item
     @GetMapping("/checkout-page")
@@ -109,7 +103,7 @@ public class OrderHistoryController {
         model.addAttribute("cartId",cart.getCartId());
         model.addAttribute("checkoutItems", checkoutItemReqList);
         model.addAttribute("orderTotalAmount", totalAmount);
-        model.addAttribute("serviceFee",OrderStatus.SERVICEFEE);
+        model.addAttribute("serviceFee",formattedServiceFee());
         model.addAttribute("orderSavedAddress",orderSavedAddress);
         return "checkout-page";
     }
@@ -183,16 +177,7 @@ public class OrderHistoryController {
             return "payment-page";
         }
 
-        try {
-            ohservice.makePayment(orderId, cardNumber, cardExpiry, cvc);
-        } catch (RuntimeException e){
-            String failed = "Your order #" + orderId + " payment failed!";
-            List<Category> categories=categoryService.getAllCategoriesWithSubcategories();
-            model.addAttribute("categories", categories);
-            model.addAttribute("failed",failed);
-            model.addAttribute("reason", e.getMessage());
-            return "payment-failed";
-        }
+        ohservice.makePayment(orderId, cardNumber, cardExpiry, cvc);
 
         String success = "Your order #" + orderId + " is paid successfully!";
         model.addAttribute("message", success);
@@ -213,4 +198,29 @@ public class OrderHistoryController {
         return "redirect:/order-history";
     }
 
+
+//Lst: review together, confirm these code no longer needed,then delete them
+
+    //temp logic when orders are not created on button click of 'checkout'
+//    @GetMapping("/checkout-page")
+//    public String checkoutPage(@RequestParam("selectedItemsIds") List<Integer> selectedItemsIds, Model model, HttpSession session) {
+//        model.addAttribute("selectedItemsIds", selectedItemsIds);
+//        session.setAttribute("selectedItemsIds", selectedItemsIds);
+//
+//        return "checkout-page";
+//    }
+
+    //press 'checkout' button on cart page, create new order to DB then get the orderId,then go to fill in address
+//    @PostMapping("/checkout")
+//    public String checkoutToAddress(HttpSession session, Map<Integer, CartItem> cartItems, Model model){
+//        Customer customer = (Customer) session.getAttribute("customer");
+//        if (customer == null) {
+//            return "redirect:/login";
+//        }
+//
+//        int orderId = ohservice.createNewOrderAndId(customer,cartItems);
+//        model.addAttribute("orderId", orderId);
+//        return "redirect:/checkout-page?orderId=" + orderId;
+//
+//    }
 }

@@ -132,6 +132,21 @@ public class OrderImpl implements OrderService {
     public void makePayment(int orderId, String cardNumber, String cardExpiry, String cvc) {
         Order order = getOrderByOrderId(orderId);
 
+        List<OrderItems> orderItemsList = orderItemsRepo.findByOrder(order);
+
+        for (OrderItems item : orderItemsList){
+            Product product = item.getProduct();
+            int stock = product.getQuantity();
+            int deductQuantity = item .getQuantity();
+
+            if (stock < deductQuantity){
+                throw new RuntimeException("Insufficient inventory!");
+            }
+
+            product.setQuantity(stock - deductQuantity);
+            productRepo.save(product);
+        }
+
         order.setPaymentMethod(OrderStatus.CREDITCARD);
         order.setOrderStatus(OrderStatus.PROCESSING);
 
@@ -147,53 +162,4 @@ public class OrderImpl implements OrderService {
             orderRepo.save(order);
         }
     }
-
-
-//        @Override
-//    //create new order to DB and get the orderId for address and payment
-//    //Done by Dionis and Shu Ting
-//    public int createNewOrderAndId(int customerId, List<CartItem> cartItems, double totalAmount) {
-//        try {
-//            Customer customer = customerRepo.findCustomerById(customerId);
-//            if (customer == null) {
-//                throw new CustomerNotFound("Customer does not exist with ID: " + customerId);
-//            }
-//
-//            Order order = new Order();
-//            order.setCustomer(customer);
-//            order.setOrderStatus(OrderStatus.TOPAY);
-//            order.setOrderDate(LocalDate.now());
-//            order.setTotalAmount(totalAmount);
-//            order.setPaymentMethod(OrderStatus.NOTPAY);
-//            //Lst-add a new one paymentMethod for create new order:"Not Pay"
-//
-//            //we gonna just temporarily save shipping address as customer's existing address,
-//            //to prepopulate customer's address in the shipping details page. any changes to re-append to db.
-//            order.setShippingAddress(customer.getAddress());
-//
-//            Order savedOrder = orderRepo.save(order);
-//
-//            for (CartItem cartItem : cartItems) {
-//                Product product = productRepo.findProductById(cartItem.getProductId());
-//                if (product == null) {
-//                    throw new ProductNotFoundException("Product does not exist with ID: " + cartItem.getProductId());
-//                }
-//
-//                OrderItems orderItem = new OrderItems();
-//                orderItem.setOrder(savedOrder);
-//                orderItem.setProduct(product);
-//                orderItem.setQuantity(cartItem.getQuantity());
-//                orderItem.setPrice(product.getPrice() * cartItem.getQuantity());
-//
-//                orderItemsRepo.save(orderItem);
-//            }
-//
-//            return savedOrder.getId();
-//
-//        } catch (DataAccessException e) {
-//            throw new OrderCreationException("Error found while saving the order: " + e);
-//        } catch (Exception e) {
-//            throw new OrderCreationException("Error found while creating the order: " + e);
-//        }
-//    }
 }

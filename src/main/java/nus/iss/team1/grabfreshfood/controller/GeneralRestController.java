@@ -69,7 +69,7 @@ public class GeneralRestController {
                     req.getCartItemId(),
                     req.getQuantity());
             logger.info("CartID: " + req.getCartId());
-            logger.info("Updated quantity: " + req.getCartItemId());
+            logger.info("Updated CartItemID: " + req.getCartItemId());
             logger.info("Updated quantity: " + req.getQuantity());
             return new ResponseEntity<>(updatedItem, HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
@@ -199,7 +199,7 @@ public class GeneralRestController {
     //Done by Dionis (tested)
     //POST call to add item to cart
     @PostMapping("/cart/add")
-    public ResponseEntity<CartItem> addItemTocart(@RequestBody AddItemToCartReq req) {
+    public ResponseEntity<CartItem> addItemToCart(@RequestBody AddItemToCartReq req) {
         try {
             CartItem addedItem = cartService.addCartItemToCart(
                     req.getCustomerId(),

@@ -119,18 +119,19 @@ function CartItem({
 				/>
 			</div>
 
+			{/* ✅ Product Image Display with conditional rendering */}
 			<div className='product-image col-2'>
-				<img
-					alt={product.name}
-					className='img-fluid rounded'
-					src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
-					onError={(e) => {
-						e.target.onerror = null;
-						e.target.src = `${
-							import.meta.env.VITE_SERVER
-						}assets/placeholder.jpg`;
-					}}
-				/>
+				{product.imageURL && (
+					<img
+						alt={product.name}
+						className='img-fluid rounded'
+						src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
+						onError={(e) => {
+							e.target.onerror = null;
+							e.target.src = `${import.meta.env.VITE_SERVER}assets/placeholder.jpg`;
+						}}
+					/>
+				)}
 			</div>
 
 			<div className='product-name col-7'>

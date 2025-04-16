@@ -21,7 +21,7 @@
             <a th:each="status : ${orderStatus}"
                th:href="@{/order-history(type=${status})}"
                th:class="'btn btn-outline-success btn-sm ' + (${selectedType} == ${status} ? 'active' : '')">
-            <span th:text="${status == 'Pending' ? 'Pending Payment' : status}"></span>
+                <span th:text="${status}"></span>
             </a>
         </div>
     </div>

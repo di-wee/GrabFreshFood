@@ -54,10 +54,7 @@ public class OrderHistoryController {
             return "redirect:/login";
         }
 
-        // map "Pending Payment" to "pending"
-        String actualStatus = type.equalsIgnoreCase("Pending Payment") ? "Pending" : type;
-
-        List<Order> orders = ohservice.getOrderHistoryForCustomer(actualStatus, customer);
+        List<Order> orders = ohservice.getOrderHistoryForCustomer(type, customer);
 
         List<String> orderStatus = List.of("All", OrderStatus.TOPAY, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.CANCELLED);
 
@@ -68,6 +65,7 @@ public class OrderHistoryController {
 
         return "orderHistory";
     }
+
 
 
     //after clicking "checkout" button, go to checkout-page to fill in address, after fill in, then create order and remove checkout cart item

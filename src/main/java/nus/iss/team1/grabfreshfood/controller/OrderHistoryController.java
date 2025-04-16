@@ -45,6 +45,15 @@ public class OrderHistoryController {
         return order != null && order.getCustomer().getId() == customer.getId();
     }
 
+    private static final Map<String, String> STATUS_COLOR_MAP = Map.of(
+            OrderStatus.TOPAY, "warning",
+            OrderStatus.PROCESSING, "primary",
+            OrderStatus.SHIPPED, "info",
+            OrderStatus.DELIVERED, "success",
+            OrderStatus.CANCELLED, "danger",
+            "All", "secondary"
+    );
+
     //Lst: show order-history
     @GetMapping("/order-history")
     public String getOrderHistory(@RequestParam(required = false, defaultValue = "All") String type, Model model, HttpSession session) {
@@ -56,6 +65,7 @@ public class OrderHistoryController {
         List<Order> orders = ohservice.getOrderHistoryForCustomer(type, customer);
         List<String> orderStatus = List.of("All", OrderStatus.TOPAY, OrderStatus.PROCESSING, OrderStatus.SHIPPED, OrderStatus.DELIVERED, OrderStatus.CANCELLED);
 
+        model.addAttribute("statusColorMap", STATUS_COLOR_MAP);
         model.addAttribute("orders", orders);
         model.addAttribute("selectedType", type);
         model.addAttribute("orderStatus", orderStatus);

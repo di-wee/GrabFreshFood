@@ -32,10 +32,7 @@
                 <div>
                     <h6 class="mb-1 fw-bold d-flex align-items-center gap-3">
                         <span th:text="'Order Id: ' + ${order.id}"></span>
-                        <span th:class="'badge rounded-pill text-bg-' + (${order.orderStatus == 'Pending' ? 'warning' :
-                                                       order.orderStatus == 'Processing' ? 'primary' :
-                                                       order.orderStatus == 'Delivered' ? 'success' :
-                                                       order.orderStatus == 'Cancelled' ? 'danger' : 'secondary'})"
+                        <span th:class="'badge rounded-pill text-bg-' + ${statusColorMap[order.orderStatus]}"
                               th:text="${order.orderStatus}"></span>
                     </h6>
                     <p class="text-muted mb-0" th:text="'Order Date: ' + ${order.orderDate}"></p>

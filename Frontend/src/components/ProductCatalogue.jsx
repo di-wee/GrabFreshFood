@@ -7,10 +7,7 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const ProductCatalogue = ({ keyword }) => {
 	const [cartState, setCartState] = useState({}); // setState to track global produc state eg.
-	// { 1: {
-	// quantity: 1,
-	// addToCart: true},
-	//             }
+	// { 1: { quantity: 1, addToCart: true} }
 	const [itemQuant, setItemQuant] = useState(1);
 	const [products, setProducts] = useState([]);
 
@@ -32,6 +29,7 @@ const ProductCatalogue = ({ keyword }) => {
 	useEffect(() => {
 		//to add if/else statement to check for keyword later to accomodate for search/category
 		fetchProductLandingPage();
+		console.log('keyword: ', keyword);
 	}, []);
 
 	useEffect(() => {
@@ -164,7 +162,11 @@ const ProductCatalogue = ({ keyword }) => {
 				
 				`}
 			</style>
-
+			{!keyword && (
+				<div>
+					<h3>Top 10 recommended products</h3>
+				</div>
+			)}
 			{productChunks.length > 0 ? (
 				<Carousel
 					className='product-carousel'

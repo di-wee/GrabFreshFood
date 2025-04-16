@@ -188,8 +188,10 @@ const ProductCatalogue = ({ keyword }) => {
 				`}
 			</style>
 			{!keyword && (
-				<div>
-					<h3>Top 10 recommended products</h3>
+				<div
+					className='product-header'
+					style={{ margin: '1rem 0' }}>
+					<h5>Top 10 recommended products</h5>
 				</div>
 			)}
 			{productChunks.length > 0 ? (

@@ -19,8 +19,6 @@ import nus.iss.team1.grabfreshfood.service.ProductService;
 
 @Controller
 public class ProductController {
-    // "/product-details
-    // "/product/{id}
 	private final ProductService productService;
 
 	@Autowired
@@ -28,17 +26,15 @@ public class ProductController {
 		this.productService = productService;
 	}
 
-
-    //receieve product id, image,name, price, description from the browser that customer click on
+    //display product details
     @GetMapping("/product/{id}")
     public String getProductInfo(@PathVariable("id") int id, Model model, HttpSession session) {
         Product product = productService.findProductById(id);
         if (product == null) {
             model.addAttribute("errorMessage", "Product not found");
-        } else {
+		} else {
             model.addAttribute("product", product);
         }
-
         return "product-details";
     }
 
@@ -49,7 +45,8 @@ public class ProductController {
 	@PostMapping("/product/addToCart")
 	public String addToCart(HttpSession session,
 							@RequestParam("productId") int productId,
-							@RequestParam("quantity") int quantity) {
+							@RequestParam("quantity") int quantity,
+							Model model) {
 		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer == null) {
 			return "redirect:/login";
@@ -58,7 +55,6 @@ public class ProductController {
 		if(product == null){
 			throw new ProductNotFoundException("ProductId not found for productId: " + productId);
 		}
-
 		cartService.addNumberQuantity(customer.getId(), product.getId(), quantity);
 		return "redirect:/cart";
 	}

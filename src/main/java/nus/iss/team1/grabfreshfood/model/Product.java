@@ -41,6 +41,7 @@ public class Product {
     private String sku;
 
     @ManyToOne
+    @JoinColumn(name = "subcategory_id")
     private SubCategory subCategory;
     @ManyToOne
     private Category category;
@@ -49,7 +50,8 @@ public class Product {
     @JsonIgnore
     private List<OrderItems> myOrderItem;
 
-    public Product() { }
+    public Product() {
+    }
 
 //	/*
 //	 * public int getId() { return 0; }

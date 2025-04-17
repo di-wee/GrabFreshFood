@@ -27,31 +27,38 @@ const ProductCarousel = ({
 	const productChunks = sliceProducts(products, 4);
 
 	return (
-		<Carousel
-			className='product-carousel'
-			indicators={false}>
-			{productChunks.map((chunk, index) => (
-				<Carousel.Item
-					key={index}
-					interval={3000}>
-					<div
-						className='d-flex justify-content-center flex-wrap'
-						style={{ gap: '3rem', padding: '0 1rem' }}>
-						{chunk.map((product) => (
-							<ProductCard
-								key={product.id}
-								product={product}
-								cartState={cartState}
-								handleAddCart={handleAddCart}
-								increaseQuantity={increaseQuantity}
-								decreaseQuantity={decreaseQuantity}
-								handleQuantityChange={handleQuantityChange}
-							/>
-						))}
-					</div>
-				</Carousel.Item>
-			))}
-		</Carousel>
+		<>
+			<div>
+				<h5 style={{ color: 'darkgreen', margin: '2rem 0 1rem 0' }}>
+					Top 10 recommended products
+				</h5>
+			</div>
+			<Carousel
+				className='product-carousel'
+				indicators={false}>
+				{productChunks.map((chunk, index) => (
+					<Carousel.Item
+						key={index}
+						interval={3000}>
+						<div
+							className='d-flex justify-content-center flex-wrap'
+							style={{ gap: '3rem', padding: '0 1rem' }}>
+							{chunk.map((product) => (
+								<ProductCard
+									key={product.id}
+									product={product}
+									cartState={cartState}
+									handleAddCart={handleAddCart}
+									increaseQuantity={increaseQuantity}
+									decreaseQuantity={decreaseQuantity}
+									handleQuantityChange={handleQuantityChange}
+								/>
+							))}
+						</div>
+					</Carousel.Item>
+				))}
+			</Carousel>
+		</>
 	);
 };
 

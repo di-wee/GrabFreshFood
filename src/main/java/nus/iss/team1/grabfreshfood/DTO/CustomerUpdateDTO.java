@@ -10,7 +10,7 @@ public class CustomerUpdateDTO {
 
     @NotBlank(message = "Username (email) is required")
     @Email(message = "Please enter a valid email")
-    @Pattern(regexp = ".*\\.com$", message = "Email must end with .com")
+    @Pattern(regexp = "^[\\w.-]+@[\\w.-]+\\.com$", message = "Email must end with .com")
     private String username;
 
     @NotBlank(message = "Password is required")
@@ -23,9 +23,7 @@ public class CustomerUpdateDTO {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    // ✅ Required phone number that must be all digits
-    @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\d+$", message = "Phone number must contain digits only")
+    @Pattern(regexp = "^\\d{8}$", message = "Phone number must be exactly 8 digits")
     private String phoneNumber;
 
     private String address;

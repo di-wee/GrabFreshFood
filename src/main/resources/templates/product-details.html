@@ -12,13 +12,17 @@
     <link href="/css/styles.css" rel="stylesheet">
 
     <style>
-        /*to remove the spinner arrow from the input box*/
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
+        /* Hide number input arrows for Chrome, Safari, Edge */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
+        /* Hide arrows for Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
 
         body {
             background-color: #f5f5f5;
@@ -72,10 +76,8 @@
                         <h3 th:text="'$' + ${#numbers.formatDecimal(product.price, 1, 2)}">Product Price</h3>
                     </div>
                     <div class="mb-5">
-
-                        <p th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></p>
-                        <form th:if="${product.quantity > 0}" th:action="@{/product/addToCart}" method="post" onsubmit="return maxQuantity();">
-                            <input type="hidden" name="productId" th:value="${product.id}" />
+                        <form method="POST" th:action="@{/product/addToCart}">
+                            <input name="productId" th:value="${product.id}" type="hidden">
 
                             <div class="mb-3">
                                 <label class="form-label" for="quantity">Quantity</label>
@@ -85,18 +87,19 @@
                                     <button class="btn btn-outline-secondary" onclick="decreaseQuantity()"
                                             type="button">−
                                     </button>
-                                    <input id="quantity" name="quantity" type="number" value="1" min="1" th:attr="max=${product.quantity > 30 ? 30:product.quantity}" required style="width: 50px; text-align: center;">
-                                    <button id="addButton" class="btn btn-outline-secondary" onclick="increaseQuantity()"
+                                    <input class="form-control text-center" id="quantity" max="30" min="1"
+                                           name="quantity" required style="max-width: 50px;" type="number" value="1"/>
+                                    <button class="btn btn-outline-secondary" onclick="increaseQuantity()"
                                             type="button">+
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- add-to-cart button using bootstrap -->
-                            <p id="stockStatus" class="text-success">In Stock</p>
-                            <button id="addToCart" class="btn btn-grabfreshfood" type="submit">Add to Cart</button>
-                            </form>
-                        <button th:unless="${product.quantity > 0}" class="btn btn-secondary" disabled>Out of Stock</button>
+                            <!-- Submit button -->
+                            <button class="btn btn-grabfreshfood" type="submit">
+                                Add to Cart
+                            </button>
+                        </form>
                     </div>
 
 
@@ -116,66 +119,24 @@
 <div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
 
 <script>
-    const quantityInput = document.getElementById("quantity");
-    const stockStatus = document.getElementById("stockStatus");
-    const addToCart = document.getElementById("addToCart");
-    const addButton = document.getElementById("addButton");
-
-
-    const maxInput = parseInt(quantityInput.getAttribute("max"))
-    const maxStock = Math.min(maxInput, 30);
-
-    //Update the stock message
-    function updateStockStatus() {
-        const value = parseInt(quantityInput.value) || 0;
-
-        if (value >= maxStock) {
-            stockStatus.textContent = "Exceeded stock quantity";
-            stockStatus.classList.remove("text-success");
-            stockStatus.classList.add("text-danger");
-            addToCart.disabled = true;
-            addButton.disabled = true;
-        } else {
-            stockStatus.textContent = "In Stock";
-            stockStatus.classList.remove("text-danger");
-            stockStatus.classList.add("text-success");
-            addToCart.disabled = false;
-            addButton.disabled = false;
-        }
-    }
-
-    // real-time feedback when user type in the input box
-    quantityInput.addEventListener("input", updateStockStatus);
-
-    // Update +/- button logic and status update message
     function increaseQuantity() {
+        const quantityInput = document.getElementById("quantity");
+        console.log("quantityInput: ", quantityInput);
         let value = parseInt(quantityInput.value) || 1;
-        const max = parseInt(quantityInput.getAttribute("max"));
-        if (value < maxStock) {
+        if (value < 30) {
             quantityInput.value = value + 1;
         }
-        updateStockStatus();
     }
 
     function decreaseQuantity() {
+        const quantityInput = document.getElementById("quantity");
         let value = parseInt(quantityInput.value) || 1;
         if (value > 1) {
             quantityInput.value = value - 1;
         }
-        updateStockStatus();
     }
 
-    // Still enforce the max on form submit
-    function maxQuantity() {
-        const value = parseInt(quantityInput.value) || 1;
-        if (value > maxStock) {
-            alert("Exceeded maximum quantity");
-            return false;
-        }
-        return true;
-    }
 
-    updateStockStatus();
 </script>
 </body>
 

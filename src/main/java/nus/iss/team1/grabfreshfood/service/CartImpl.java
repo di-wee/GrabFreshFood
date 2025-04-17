@@ -32,12 +32,12 @@ public class CartImpl implements CartService {
     private static final Logger logger = LoggerFactory.getLogger(CartImpl.class);
     private final CartRepository cartRepo;
     private final CartItemRepository cartItemRepo;
-    private final ProductRepository productRepo;
+    private final ProductRepository productRepository;
 
-    public CartImpl(CartRepository cartRepo, CartItemRepository cartItemRepo, ProductRepository productRepo) {
+    public CartImpl(CartRepository cartRepo, CartItemRepository cartItemRepo, ProductRepository productRepository) {
         this.cartRepo = cartRepo;
         this.cartItemRepo = cartItemRepo;
-        this.productRepo = productRepo;
+        this.productRepository = productRepository;
     }
 
     // Done by Dionis
@@ -56,7 +56,8 @@ public class CartImpl implements CartService {
         return cartItemRepo.findCartItemsByCartId(cartId);
     }
 
-    // Updated to use Spring Data JPA derived method to strictly match both cartId and cartItemId
+    // Updated to use Spring Data JPA derived method to strictly match both cartId
+    // and cartItemId
     @Override
     public CartItem findCartItem(int cartId, int cartItemId) {
         Optional<CartItem> item = cartItemRepo.findByCartCartIdAndCartItemId(cartId, cartItemId);
@@ -92,7 +93,8 @@ public class CartImpl implements CartService {
             } catch (DataAccessException e) {
                 throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
             } catch (Exception e) {
-                throw new CartItemCreationException("Unexpected error occurred while adding item to cart: " + e.getMessage());
+                throw new CartItemCreationException(
+                        "Unexpected error occurred while adding item to cart: " + e.getMessage());
             }
 
             return cartItem;
@@ -170,7 +172,8 @@ public class CartImpl implements CartService {
             } catch (DataAccessException e) {
                 throw new CartItemCreationException("Error while saving Cart Item to DB: " + e.getMessage());
             } catch (Exception e) {
-                throw new CartItemCreationException("Unexpected error occurred while adding item to cart: " + e.getMessage());
+                throw new CartItemCreationException(
+                        "Unexpected error occurred while adding item to cart: " + e.getMessage());
             }
 
             return cartItem;
@@ -192,7 +195,7 @@ public class CartImpl implements CartService {
         List<CheckoutItemReq> showList = new ArrayList<>();
 
         for (CartItem cartItem : checkoutItems) {
-            Product product = productRepo.findProductById(cartItem.getProductId());
+            Product product = productRepository.findProductById(cartItem.getProductId());
             BigDecimal unitPrice = BigDecimal.valueOf(product.getPrice()).setScale(2, RoundingMode.HALF_UP);
             BigDecimal quantity = BigDecimal.valueOf(cartItem.getQuantity());
             BigDecimal perItemTotal = unitPrice.multiply(quantity).setScale(2, RoundingMode.HALF_UP);
@@ -210,36 +213,12 @@ public class CartImpl implements CartService {
     }
 
     public BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList) {
-        return checkoutItemReqList.stream()
-                .map(CheckoutItemReq::getPerProductTotalAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .add(OrderStatus.SERVICEFEE)
-                .setScale(2, RoundingMode.HALF_UP);
+        return checkoutItemReqList.stream().map(CheckoutItemReq::getPerProductTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add).add(OrderStatus.SERVICEFEE).setScale(2, RoundingMode.HALF_UP);
     }
 
     public int getCartItemCount(int customerId) {
         Cart cart = findCartByCustomerId(customerId);
         List<CartItem> cartItems = findCartItemsByCartId(cart.getCartId());
         return cartItems.size();
-    }
-
-    // ✅ Overloaded method to support quantity and stock validation
-    @Override
-    public CartItem addCartItemToCart(int customerId, int productId, int quantity) {
-        Cart cart = findCartByCustomerId(customerId);
-        Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        if (quantity > product.getStock()) {
-            throw new IllegalArgumentException("Requested quantity exceeds available stock.");
-        }
-
-        CartItem item = new CartItem();
-        item.setCart(cart);
-        item.setProductId(productId);
-        item.setQuantity(quantity);
-        item.setCheckout(false);
-
-        return cartItemRepo.save(item);
     }
 }

@@ -11,7 +11,6 @@ import java.util.List;
 @Setter
 @Entity
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id", nullable = false)
@@ -43,7 +42,6 @@ public class Product {
 
     @ManyToOne
     private SubCategory subCategory;
-
     @ManyToOne
     private Category category;
 
@@ -53,8 +51,8 @@ public class Product {
 
     public Product() { }
 
-    // Getter added to use 'quantity' as stock value
-    public int getStock() {
-        return quantity;
-    }
+//	/*
+//	 * public int getId() { return 0; }
+//	 */
+
 }

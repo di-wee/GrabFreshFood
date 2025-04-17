@@ -36,8 +36,8 @@ CREATE TABLE `product` (
   `subcategory_id` int DEFAULT NULL,
   PRIMARY KEY (`product_id`),
   UNIQUE KEY `sku_UNIQUE` (`sku`),
-  KEY `FKg7f35cuvad1r3yddcvv6cv059` (`category_category_id`),
-  KEY `FKhbsk9l3la1xh1aaxk1r4b8i0a` (`sub_category_subcategory_id`),
+  KEY `FKg7f35cuvad1r3yddcvv6cv059` (`category_id`),
+  KEY `FKhbsk9l3la1xh1aaxk1r4b8i0a` (`subcategory_id`),
   CONSTRAINT `FKg7f35cuvad1r3yddcvv6cv059` FOREIGN KEY (`category_category_id`) REFERENCES `categories` (`category_id`),
   CONSTRAINT `FKhbsk9l3la1xh1aaxk1r4b8i0a` FOREIGN KEY (`sub_category_subcategory_id`) REFERENCES `subcategories` (`subcategory_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

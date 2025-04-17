@@ -44,6 +44,7 @@ public class Product {
     @JoinColumn(name = "subcategory_id")
     private SubCategory subCategory;
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(mappedBy = "product")

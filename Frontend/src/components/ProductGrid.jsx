@@ -6,33 +6,31 @@ import Pagination from 'react-bootstrap/Pagination';
 const ProductGrid = ({
 	products,
 	cartState,
+	keyword,
 	handleAddCart,
 	increaseQuantity,
 	decreaseQuantity,
 	handleQuantityChange,
 	currentPage,
-	itemsPerPage,
 	setCurrentPage,
+	itemsPerPage,
 	type,
+	cartItems,
+	setCartItems,
 }) => {
 	//pagination logic for search/category pages
-	const indexOfLastItem = currentPage * itemsPerPage;
-	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-	const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
-
-	const totalPages = Math.ceil(products.length / itemsPerPage);
 
 	//generate page numbers for pagination
 	const pageNumbers = [];
-	for (let i = 1; i <= totalPages; i++) {
-		pageNumbers.push(i);
-	}
 
 	return (
 		<div>
-			{/* product grid display */}
+			<div className='productgrid-header'>
+				<h4 style={{ color: 'darkgreen' }}>{keyword}</h4>
+				<p>{products.length} products</p>
+			</div>
 			<div className='row row-cols-2 row-cols-md-5 row-cols-sm-3 g-4'>
-				{currentItems.map((product) => (
+				{products.map((product) => (
 					<div
 						className='col'
 						key={product.id}>

@@ -145,6 +145,7 @@ public class GeneralRestController {
         }
     }
 
+    //Done by Shi Ying
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchResult(@RequestParam("keyword") String query) {
         List<Product> products = productService.findProductByQuery(query);
@@ -155,46 +156,29 @@ public class GeneralRestController {
         }
     }
 
+    //Done by Shi Ying
     @GetMapping("/category/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.findAllProduct();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //Done by Shi Ying
     @GetMapping("/category/{keyword}")
     public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("keyword") String keyword) {
         List<Product> products = productService.findProductBySubCategory(keyword);
-        if (products == null) {
+        if (products == null || products.isEmpty()) {
             products = productService.findProductByCategory(keyword);
+        }
+        logger.info("Products retrieved: " + products);
+
+        if (products.isEmpty()) {
+            logger.error("Error: no products retrieved from category");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    //Done by Dionis
-    //POST call for checkout logic for button click of 'checkout' button to create an order based on shopping cart.
-//    @PostMapping("/order/create")
-//    public ResponseEntity<Integer> createOrder(@RequestBody CreateOrderRequest req) {
-//        try {
-//            int newOrderId = orderService.createNewOrderAndId(
-//                    req.getCustomerId(),
-//                    req.getCartItems(),
-//                    req.getTotalAmount()
-//
-//            );
-//
-//            return new ResponseEntity<>(newOrderId, HttpStatus.CREATED);
-//
-//        } catch (CustomerNotFound | ProductNotFoundException e) {
-//            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.NOT_FOUND + "): " + e);
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        } catch (DataAccessException e) {
-//            logger.error("Error encountered when saving Order to DB (Status Code: " + HttpStatus.BAD_REQUEST + "): " + e);
-//            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//        } catch (Exception e) {
-//            logger.error("Error encountered when creating Order(Status Code: " + HttpStatus.INTERNAL_SERVER_ERROR + "): " + e);
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
 
     //Done by Dionis (tested)
     //POST call to add item to cart
@@ -221,7 +205,7 @@ public class GeneralRestController {
     }
 
     //Done by Ben
-    //Change Return type to ResponseEntity<{data type of what is to be returned alongside HttpStatus>
+
     @GetMapping("/{categoryName}/products")
     public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String categoryName) {
         try {

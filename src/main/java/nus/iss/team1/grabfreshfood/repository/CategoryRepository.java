@@ -13,7 +13,9 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     @Query("SELECT DISTINCT c FROM Category c WHERE c.subCategories IS NOT EMPTY")
     List<Category> findDistinctCategoriesWithSubcategories();
-    
+
+    Category findCategoryByName(String categoryName);
+
 
 }
 

@@ -17,17 +17,25 @@ const ProductCatalogue = ({ keyword, type }) => {
 	const itemsPerPage = 10;
 
 	//fetching products for landing page
-	const fetchProductLandingPage = async () => {
+	const fetchProducts = async () => {
 		try {
-			const url = import.meta.env.VITE_SERVER + `api/search/landingpage`;
+			let url;
+
+			if (!keyword) {
+				url = import.meta.env.VITE_SERVER + `api/search/landingpage`;
+			} else if (type === 'category') {
+				url = import.meta.env.VITE_SERVER + `api/category/${keyword}`;
+			} else if (type === 'search') {
+				url = import.meta.env.VITE_SERVER + `api/search?keyword=${keyword}`;
+			}
 			const res = await fetch(url);
 			if (!res.ok) {
-				throw new Error('Error getting products for landing page');
+				throw new Error('Error getting products');
 			}
 			const data = await res.json();
 			setProducts(data);
 		} catch (err) {
-			console.error('Error retrieving products for LP: ', err);
+			console.error('Error retrieving products', err);
 		}
 	};
 
@@ -136,12 +144,7 @@ const ProductCatalogue = ({ keyword, type }) => {
 
 	//on first render of page to fetch products to component
 	useEffect(() => {
-		//to add if/else statement to check for keyword later to accomodate for search/category
-		if (!keyword) {
-			fetchProductLandingPage();
-		} else {
-			// This will be handled inside ProductGrid component using keyword prop
-		}
+		fetchProducts();
 		const loadCart = async () => {
 			const id = await fetchCustomerId();
 			console.log('id: ', id);
@@ -326,6 +329,8 @@ const ProductCatalogue = ({ keyword, type }) => {
 					setCurrentPage={setCurrentPage}
 					itemsPerPage={itemsPerPage}
 					type={type}
+					cartItems={cartItems}
+					setCartItems={setCartItems}
 				/>
 			)}
 		</div>

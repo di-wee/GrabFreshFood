@@ -143,6 +143,34 @@ const ProductCatalogue = ({ keyword, type }) => {
 		}
 	};
 
+	const removeFromCart = async (productId) => {
+		try {
+			const item = cartItems.find((item) => item.productId === productId);
+			if (!item) {
+				console.warn(`Cart item not found for productId: ${productId}`);
+				return;
+			}
+			const url =
+				import.meta.env.VITE_SERVER +
+				`api/cart/${item.cartId}/item/${item.cartItemId}`;
+
+			const res = await fetch(url, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			if (!res.ok) throw new Error('Error removing item from cart!');
+			data = await res.json();
+			console.log('item removed from cart!');
+			setCartItems((prev) =>
+				prev.filter((item) => item.productId !== productId)
+			);
+		} catch (err) {
+			console.error('Error removing item from cart: ', err);
+		}
+	};
+
 	//on first render of page to fetch products to component
 	useEffect(() => {
 		fetchProducts();
@@ -223,6 +251,10 @@ const ProductCatalogue = ({ keyword, type }) => {
 					addToCart: currentQuantity <= 1 ? false : true,
 				},
 			};
+
+			if (currentQuantity <= 1) {
+				removeFromCart(productId);
+			}
 
 			return updated;
 		});

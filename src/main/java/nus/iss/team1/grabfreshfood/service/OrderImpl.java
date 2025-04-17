@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import nus.iss.team1.grabfreshfood.DTO.PaymentResult;
 import nus.iss.team1.grabfreshfood.config.ProductNotFoundException;
 import nus.iss.team1.grabfreshfood.model.*;
-import nus.iss.team1.grabfreshfood.repository.CustomerRepository;
 import nus.iss.team1.grabfreshfood.repository.OrderItemsRepository;
 import nus.iss.team1.grabfreshfood.repository.OrderRepository;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
@@ -32,8 +31,6 @@ public class OrderImpl implements OrderService {
     @Autowired
     private OrderItemsRepository orderItemsRepo;
 
-    @Autowired
-    private CustomerRepository customerRepo;
 
     @Override
     //show customer order list
@@ -158,7 +155,7 @@ public class OrderImpl implements OrderService {
             order.setOrderStatus(OrderStatus.PROCESSING);
 
             orderRepo.save(order);
-            return new PaymentResult(true, Collections.EMPTY_LIST);
+            return new PaymentResult(true, Collections.emptyList());
         } else {
             return new PaymentResult(false, outOfStockList);
         }

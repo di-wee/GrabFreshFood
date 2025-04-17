@@ -31,7 +31,7 @@ public class GeneralRestController {
 
     @Autowired
     private OrderService orderService;
-    
+
 
     // Done by Dionis
     //GET call to retrieve Cart based on Customer ID
@@ -131,11 +131,15 @@ public class GeneralRestController {
                                                @PathVariable("cartId") int cartId) {
         try {
             cartService.deleteCartItem(cartId, itemId);
+            logger.info("CartItemId to be deleted:" + itemId);
+            logger.info("CartID to be deleted:" + cartId);
+
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (CartItemNotFoundException e) {
             logger.error("Delete failed: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            logger.error("Delete failed (INTERNAL SERVER ERROR): " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

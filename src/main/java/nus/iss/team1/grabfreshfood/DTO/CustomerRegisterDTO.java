@@ -12,7 +12,7 @@ public class CustomerRegisterDTO {
 
     @NotBlank(message = "Username is required")
     @Email(message = "Email should be valid")
-    @Pattern(regexp = ".*\\.com$", message = "Email must end with .com")
+    @Pattern(regexp = "^[\\w.-]+@[\\w.-]+\\.com$", message = "Email must be a valid address ending with .com")
     private String username; // Treated as email
 
     @NotBlank(message = "Password is required")
@@ -28,11 +28,8 @@ public class CustomerRegisterDTO {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    // ✅ Required phone number that must be all digits
-    @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\d+$", message = "Phone number must contain digits only")
+    @Pattern(regexp = "^\\d{8}$", message = "Phone number must be exactly 8 digits")
     private String phoneNumber;
 
-    // ✅ Address is optional; no validation applied
     private String address;
 }

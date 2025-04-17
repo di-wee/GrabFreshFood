@@ -30,7 +30,7 @@
 
         <div class="form-group mb-3">
             <label for="username">Email</label>
-            <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Email" required>
+            <input type="email" id="username" th:field="*{username}" class="form-control" required pattern="^[\\w.-]+@[\\w.-]+\\.com$">
             <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
         </div>
 
@@ -48,7 +48,7 @@
 
         <div class="form-group mb-3">
             <label for="phoneNumber">Phone Number</label>
-            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control">
+            <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control" required pattern="\d{8}">
             <div class="text-danger" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
         </div>
 
@@ -67,36 +67,16 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.getElementById("registerForm");
+
         form.addEventListener("submit", function (e) {
-            let valid = true;
+            form.reportValidity();
+        });
 
-            const email = document.getElementById("username");
-            const emailVal = email.value.trim();
-            const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
-
-            if (!emailRegex.test(emailVal)) {
-                email.setCustomValidity("Please enter a valid email address");
-                valid = false;
-            } else if (!emailVal.toLowerCase().endsWith(".com")) {
-                email.setCustomValidity("Email must end with .com");
-                valid = false;
-            } else {
-                email.setCustomValidity("");
-            }
-
-            const phone = document.getElementById("phoneNumber");
-            const phoneVal = phone.value.trim();
-            if (phoneVal !== "" && !/^\\d+$/.test(phoneVal)) {
-                phone.setCustomValidity("Phone number must contain digits only");
-                valid = false;
-            } else {
-                phone.setCustomValidity("");
-            }
-
-            if (!valid) {
-                form.reportValidity();
-                e.preventDefault();
-            }
+        const inputs = form.querySelectorAll("input");
+        inputs.forEach(input => {
+            input.addEventListener("input", () => {
+                input.setCustomValidity(""); // Clear custom validation messages
+            });
         });
     });
 </script>

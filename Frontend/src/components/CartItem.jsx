@@ -12,7 +12,7 @@ function CartItem({
 	itemPrice,
 	setItemPrice,
 	removeCartItem,
-	itemSubtotal, // ✅ receives computed subtotal from parent
+	itemSubtotal,
 }) {
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
@@ -102,7 +102,9 @@ function CartItem({
 			if (selectedItems.includes(item.cartItemId)) {
 				const quant = quantities[item.cartItemId];
 				const price = itemPrice[item.cartItemId];
-				total += quant * price;
+				if (quant && price) {
+					total += quant * price;
+				}
 			}
 		}
 		setSubTotal(total);
@@ -119,7 +121,6 @@ function CartItem({
 				/>
 			</div>
 
-			{/* ✅ Product Image Display with conditional rendering */}
 			<div className='product-image col-2'>
 				{product.imageURL && (
 					<img
@@ -139,48 +140,53 @@ function CartItem({
 					<b>{product.name}</b>
 				</h6>
 
-				{/* ✅ Description */}
 				<p style={{ fontSize: 'smaller', marginBottom: '0.5rem' }}>
 					<i>{product.description}</i>
 				</p>
 
-				{/* ✅ Unit price styled same as description */}
 				<p
 					style={{
 						fontSize: 'smaller',
 						fontWeight: 'bold',
 						marginBottom: '0.5rem',
 					}}>
-					$
-					{product.price !== undefined
+					${product.price !== undefined
 						? product.price.toFixed(2)
 						: product.price}
 				</p>
 
-				{/* Quantity input */}
+				{/* Quantity input with dual constraint logic */}
 				<input
 					className='form-control form-control-sm text-center'
 					min='1'
-					max='30' // ✅ updated from 10 to 30
+					max={Math.min(product.quantity, 30)}
 					style={{ width: '80px' }}
 					type='number'
 					value={quantities[item.cartItemId]}
 					onChange={(event) => {
-						setLocalQuantity(parseInt(event.target.value));
-						handleUpdateQuantity(item.cartItemId, parseInt(event.target.value));
+						const newQty = parseInt(event.target.value);
+						const maxAllowed = Math.min(product.quantity, 30);
+						if (newQty > maxAllowed) {
+							alert(`You can only purchase up to ${maxAllowed} units`);
+							return;
+						}
+						setLocalQuantity(newQty);
+						handleUpdateQuantity(item.cartItemId, newQty);
 					}}
 					onBlur={() => {
 						const qty = parseInt(localQuantity);
-						if (!isNaN(qty) && qty >= 1 && qty <= 30) {
+						const maxAllowed = Math.min(product.quantity, 30);
+						if (!isNaN(qty) && qty >= 1 && qty <= maxAllowed) {
 							updateQuantityDB(item.cartId, item.cartItemId, qty);
 						} else {
-							console.warn('invalid quantity entered');
+							console.warn('Invalid quantity entered');
 						}
 					}}
 				/>
+
+				<p className='text-muted small mt-1'>(Max 30 per customer)</p>
 			</div>
 
-			{/* ✅ Subtotal and delete icon */}
 			<div
 				className='price-delete col-1 d-flex flex-column align-items-center'
 				style={{ marginLeft: '3vh' }}>

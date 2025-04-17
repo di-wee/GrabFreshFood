@@ -36,10 +36,10 @@ CREATE TABLE `product` (
   `subcategory_id` int DEFAULT NULL,
   PRIMARY KEY (`product_id`),
   UNIQUE KEY `sku_UNIQUE` (`sku`),
-  KEY `FKg7f35cuvad1r3yddcvv6cv059` (`category_id`),
-  KEY `FKhbsk9l3la1xh1aaxk1r4b8i0a` (`subcategory_id`),
-  CONSTRAINT `FKg7f35cuvad1r3yddcvv6cv059` FOREIGN KEY (`category_category_id`) REFERENCES `categories` (`category_id`),
-  CONSTRAINT `FKhbsk9l3la1xh1aaxk1r4b8i0a` FOREIGN KEY (`sub_category_subcategory_id`) REFERENCES `subcategories` (`subcategory_id`)
+  KEY `fk_product_category` (`category_id`),
+  KEY `fk_product_subcategory` (`subcategory_id`),
+  CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`),
+  CONSTRAINT `fk_product_subcategory` FOREIGN KEY (`subcategory_id`) REFERENCES `subcategories` (`subcategory_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

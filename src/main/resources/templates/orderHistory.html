@@ -9,11 +9,12 @@
     <link href="/css/styles.css" rel="stylesheet">
 </head>
 <body>
+
 <div th:replace="~{fragments/topbanner :: topbanner}"></div>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container mt-4 mb-5">
-<!--    tab buttons-->
+    <!-- tab buttons! -->
     <div class="bg-white rounded-3 shadow-sm mb-3 p-3 py-2">
         <h6 class="fw-bold mb-2">Order Status</h6>
         <div class="d-flex flex-wrap gap-2 mb-1">
@@ -25,14 +26,17 @@
         </div>
     </div>
 
-<!--    orders-->
+    <!-- orders -->
     <div class="orderList">
         <div th:each="order : ${orders}" class="bg-white rounded-3 shadow-sm p-4 mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
                     <h6 class="mb-1 fw-bold d-flex align-items-center gap-3">
-                        <span th:text="'Order Id: ' + ${order.id}"></span>
-                        <span th:class="'badge rounded-pill text-bg-' + ${statusColorMap[order.orderStatus]}"
+                        <span th:text="'Order ID: ' + ${order.id}"></span>
+                        <span th:class="'badge rounded-pill text-bg-' + (${order.orderStatus == 'Pending' ? 'warning' :
+                                                       order.orderStatus == 'Processing' ? 'primary' :
+                                                       order.orderStatus == 'Delivered' ? 'success' :
+                                                       order.orderStatus == 'Cancelled' ? 'danger' : 'secondary'})"
                               th:text="${order.orderStatus}"></span>
                     </h6>
                     <p class="text-muted mb-0" th:text="'Order Date: ' + ${order.orderDate}"></p>
@@ -40,22 +44,23 @@
             </div>
 
 
+
             <div class="table-responsive mb-3">
                 <table class="table table-sm align-middle">
                     <thead class="table-light">
                     <tr>
-                        <th style="width: 30%">Product</th>
-                        <th class="text-center" style="width: 25%">Qty</th>
-                        <th class="text-center" style="width: 20%">Unit Price</th>
-                        <th class="text-center" style="width: 25%">Amount</th>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Amount</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:each="item : ${order.myOrderItems}">
                         <td th:text="${item.product.name}"></td>
-                        <td class="text-center" th:text="'x' + ${item.quantity}"></td>
-                        <td class="text-center" th:text="'$' + ${#numbers.formatDecimal(item.product.price, 1, 2)}"></td>
-                        <td class="text-center" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)}"></td>
+                        <td th:text="'x' + ${item.quantity}"></td>
+                        <td th:text="'$' + ${item.product.price}"></td>
+                        <td th:text="'$' + ${item.price}"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -64,30 +69,28 @@
             <div class="bg-white rounded-3 shadow-sm p-4 mt-4 mb-2" style="max-width: 400px; margin-left: auto;">
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Subtotal</span>
-                    <span th:text="'$' + (${#numbers.formatDecimal(order.totalAmount, 1, 2)} - ${#numbers.formatDecimal(serviceFee, 1, 2)})"></span>
+                    <span th:text="'$' + (${order.totalAmount} - ${serviceFee})">--</span>
                 </div>
                 <div class="d-flex justify-content-between mb-3">
                     <span class="text-muted">Service fee</span>
-                    <span th:text="'$' + ${#numbers.formatDecimal(serviceFee, 1, 2)}"></span>
+                    <span th:text="'$' + ${serviceFee}">--</span>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Total (incl. of 9% GST)</strong>
-                    <strong th:text="'$' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></strong>
+                    <strong th:text="'$' + ${order.totalAmount}">--</strong>
                 </div>
             </div>
 
 
             <div class="mt-3" th:if="${order.orderStatus == 'Pending Payment'}">
-                <a class="btn btn-sm btn-primary mr-2" th:href="@{/payment-page(orderId=${order.id})}">Go To Payment</a>
-                <button class="btn btn-sm btn-danger" onclick="confirmCancel(this)" th:attr="data-order-id=${order.id}">
-                    Cancel Order
-                </button>
+                <a class="btn btn-primary btn-sm me-2" th:href="@{/payment-page(orderId=${order.id})}">Go To Payment</a>
+                <button class="btn btn-outline-danger btn-sm" onclick="confirmCancel(this)"
+                        th:attr="data-order-id=${order.id}">Cancel Order</button>
             </div>
         </div>
     </div>
 </div>
-
 
 <footer class="bg-grabfreshfood text-white py-4 mt-5">
     <div class="container">

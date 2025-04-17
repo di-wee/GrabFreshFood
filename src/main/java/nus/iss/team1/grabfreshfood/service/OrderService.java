@@ -23,5 +23,7 @@ public interface OrderService {
 
     int createNewOrderAndGetNewOrderId(Customer customer, String shippingAddress, List<CartItem> checkoutItems);
 
+//    int createNewOrderAndId(int customerId, List<CartItem> cartItems, double totalAmount);
+
 
 }

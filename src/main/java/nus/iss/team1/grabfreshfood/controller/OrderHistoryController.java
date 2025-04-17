@@ -3,13 +3,13 @@ package nus.iss.team1.grabfreshfood.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
+import nus.iss.team1.grabfreshfood.DTO.PaymentResult;
 import nus.iss.team1.grabfreshfood.config.CartNotFoundException;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.CategoryService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomMapEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -183,21 +182,24 @@ public class OrderHistoryController {
             return "payment-page";
         }
 
-        try {
-            ohservice.makePayment(orderId, cardNumber, cardExpiry, cvc);
-        } catch (RuntimeException e){
+        PaymentResult result = ohservice.makePayment(orderId, cardNumber, cardExpiry, cvc);
+
+        if (result.isSuccess()){
+            String success = "Your order #" + orderId + " is paid successfully!";
+            model.addAttribute("message", success);
+
+            return "payment-success";
+        } else {
+            String outStockName = String.join(", ", result.getOutStockList());
             String failed = "Your order #" + orderId + " payment failed!";
+
             List<Category> categories=categoryService.getAllCategoriesWithSubcategories();
+
             model.addAttribute("categories", categories);
             model.addAttribute("failed",failed);
-            model.addAttribute("reason", e.getMessage());
+            model.addAttribute("reason", "Insufficient inventory: " + outStockName);
             return "payment-failed";
         }
-
-        String success = "Your order #" + orderId + " is paid successfully!";
-        model.addAttribute("message", success);
-
-        return "payment-success";
     }
 
     //for cancel order

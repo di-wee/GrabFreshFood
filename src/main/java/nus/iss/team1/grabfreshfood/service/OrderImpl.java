@@ -1,9 +1,7 @@
 package nus.iss.team1.grabfreshfood.service;
 
 import jakarta.transaction.Transactional;
-import nus.iss.team1.grabfreshfood.DTO.CheckoutItemReq;
-import nus.iss.team1.grabfreshfood.config.CustomerNotFound;
-import nus.iss.team1.grabfreshfood.config.OrderCreationException;
+import nus.iss.team1.grabfreshfood.DTO.PaymentResult;
 import nus.iss.team1.grabfreshfood.config.ProductNotFoundException;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.repository.CustomerRepository;
@@ -11,12 +9,13 @@ import nus.iss.team1.grabfreshfood.repository.OrderItemsRepository;
 import nus.iss.team1.grabfreshfood.repository.OrderRepository;
 import nus.iss.team1.grabfreshfood.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -129,10 +128,11 @@ public class OrderImpl implements OrderService {
     }
 
     //pay order and update order status to DB
-    public void makePayment(int orderId, String cardNumber, String cardExpiry, String cvc) {
+    public PaymentResult makePayment(int orderId, String cardNumber, String cardExpiry, String cvc) {
         Order order = getOrderByOrderId(orderId);
 
         List<OrderItems> orderItemsList = orderItemsRepo.findByOrder(order);
+        List<String> outOfStockList = new ArrayList<>();
 
         for (OrderItems item : orderItemsList){
             Product product = item.getProduct();
@@ -140,17 +140,28 @@ public class OrderImpl implements OrderService {
             int deductQuantity = item .getQuantity();
 
             if (stock < deductQuantity){
-                throw new RuntimeException("Insufficient inventory!");
+                outOfStockList.add(product.getName());
             }
-
-            product.setQuantity(stock - deductQuantity);
-            productRepo.save(product);
         }
 
-        order.setPaymentMethod(OrderStatus.CREDITCARD);
-        order.setOrderStatus(OrderStatus.PROCESSING);
+        if (outOfStockList.isEmpty()){
+            for (OrderItems item : orderItemsList){
+                Product product = item.getProduct();
+                int stock = product.getQuantity();
+                int deductQuantity = item .getQuantity();
 
-        orderRepo.save(order);
+                product.setQuantity(stock - deductQuantity);
+                productRepo.save(product);
+            }
+
+            order.setPaymentMethod(OrderStatus.CREDITCARD);
+            order.setOrderStatus(OrderStatus.PROCESSING);
+
+            orderRepo.save(order);
+            return new PaymentResult(true, Collections.EMPTY_LIST);
+        } else {
+            return new PaymentResult(false, outOfStockList);
+        }
     }
 
     //cancel order by click cancel button on history page

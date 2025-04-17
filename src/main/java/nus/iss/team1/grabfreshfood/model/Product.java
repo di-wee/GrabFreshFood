@@ -41,10 +41,10 @@ public class Product {
     private String sku;
 
     @ManyToOne
-    @JoinColumn(name = "sub_category_subcategory_id")
+    @JoinColumn(name = "subcategory_id")
     private SubCategory subCategory;
     @ManyToOne
-    @JoinColumn(name = "category_category_id")
+    @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(mappedBy = "product")

@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 8.0.41, for macos15 (arm64)
+product-- MySQL dump 10.13  Distrib 8.0.41, for macos15 (arm64)
 --
 -- Host: localhost    Database: ecom_db
 -- ------------------------------------------------------

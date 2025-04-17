@@ -42,9 +42,12 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id")
+    @JsonIgnore
     private SubCategory subCategory;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
 
     @OneToMany(mappedBy = "product")

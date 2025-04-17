@@ -58,6 +58,7 @@ public class CartImpl implements CartService {
 
     // Updated to use Spring Data JPA derived method to strictly match both cartId
     // and cartItemId
+    //Done by Lewis
     @Override
     public CartItem findCartItem(int cartId, int cartItemId) {
         Optional<CartItem> item = cartItemRepo.findByCartCartIdAndCartItemId(cartId, cartItemId);
@@ -101,6 +102,7 @@ public class CartImpl implements CartService {
         }
     }
 
+    //Done by Dionis
     @Override
     public CartItem updateItemQuantity(int cartId, int cartItemId, int quantity) {
         CartItem item = findCartItem(cartId, cartItemId);
@@ -216,6 +218,7 @@ public class CartImpl implements CartService {
         return checkoutItemReqList.stream().map(CheckoutItemReq::getPerProductTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add).add(OrderStatus.SERVICEFEE).setScale(2, RoundingMode.HALF_UP);
     }
 
+    //Done by Dionis for badge count
     public int getCartItemCount(int customerId) {
         Cart cart = findCartByCustomerId(customerId);
         List<CartItem> cartItems = findCartItemsByCartId(cart.getCartId());

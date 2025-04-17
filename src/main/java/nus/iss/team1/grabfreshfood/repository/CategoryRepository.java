@@ -11,9 +11,13 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Category findByName(String name);
 
+    //Done by ShiYing
     @Query("SELECT DISTINCT c FROM Category c WHERE c.subCategories IS NOT EMPTY")
     List<Category> findDistinctCategoriesWithSubcategories();
-    
+
+    //Done by Dionis
+    Category findCategoryByName(String categoryName);
+
 
 }
 

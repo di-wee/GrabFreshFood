@@ -1,42 +1,34 @@
 import React, { useEffect, useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import Carousel from 'react-bootstrap/Carousel';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Spinner from 'react-bootstrap/Spinner';
-import ProductCarousel from './ProductCarousel';
-import ProductGrid from './ProductGrid';
-import '../index.css';
 
 //done by dionis
-const ProductCatalogue = ({ keyword, type }) => {
+const ProductCatalogue = ({ keyword }) => {
 	const [cartState, setCartState] = useState({}); // setState to track global produc state eg.
 	// { 1: { quantity: 1, addToCart: true} }
 
 	const [products, setProducts] = useState([]);
 	const [customerId, setCustomerId] = useState(0);
 	const [cartItems, setCartItems] = useState([]);
-
 	//pagination logic
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;
 
 	//fetching products for landing page
-	const fetchProducts = async () => {
+	const fetchProductLandingPage = async () => {
 		try {
-			let url;
-
-			if (!keyword) {
-				url = import.meta.env.VITE_SERVER + `api/search/landingpage`;
-			} else if (type === 'category') {
-				url = import.meta.env.VITE_SERVER + `api/category/${keyword}`;
-			} else if (type === 'search') {
-				url = import.meta.env.VITE_SERVER + `api/search?keyword=${keyword}`;
-			}
+			const url = import.meta.env.VITE_SERVER + `api/search/landingpage`;
 			const res = await fetch(url);
 			if (!res.ok) {
-				throw new Error('Error getting products');
+				throw new Error('Error getting products for landing page');
 			}
 			const data = await res.json();
 			setProducts(data);
 		} catch (err) {
-			console.error('Error retrieving products', err);
+			console.error('Error retrieving products for LP: ', err);
 		}
 	};
 
@@ -145,7 +137,11 @@ const ProductCatalogue = ({ keyword, type }) => {
 
 	//on first render of page to fetch products to component
 	useEffect(() => {
-		fetchProducts();
+		//to add if/else statement to check for keyword later to accomodate for search/category
+		if (!keyword) {
+			fetchProductLandingPage();
+		} else {
+		}
 		const loadCart = async () => {
 			const id = await fetchCustomerId();
 			console.log('id: ', id);
@@ -155,7 +151,6 @@ const ProductCatalogue = ({ keyword, type }) => {
 		};
 		loadCart();
 		console.log('keyword: ', keyword);
-		console.log('type: ', type);
 		console.log('cartState updated from existing cart items: ', cartState);
 	}, []);
 
@@ -176,6 +171,7 @@ const ProductCatalogue = ({ keyword, type }) => {
 	//add on button click of addtoCart
 	async function handleAddCart(productId) {
 		//checking if user is a registered user, else redirect to login
+
 		if (!customerId) {
 			window.location.href = import.meta.env.VITE_SERVER + `login`;
 			return;
@@ -246,6 +242,20 @@ const ProductCatalogue = ({ keyword, type }) => {
 		});
 	}
 
+	//to 'paginate' product carousell
+	const sliceProducts = (arr, size) => {
+		let result = [];
+		//if arr.length is 10, size = 5, it will slice
+		//[ [a,b,c,d,e], [f,g,h,j] ] i = i + size
+		for (let i = 0; i < arr.length; i += size) {
+			let sliced = arr.slice(i, i + size); //arr.slice(0, 5), arr.slice(5, 10)
+			result.push(sliced);
+		}
+		return result;
+	};
+
+	const productChunks = sliceProducts(products, 4);
+
 	return (
 		<div className='container mt-4'>
 			<style>
@@ -309,30 +319,166 @@ const ProductCatalogue = ({ keyword, type }) => {
 				`}
 			</style>
 			{!keyword ? (
-				<ProductCarousel
-					products={products}
-					cartState={cartState}
-					handleAddCart={handleAddCart}
-					increaseQuantity={increaseQuantity}
-					decreaseQuantity={decreaseQuantity}
-					handleQuantityChange={handleQuantityChange}
-				/>
+				<div
+					className='product-header'
+					style={{ margin: '1rem 0' }}>
+					<h5 style={{ color: 'darkgreen' }}>Top 10 recommended products</h5>
+				</div>
 			) : (
-				<ProductGrid
-					products={products}
-					cartState={cartState}
-					keyword={keyword}
-					handleAddCart={handleAddCart}
-					increaseQuantity={increaseQuantity}
-					decreaseQuantity={decreaseQuantity}
-					handleQuantityChange={handleQuantityChange}
-					currentPage={currentPage}
-					setCurrentPage={setCurrentPage}
-					itemsPerPage={itemsPerPage}
-					type={type}
-					cartItems={cartItems}
-					setCartItems={setCartItems}
-				/>
+				<div
+					className='category-header'
+					style={{ margin: '1rem 0' }}>
+					<h5 style={{ color: 'darkgreen' }}>{keyword}</h5>
+					<p>{products.length} products</p>
+				</div>
+			)}
+
+			{productChunks.length > 0 ? (
+				<Carousel
+					className='product-carousel'
+					indicators={false}>
+					{productChunks.map((chunk, index) => (
+						<Carousel.Item
+							key={index}
+							interval={3000}>
+							<div
+								className='d-flex justify-content-center flex-wrap'
+								style={{
+									gap: '3rem',
+									padding: '0 1rem',
+								}}>
+								{chunk.map((product) => (
+									<Card
+										key={product.id}
+										style={{
+											width: '16rem',
+											minHeight: '365px',
+											flex: '0 0 auto',
+											scrollSnapAlign: 'start',
+										}}>
+										<Card.Img
+											variant='top'
+											src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
+											style={{
+												height: '180px',
+												objectFit: 'contain',
+												padding: '10px',
+												cursor: 'pointer',
+											}}
+											onClick={() =>
+												(window.location.href =
+													import.meta.env.VITE_SERVER + `product/${product.id}`)
+											}
+										/>
+										<Card.Body
+											style={{
+												display: 'flex',
+												flexDirection: 'column',
+												justifyContent: 'space-between',
+												height: '100%',
+											}}>
+											<Card.Title
+												title={product.name}
+												style={{
+													fontSize: '1rem',
+													fontWeight: 'bold',
+													marginBottom: '0.5rem',
+													whiteSpace: 'normal',
+													overflow: 'visible',
+													textOverflow: 'unset',
+												}}>
+												{product.name}
+											</Card.Title>
+
+											<Card.Text style={{ marginBottom: '0.5rem' }}>
+												<p
+													style={{
+														color: product.quantity !== 0 ? 'green' : 'red',
+														margin: '0 0 4px 0',
+													}}>
+													{product.quantity !== 0
+														? 'In Stock'
+														: 'Out of Stock!'}
+												</p>
+												<p style={{ margin: '0 0 6px 0', fontWeight: '500' }}>
+													$
+													{product.price !== undefined
+														? product.price.toFixed(2)
+														: product.price}
+												</p>
+											</Card.Text>
+
+											{product.quantity == 0 ? (
+												<button
+													className='btn btn-secondary'
+													disabled>
+													Out of Stock
+												</button>
+											) : //product is fetched via api and is async
+											cartState[product.id]?.addToCart ? (
+												<div
+													class='input-group'
+													style={{ maxWidth: '140px' }}>
+													<button
+														class='btn btn-outline-secondary'
+														type='button'
+														onClick={() => decreaseQuantity(product.id)}>
+														−
+													</button>
+													<div className='quantity-input'>
+														<input
+															type='number'
+															id='quantity'
+															name='quantity'
+															class='form-control text-center'
+															value={cartState[product.id]?.quantity}
+															min='1'
+															max='30'
+															required
+															style={{ maxWidth: '50px' }}
+															onChange={(e) =>
+																handleQuantityChange(
+																	e,
+																	product.id,
+																	product.quantity
+																)
+															}
+														/>
+													</div>
+
+													<button
+														class='btn btn-outline-secondary'
+														type='button'
+														onClick={() => {
+															increaseQuantity(product.id, product.quantity);
+															console.log('increased cartstate: ', cartState);
+														}}>
+														+
+													</button>
+												</div>
+											) : (
+												<Button
+													onClick={() => {
+														handleAddCart(product.id);
+													}}
+													variant='success'>
+													Add to cart
+												</Button>
+											)}
+										</Card.Body>
+									</Card>
+								))}
+							</div>
+						</Carousel.Item>
+					))}
+				</Carousel>
+			) : (
+				<Spinner
+					animation='border'
+					variant='success'
+					role='status'>
+					<span className='visually-hidden'>Loading products...</span>
+				</Spinner>
 			)}
 		</div>
 	);

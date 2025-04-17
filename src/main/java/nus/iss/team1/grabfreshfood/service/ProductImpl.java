@@ -20,6 +20,7 @@ public class ProductImpl implements ProductService {
     }
 
 
+    //Done by Shi Ying
     @Override
     public Product findProductById(int id) {
         Product product = productRepo.findProductById(id);
@@ -28,22 +29,25 @@ public class ProductImpl implements ProductService {
 
     }
 
-
+    //Done by Shi Ying
     @Override
     public List<Product> findProductByQuery(String query) {
         return productRepo.findProductByQuery(query);
     }
 
-
+    //Done by Shi Ying
     @Override
     public List<Product> findProductBySubCategory(String subcategoryName) {
-        return productRepo.findProductBySubCategory(subcategoryName);
-    }
-    @Override
-    public List<Product> findProductByCategory(String categoryName) {
-        return productRepo.findProductByCategory(categoryName);
+        return productRepo.findProductsBySubCategory_Name(subcategoryName);
     }
 
+    //Done by Shi Ying
+    @Override
+    public List<Product> findProductByCategory(String categoryName) {
+        return productRepo.findProductsByCategory_Name(categoryName);
+    }
+
+    //Done by Shi Ying
     @Override
     public List<Product> findAllProduct() {
         try {

@@ -9,8 +9,5 @@ import java.util.List;
 public interface CategoryService {
     List<Category> getAllCategoriesWithSubcategories();
 
-    Category getCategoryByName(String categoryName);
-
-    SubCategory getSubcategoryByName(String subcatName);
 
 }

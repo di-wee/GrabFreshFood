@@ -12,17 +12,15 @@
     <link href="/css/styles.css" rel="stylesheet">
 </head>
 
-<body style="background-color: #dee2e6">
+<body>
 <!-- Top Notice Banner Fragment -->
 <div th:replace="~{fragments/topbanner :: topbanner}"></div>
 
 <!-- Navbar Fragment -->
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<!-- React Container and Heading -->
-<div class="container mt-3" style="padding-top: 80px;">
-
-    <!-- Option A: React renders here -->
+<!--React Injection-->
+<div class="container">
     <div id="react-catalogue" th:attr="data-keyword=${keyword}, data-type=${type}"></div>
 </div>
 

@@ -12,6 +12,7 @@ const ProductCatalogue = ({ keyword, type }) => {
 	const [products, setProducts] = useState([]);
 	const [customerId, setCustomerId] = useState(0);
 	const [cartItems, setCartItems] = useState([]);
+
 	//pagination logic
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 10;

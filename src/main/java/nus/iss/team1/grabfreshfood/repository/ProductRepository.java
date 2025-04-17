@@ -17,12 +17,13 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             "LOWER(p.category.name) LIKE LOWER(CONCAT('%',:query, '%'))")
     List<Product> findProductByQuery(@Param("query") String query);
 
-    @Query("SELECT p FROM Product p WHERE p.subCategory.name = :subcategory")
-    List<Product> findProductBySubCategory(@Param("subcategory") String subcategoryName);
+    //Done by Dionis
+    List<Product> findProductsByCategory_Name(String categoryName);
 
-    @Query("SELECT p FROM Product p WHERE p.category.name = :category")
-    List<Product> findProductByCategory(@Param("category") String categoryName);
+    //Done by Dionis
+    List<Product> findProductsBySubCategory_Name(String subCategoryName);
 
+    //Done by Dionis
     Product findProductById(int ProductId);
 
 }

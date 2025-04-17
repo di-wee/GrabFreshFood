@@ -2,14 +2,12 @@ package nus.iss.team1.grabfreshfood.controller;
 
 import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.DTO.AddItemToCartReq;
-import nus.iss.team1.grabfreshfood.DTO.CreateOrderRequest;
 import nus.iss.team1.grabfreshfood.DTO.UpdateCartItemReq;
 import nus.iss.team1.grabfreshfood.DTO.UpdateSelectedItemsReq;
 import nus.iss.team1.grabfreshfood.config.*;
 import nus.iss.team1.grabfreshfood.model.*;
 import nus.iss.team1.grabfreshfood.service.CartService;
 import nus.iss.team1.grabfreshfood.service.OrderService;
-import nus.iss.team1.grabfreshfood.service.ProductCategoriesService;
 import nus.iss.team1.grabfreshfood.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -34,9 +31,7 @@ public class GeneralRestController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private ProductCategoriesService productCategoriesService;
+    
 
     // Done by Dionis
     //GET call to retrieve Cart based on Customer ID
@@ -149,7 +144,7 @@ public class GeneralRestController {
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchResult(@RequestParam("keyword") String query) {
         List<Product> products = productService.findProductByQuery(query);
-        if (products == null) {
+        if (products == null || products.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(products, HttpStatus.OK);
@@ -163,11 +158,12 @@ public class GeneralRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //Done by Shi Ying
+    //Done by Ben
     @GetMapping("/category/{keyword}")
     public ResponseEntity<List<Product>> categorySubcategory(@PathVariable("keyword") String keyword) {
+
         List<Product> products = productService.findProductBySubCategory(keyword);
-        if (products == null) {
+        if (products == null || products.isEmpty()) {
             products = productService.findProductByCategory(keyword);
         }
         logger.info("Products retrieved: " + products);
@@ -204,17 +200,6 @@ public class GeneralRestController {
         }
     }
 
-    //Done by Ben
-    @GetMapping("/{categoryName}/products")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable String categoryName) {
-        try {
-            List<Product> products = productCategoriesService.getProductsByCategoryName(categoryName);
-            return new ResponseEntity<>(products, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
-    }
 
     //get api for landing page products done by Dionis (tested)
     @GetMapping("/search/landingpage")

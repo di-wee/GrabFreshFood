@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ShoppingCartController {
+
+    //Done by Dionis
     @GetMapping("/cart")
     public String cartPage(HttpSession session) {
         // check user session. if user not logged in, redirect to login page
@@ -15,7 +17,7 @@ public class ShoppingCartController {
         if (customer == null) {
             return "redirect:/login";
         }
-        
+
 
         return "shopping-cart";
     }

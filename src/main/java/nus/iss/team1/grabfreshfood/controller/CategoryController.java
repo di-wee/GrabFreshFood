@@ -14,6 +14,7 @@ public class CategoryController {
     @Autowired
     private ProductService productService;
 
+    //Done by Shi Ying
     @GetMapping("/category/all")
     public String categoryAll(Model model) {
         //List<Product>products=productService.findAllProduct();
@@ -23,6 +24,7 @@ public class CategoryController {
         return "category-page";
     }
 
+    //Done by Shi Ying
     @GetMapping("/category/{keyword}")
     public String categorySubcategory(@PathVariable("keyword") String keyword, Model model) {
         model.addAttribute("keyword", keyword);

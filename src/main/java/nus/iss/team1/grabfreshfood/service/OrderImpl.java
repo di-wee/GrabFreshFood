@@ -79,9 +79,7 @@ public class OrderImpl implements OrderService {
             deliverAddress.append(")");
         }
 
-        String shippingAddress = deliverAddress.toString();
-
-        return shippingAddress;
+        return deliverAddress.toString();
 
     }
 

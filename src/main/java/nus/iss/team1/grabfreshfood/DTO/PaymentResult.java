@@ -3,6 +3,8 @@ package nus.iss.team1.grabfreshfood.DTO;
 import lombok.Getter;
 
 import java.util.List;
+
+//Done by LIU SHUTING
 @Getter
 public class PaymentResult {
     private boolean success;

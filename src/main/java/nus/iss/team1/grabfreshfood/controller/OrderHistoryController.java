@@ -33,10 +33,12 @@ public class OrderHistoryController {
     @Autowired
     private CategoryService categoryService;
 
+    //Done by LIU SHUTING
     private Customer getLogInCustomer(HttpSession session){
         return (Customer) session.getAttribute("customer");
     }
 
+    //Done by LIU SHUTING
     private boolean isOrderOwnedByThisCustomer(int orderId, HttpSession session) {
         Customer customer = getLogInCustomer(session);
         if (customer == null) return false;
@@ -44,6 +46,7 @@ public class OrderHistoryController {
         return order != null && order.getCustomer().getId() == customer.getId();
     }
 
+    //Done by LIU SHUTING
     private static final Map<String, String> STATUS_COLOR_MAP = Map.of(
             OrderStatus.TOPAY, "warning",
             OrderStatus.PROCESSING, "primary",
@@ -53,7 +56,7 @@ public class OrderHistoryController {
             "All", "secondary"
     );
 
-    //Lst: show order-history
+    //Done by LIU SHUTING: show order-history
     @GetMapping("/order-history")
     public String getOrderHistory(@RequestParam(required = false, defaultValue = "All") String type, Model model, HttpSession session) {
         Customer customer = getLogInCustomer(session);
@@ -73,7 +76,7 @@ public class OrderHistoryController {
         return "orderHistory";
     }
 
-    //after clicking "checkout" button, go to checkout-page to fill in address, after fill in, then create order and remove checkout cart item
+    //Done by LIU SHUTING - after clicking "checkout" button, go to checkout-page to fill in address, after fill in, then create order and remove checkout cart item
     @GetMapping("/checkout-page")
     public String checkoutPage(Model model, HttpSession session) {
         Customer customer = getLogInCustomer(session);
@@ -114,7 +117,7 @@ public class OrderHistoryController {
     }
 
 
-    //fill and add address to DB by click 'save&continue' button on checkout-page.html
+    //Done by LIU SHUTING - fill and add address to DB by click 'save&continue' button on checkout-page.html
     @PostMapping("/checkout/pay")
     public String getAddress(@RequestParam(value = "postalCode", required = false) String postalCode,
                              @RequestParam(value = "buildingName", required = false) String buildingName,
@@ -154,7 +157,7 @@ public class OrderHistoryController {
         return "redirect:/payment-page?orderId=" + orderId;
     }
 
-    //for test, make me can run it without receiving cart data, manually enter an existing orderId in the URL
+    //Done by LIU SHUTING - for test, make me can run it without receiving cart data, manually enter an existing orderId in the URL
     @GetMapping("/payment-page")
     public String showPaymentPage(@RequestParam("orderId") int orderId, Model model, HttpSession session) {
         if (!isOrderOwnedByThisCustomer(orderId, session)) {
@@ -165,7 +168,7 @@ public class OrderHistoryController {
         return "payment-page";
     }
 
-    //click the 'complete payment' button on payment page to update order status and payment method
+    //Done by LIU SHUTING - click the 'complete payment' button on payment page to update order status and payment method
     @PostMapping("/payment")
     public String payIt(@RequestParam("orderId") int orderId,
                         @RequestParam("cardNumber") String cardNumber,
@@ -202,7 +205,7 @@ public class OrderHistoryController {
         }
     }
 
-    //for cancel order
+    //Done by LIU SHUTING - for cancel order
     @PostMapping("/cancel-order")
     public String cancelOrder(@RequestParam("orderId") int orderId, HttpSession session) {
         Customer customer = getLogInCustomer(session);

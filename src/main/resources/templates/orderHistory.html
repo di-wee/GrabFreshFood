@@ -14,6 +14,7 @@
 
 <div class="container mt-4 mb-5">
 <!--    tab buttons-->
+<!--    Done by LIU SHUTING-->
     <div class="bg-white rounded-3 shadow-sm mb-3 p-3 py-2">
         <h6 class="fw-bold mb-2">Order Status</h6>
         <div class="d-flex flex-wrap gap-2 mb-1">
@@ -26,6 +27,7 @@
     </div>
 
 <!--    orders-->
+<!--    Done by LIU SHUTING-->
     <div class="orderList">
         <div th:each="order : ${orders}" class="bg-white rounded-3 shadow-sm p-4 mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -112,6 +114,7 @@
     </div>
 </footer>
 
+<!--Done by LIU SHUTING-->
 <script>
     function confirmCancel(button) {
         const orderId = button.getAttribute("data-order-id");

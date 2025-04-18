@@ -33,7 +33,7 @@ public class OrderImpl implements OrderService {
 
 
     @Override
-    //show customer order list
+    //Done by LIU SHUTING - show customer order list
     public List<Order> getOrderHistoryForCustomer(String status, Customer customer) {
         if (!status.equals("All")) {
             return orderRepo.findByOrderStatusAndCustomer(status, customer);
@@ -41,12 +41,12 @@ public class OrderImpl implements OrderService {
         return orderRepo.findByCustomer(customer);
     }
 
-    // find order by orderId
+    //Done by LIU SHUTING -  find order by orderId
     public Order getOrderByOrderId(int orderId) {
         return orderRepo.findById(orderId);
     }
 
-    // get the address and update it to DB
+    //Done by LIU SHUTING -  get the address and update it to DB
     public String saveDeliverAddress(String address, String floorNumber, String unitNumber,String postalCode, String buildingName) {
         StringBuilder deliverAddress = new StringBuilder();
 
@@ -83,7 +83,7 @@ public class OrderImpl implements OrderService {
 
     }
 
-    //Lst: create new order to DB and get the orderId
+    //Done by LIU SHUTING - create new order to DB and get the orderId
     public int createNewOrderAndGetNewOrderId(Customer customer, String shippingAddress, List<CartItem> checkoutItems){
 
         Order order = new Order();
@@ -122,7 +122,7 @@ public class OrderImpl implements OrderService {
         return saveNewOrder.getId();
     }
 
-    //pay order and update order status to DB
+    //Done by LIU SHUTING - pay order and update order status to DB
     public PaymentResult makePayment(int orderId, String cardNumber, String cardExpiry, String cvc) {
         Order order = getOrderByOrderId(orderId);
 
@@ -159,7 +159,7 @@ public class OrderImpl implements OrderService {
         }
     }
 
-    //cancel order by click cancel button on history page
+    //Done by LIU SHUTING - cancel order by click cancel button on history page
     public void cancelOrder(int orderId, Customer customer) {
         Order order = getOrderByOrderId(orderId);
 

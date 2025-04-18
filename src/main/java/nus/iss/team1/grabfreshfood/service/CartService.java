@@ -30,13 +30,16 @@ public interface CartService {
 
     void deleteCartItem(int cartId, int itemId);
 
-    //Lst
+    //Done by LIU SHUTING
     List<CartItem> getCheckoutCartItems(int cartId);
 
+    //Done by LIU SHUTING
     void removeCheckoutItemsFromCart(List<CartItem> checkoutItems);
 
+    //Done by LIU SHUTING
     List<CheckoutItemReq> getCheckoutReq(int cartId);
 
+    //Done by LIU SHUTING
     BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList);
 
     //Done by Dionis

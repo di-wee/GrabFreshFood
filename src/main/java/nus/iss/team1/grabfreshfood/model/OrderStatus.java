@@ -2,6 +2,7 @@ package nus.iss.team1.grabfreshfood.model;
 
 import java.math.BigDecimal;
 
+//Done by LIU SHUTING
 public class OrderStatus {
     //for order status
     public static final String PROCESSING = "Processing";

@@ -7,10 +7,7 @@ import nus.iss.team1.grabfreshfood.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 import nus.iss.team1.grabfreshfood.model.Customer;
@@ -78,6 +75,23 @@ public class ProductController {
 		return "redirect:/cart";
 	}
 
+	@PostMapping("/product/{id}/review")
+	public String submitReview(@PathVariable("id") int productId,
+							   @ModelAttribute("reviewForm") Review review,
+							   HttpSession session) {
+
+		Customer customer = (Customer) session.getAttribute("customer");
+		if (customer == null) {
+			return "redirect:/login";
+		}
+
+		review.setId(0);
+		review.setUserId(customer.getId());
+		review.setProductId(productId);
+		reviewService.addReview(review);
+
+		return "redirect:/product/" + productId;
+	}
 }
 
 

@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Max;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private int id;
 
     @Column(name = "product_id", nullable = false)

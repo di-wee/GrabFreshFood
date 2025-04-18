@@ -120,10 +120,10 @@ body {
 .dropdown-submenu:hover > .dropdown-menu {
     display: block;
 }
- :root {
-     --grabfreshfood-green: #0D723B;
-     --grabfreshfood-light-green: #E8F5E9;
- }
+:root {
+    --grabfreshfood-green: #0D723B;
+    --grabfreshfood-light-green: #E8F5E9;
+}
 
 .text-grabfreshfood {
     color: var(--grabfreshfood-green);
@@ -199,4 +199,8 @@ body {
     display: none;
 }
 
-
+/* ✅ Fix: First-level dropdown auto-hide on mouse leave (hover-based open) */
+.navbar-grabfreshfood .nav-item.dropdown:hover > .dropdown-menu,
+.navbar-grabfreshfood .nav-item.dropdown .dropdown-menu:hover {
+    display: block;
+}

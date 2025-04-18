@@ -185,79 +185,65 @@ function ShoppingCart() {
 					</button>
 				</div>
 			) : (
-				<div className='main container'>
-					<div className='title row'>
-						<div className='col'>
-							<h5>Shopping Cart</h5>
-						</div>
-						<div className='col text-right'>
-							{/* Updated Empty Cart button to call handleEmptyCart */}
-							<button
-								onClick={() => handleEmptyCart()}
-								className='btn btn-outline-danger'>
-								<span style={{ marginRight: '5px' }}>
-									<i className='bi bi-trash3'></i>
-								</span>
-								Empty cart
-							</button>
-						</div>
+				<div className='main container my-5'>
+					<div className='d-flex justify-content-between align-items-center mb-4'>
+						<h4 className='mb-0'>Your Shopping Cart</h4>
+						<button
+							onClick={handleEmptyCart}
+							className='btn btn-outline-danger btn-sm'>
+							<i className='bi bi-trash3 me-2'></i>
+							Empty cart
+						</button>
 					</div>
 
-					<div className='container'>
-						<form>
-							<div className='row mt-4'>
-								{/* shopping cart grid */}
-								<div className='col-md-7 pr-md-3'>
-									<div
-										className='border bg-light rounded overflow-hidden mb-2'
-										style={{ padding: '1vh 1vh 0 1vh' }}>
-										{cartItems.map((item) => (
-											<CartItem
-												key={item.cartItemId}
-												item={item}
-												selectedItems={selectedItems}
-												setSelectedItems={setSelectedItems}
-												setQuantities={setQuantities}
-												quantities={quantities}
-												setSubTotal={setSubTotal}
-												subtotal={subtotal}
-												cartItems={cartItems}
-												itemPrice={itemPrice}
-												setItemPrice={setItemPrice}
-												removeCartItem={removeCartItem}
-												// ✅ NEW: Pass calculated item subtotal to each cart item
-												itemSubtotal={calculateItemSubtotal(item.cartItemId)}
-											/>
-										))}
-									</div>
-								</div>
-
-								{/* Subtotal grid */}
-								<div className='col-md-5 pl-md-3'>
-									<CartSummary
-										subtotal={subtotal}
-										setSubTotal={setSubTotal}
-										serviceFee={serviceFee}
-										total={total}
-									/>
-									<div className='pt-0 mt-3'>
-										<Button
-											onClick={() => handleCheckout()}
-											variant='success'
-											className='w-100 d-flex justify-content-between align-items-center px-4 py-2'>
-											<span>
-												<b>Checkout</b>
-											</span>
-											<span>
-												<b>${total}</b>
-											</span>
-										</Button>
-									</div>
+					<form>
+						<div className='row'>
+							{/* Cart Items */}
+							<div className='col-md-8 mb-4'>
+								<div className='bg-white p-3 rounded shadow-sm'>
+									{cartItems.map((item) => (
+										<CartItem
+											key={item.cartItemId}
+											item={item}
+											selectedItems={selectedItems}
+											setSelectedItems={setSelectedItems}
+											setQuantities={setQuantities}
+											quantities={quantities}
+											setSubTotal={setSubTotal}
+											subtotal={subtotal}
+											cartItems={cartItems}
+											itemPrice={itemPrice}
+											setItemPrice={setItemPrice}
+											removeCartItem={removeCartItem}
+											itemSubtotal={calculateItemSubtotal(item.cartItemId)}
+										/>
+									))}
 								</div>
 							</div>
-						</form>
-					</div>
+
+							{/* Summary Panel */}
+							<div className='col-md-4'>
+								<div className='bg-white p-4 rounded shadow-sm'>
+									<CartSummary
+										subtotal={subtotal}
+										serviceFee={serviceFee}
+										total={total}
+										selectedCount={selectedItems.length}
+									/>
+
+									<Button
+										onClick={handleCheckout}
+										variant='success'
+										className='w-100 d-flex justify-content-between align-items-center px-4 py-3 mt-3'>
+										<span><strong>Checkout</strong></span>
+										<span><strong>${total}</strong></span>
+									</Button>
+								</div>
+							</div>
+						</div>
+					</form>
 				</div>
+
 			)}
 		</>
 	);

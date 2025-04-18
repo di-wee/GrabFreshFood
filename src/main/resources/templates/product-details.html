@@ -204,15 +204,15 @@
     const addButton = document.getElementById("addButton");
 
 
-    const maxInput = parseInt(quantityInput.getAttribute("max"))
-    const maxStock = Math.min(maxInput, 30);
+    const maxInput = parseInt(quantityInput.getAttribute("max")) //product.quantity > 30 ? 30:product.quantity
+    const maxStock = Math.min(maxInput, 30); // choose the lesser of the two
 
     //Update the stock message
     function updateStockStatus() {
         const value = parseInt(quantityInput.value) || 0;
 
-        if (value >= maxStock) {
-            stockStatus.textContent = "Exceeded stock quantity";
+        if (value > maxStock) {
+            stockStatus.textContent = "Out of stock";
             stockStatus.classList.remove("text-success");
             stockStatus.classList.add("text-danger");
             addToCart.disabled = true;

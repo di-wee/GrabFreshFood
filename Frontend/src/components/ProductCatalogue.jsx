@@ -22,12 +22,14 @@ const ProductCatalogue = ({ keyword, type }) => {
 		try {
 			let url;
 
-			if (!keyword) {
+			if (!keyword && !type) {
 				url = import.meta.env.VITE_SERVER + `api/search/landingpage`;
 			} else if (type === 'category') {
 				url = import.meta.env.VITE_SERVER + `api/category/${keyword}`;
-			} else if (type === 'search') {
+			} else if (keyword && type === 'search') {
 				url = import.meta.env.VITE_SERVER + `api/search?keyword=${keyword}`;
+			} else if (!keyword && type === 'search') {
+				url = import.meta.env.VITE_SERVER + `api/search/all`;
 			}
 			const res = await fetch(url);
 			if (!res.ok) {
@@ -340,7 +342,7 @@ const ProductCatalogue = ({ keyword, type }) => {
 				
 				`}
 			</style>
-			{!keyword ? (
+			{!keyword && !type ? (
 				<ProductCarousel
 					products={products}
 					cartState={cartState}

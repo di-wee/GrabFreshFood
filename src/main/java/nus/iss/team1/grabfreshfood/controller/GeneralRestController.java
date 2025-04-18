@@ -155,12 +155,6 @@ public class GeneralRestController {
         }
     }
 
-    //Done by Shi Ying
-    @GetMapping("/category/all")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        List<Product> products = productService.findAllProduct();
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     //Done by Ben
     @GetMapping("/category/{keyword}")
@@ -226,7 +220,20 @@ public class GeneralRestController {
     }
 
 
-
+    //Done by ShiYing & Dionis
+    @GetMapping("/search/all")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        try {
+            List<Product> productList = productService.findAllProduct();
+            return new ResponseEntity<>(productList, HttpStatus.OK);
+        } catch (ProductNotFoundException e) {
+            logger.error("Error retrieving product list: ", e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            logger.error("Internal server error retrieving product: ", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 }

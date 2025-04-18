@@ -1,5 +1,6 @@
 package nus.iss.team1.grabfreshfood.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import nus.iss.team1.grabfreshfood.config.ProductNotFoundException;
@@ -18,15 +19,16 @@ import nus.iss.team1.grabfreshfood.model.Review;
 
 @Controller
 public class ProductController {
-	private final ProductService productService;
+    private final ProductService productService;
+    @Autowired
+    private ReviewService reviewService;
+    @Autowired
+    private CartService cartService;
 
-	@Autowired
-	public ProductController(ProductService productService) {
-		this.productService = productService;
-	}
-
-	@Autowired
-	private ReviewService reviewService;
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     //display product details
     @GetMapping("/product/{id}")
@@ -34,68 +36,69 @@ public class ProductController {
         Product product = productService.findProductById(id);
         if (product == null) {
             model.addAttribute("errorMessage", "Product not found");
-		} else {
+        } else {
             model.addAttribute("product", product);
         }
 
-		double averageRating = reviewService.getAverageRating(id);
-		model.addAttribute("averageRating", averageRating);
+        double averageRating = reviewService.getAverageRating(id);
+        model.addAttribute("averageRating", averageRating);
 
-		model.addAttribute("reviews", reviewService.getReviewsByProductId(id));
-		model.addAttribute("reviewForm", new Review());
+        List<Review> allReviews = reviewService.getReviewsByProductId(id);
+        int reviewCount = allReviews.size();
 
-		Customer customer = (Customer) session.getAttribute("customer");
-		if (customer != null) {
-			boolean alreadyReviewed = reviewService.hasUserReviewedProduct(id, customer.getId());
-			model.addAttribute("alreadyReviewed", alreadyReviewed);
-		}
+        model.addAttribute("reviews", allReviews);
+        model.addAttribute("reviewForm", new Review());
+        model.addAttribute("reviewCount", reviewCount);
+
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer != null) {
+            boolean alreadyReviewed = reviewService.hasUserReviewedProduct(id, customer.getId());
+            model.addAttribute("alreadyReviewed", alreadyReviewed);
+        }
 
         return "product-details";
 
     }
 
-	@Autowired
-	private CartService cartService;
+    //check if the user is login before allowing usage of add to cart function
+    @PostMapping("/product/addToCart")
+    public String addToCart(HttpSession session,
+                            @RequestParam("productId") int productId,
+                            @RequestParam("quantity") int quantity,
+                            Model model) {
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer == null) {
+            return "redirect:/login";
+        }
+        Product product = productService.findProductById(productId);
+        if (product == null) {
+            throw new ProductNotFoundException("ProductId not found for productId: " + productId);
+        }
+        cartService.addNumberQuantity(customer.getId(), product.getId(), quantity);
+        return "redirect:/cart";
+    }
 
-	//check if the user is login before allowing usage of add to cart function
-	@PostMapping("/product/addToCart")
-	public String addToCart(HttpSession session,
-							@RequestParam("productId") int productId,
-							@RequestParam("quantity") int quantity,
-							Model model) {
-		Customer customer = (Customer) session.getAttribute("customer");
-		if (customer == null) {
-			return "redirect:/login";
-		}
-		Product product = productService.findProductById(productId);
-		if(product == null){
-			throw new ProductNotFoundException("ProductId not found for productId: " + productId);
-		}
-		cartService.addNumberQuantity(customer.getId(), product.getId(), quantity);
-		return "redirect:/cart";
-	}
+    @PostMapping("/product/{id}/review")
+    public String submitReview(@PathVariable("id") int productId,
+                               @ModelAttribute("reviewForm") Review review,
+                               HttpSession session) {
 
-	@PostMapping("/product/{id}/review")
-	public String submitReview(@PathVariable("id") int productId,
-							   @ModelAttribute("reviewForm") Review review,
-							   HttpSession session) {
+        Customer customer = (Customer) session.getAttribute("customer");
+        if (customer == null) {
+            return "redirect:/login";
+        }
 
-		Customer customer = (Customer) session.getAttribute("customer");
-		if (customer == null) {
-			return "redirect:/login";
-		}
+        review.setId(0);
+        review.setUserId(customer.getId());
+        review.setProductId(productId);
 
-		review.setId(0);
-		review.setUserId(customer.getId());
-		review.setProductId(productId);
+        String displayName = customer.getFirstName();
+        review.setUsername(displayName);
 
-		String displayName = customer.getFirstName();
-		review.setUsername(displayName);
+        reviewService.addReview(review);
 
-		reviewService.addReview(review);
-
-		return "redirect:/product/" + productId;
-	}
+        return "redirect:/product/" + productId;
+    }
 }
 
 

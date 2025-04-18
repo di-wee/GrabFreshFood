@@ -29,8 +29,8 @@
     </div>
 </div>
 
-<!--To replace if implementing stripe payment-->
 <!--Payment grid-->
+<!--Done by LIU SHUTING-->
 <div class="payment-grid container bg-light">
     <div class="top-banner">
         <h5 class="banner-text"><span style="margin-right: 10px"><i class="bi bi-credit-card"></i></span>Payment method
@@ -54,7 +54,7 @@
 
             <button class="payment-button btn btn-success" type="submit">Complete Payment</button>
 
-            <!-- Lst error message show-->
+            <!--  error message show-->
             <div class="alert alert-danger fade show mt-3" id="errorAlert" role="alert" th:if="${error}">
                 <p th:text="${error}"></p>
             </div>
@@ -65,6 +65,7 @@
 
 </div>
 
+<!--Done by LIU SHUTING-->
 <script>
     window.addEventListener("DOMContentLoaded", () => {
         const errorAlert = document.getElementById("errorAlert");

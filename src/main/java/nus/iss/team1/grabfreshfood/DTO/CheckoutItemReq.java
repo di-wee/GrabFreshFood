@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
+//Done by LIU SHUTING
 @Getter
 @Setter
 public class CheckoutItemReq {

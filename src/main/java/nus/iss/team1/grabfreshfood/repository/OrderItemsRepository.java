@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface OrderItemsRepository extends JpaRepository<OrderItems, Integer> {
 
+    //Done by LIU SHUTING
     List<OrderItems> findByOrder(Order order);
 
 }

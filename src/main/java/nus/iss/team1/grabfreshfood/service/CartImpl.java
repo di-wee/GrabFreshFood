@@ -182,16 +182,17 @@ public class CartImpl implements CartService {
         }
     }
 
-    // Lst find the checkout cart item
+    // Done by LIU SHUTING -  find the checkout cart item
     public List<CartItem> getCheckoutCartItems(int cartId) {
         return cartItemRepo.findCheckoutCartItemByCartId(cartId);
     }
 
-    // Lst remove checkout item after creating new order
+    // Done by LIU SHUTING -  remove checkout item after creating new order
     public void removeCheckoutItemsFromCart(List<CartItem> checkoutItems) {
         cartItemRepo.deleteAll(checkoutItems);
     }
 
+    //Done by LIU SHUTING
     public List<CheckoutItemReq> getCheckoutReq(int cartId) {
         List<CartItem> checkoutItems = getCheckoutCartItems(cartId);
         List<CheckoutItemReq> showList = new ArrayList<>();
@@ -214,6 +215,7 @@ public class CartImpl implements CartService {
         return showList;
     }
 
+    //Done by LIU SHUTING
     public BigDecimal calculateCheckoutSum(List<CheckoutItemReq> checkoutItemReqList) {
         return checkoutItemReqList.stream().map(CheckoutItemReq::getPerProductTotalAmount).reduce(BigDecimal.ZERO, BigDecimal::add).add(OrderStatus.SERVICEFEE).setScale(2, RoundingMode.HALF_UP);
     }

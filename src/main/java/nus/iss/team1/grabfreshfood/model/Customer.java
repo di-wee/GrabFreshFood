@@ -1,4 +1,4 @@
-//Done by Lewis Huang
+// Done by Lewis Huang
 
 package nus.iss.team1.grabfreshfood.model;
 
@@ -7,33 +7,42 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Represents a Customer in the system.
+ * Includes personal and login information, along with account status and orders.
+ */
 @Entity
 @Table(name = "customer")
 public class Customer {
 
+    // Primary key: auto-incremented customer ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private Integer id;           // changed from Long to Integer
+    private Integer id; // changed from Long to Integer
 
+    // Username used as email; must be unique and match specific pattern
     @NotBlank(message = "Email is required")
     @Pattern(
         regexp = "^[\\w.-]+@[\\w.-]+\\.com$",
         message = "Email must be a valid address ending with .com"
     )
     @Column(name = "email", nullable = false, unique = true)
-    private String username;      // used as email
+    private String username;
 
+    // Login password; must be provided
     @NotBlank(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
+    // First and last name; optional at entity level
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
+    // Phone number validation: must be digits only
     @NotBlank(message = "Phone number is required")
     @Pattern(
         regexp = "\\d+",
@@ -42,24 +51,27 @@ public class Customer {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    // Optional address field
     private String address;
 
+    // Auto-captured during customer creation
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
+    // Indicates if the account is currently active
     @Column(name = "is_active")
     private Boolean isActive;
 
-    // mapped orders
+    // One-to-many relationship: a customer can have multiple orders
     @OneToMany(mappedBy = "customer")
     private List<Order> myOrders;
 
+    // Default constructor sets registration date
     public Customer() {
-        // Automatically set registration date when a customer is created
         this.registrationDate = LocalDateTime.now();
     }
 
-    // Getters and setters...
+    // Getters and setters
     public Integer getId() {
         return id;
     }

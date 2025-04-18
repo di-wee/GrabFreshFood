@@ -15,7 +15,7 @@
 
 <div class="login-grid container bg-white">
     <form class="w-100" method="post" th:action="@{/login}">
-        <!-- ✅ Display logout success message -->
+        <!-- Display logout success message -->
         <div class="alert alert-success text-center" th:if="${logoutMessage}">
             <i class="bi bi-check-circle-fill"></i>
             <span th:text="${logoutMessage}"></span>

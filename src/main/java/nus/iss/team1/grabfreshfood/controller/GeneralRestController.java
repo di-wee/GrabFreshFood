@@ -125,7 +125,7 @@ public class GeneralRestController {
     }
 
 
-    //Done by Lewis
+    //Done by Lewis Huang
     @DeleteMapping("/cart/{cartId}/item/{itemId}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable("itemId") int itemId,
                                                @PathVariable("cartId") int cartId) {

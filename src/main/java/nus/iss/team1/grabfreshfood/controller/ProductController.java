@@ -88,6 +88,10 @@ public class ProductController {
 		review.setId(0);
 		review.setUserId(customer.getId());
 		review.setProductId(productId);
+
+		String displayName = customer.getFirstName();
+		review.setUsername(displayName);
+
 		reviewService.addReview(review);
 
 		return "redirect:/product/" + productId;

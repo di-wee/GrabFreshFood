@@ -120,11 +120,14 @@
             <h4>Customer Reviews</h4>
 
             <div th:each="review : ${reviews}" class="p-2 mb-2 border rounded">
-                <div>
-                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                      th:classappend="${i <= review.rating} ? 'text-warning' : 'text-muted'">
-                    <i class="bi bi-star-fill"></i>
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    <div>
+            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                  th:classappend="${i <= review.rating} ? 'text-warning' : 'text-muted'">
+                <i class="bi bi-star-fill"></i>
+            </span>
+                    </div>
+                    <small class="text-muted" th:text="${review.username}">Username</small>
                 </div>
                 <p class="mt-2 mb-0" th:text="${review.comment}">Review comment</p>
             </div>

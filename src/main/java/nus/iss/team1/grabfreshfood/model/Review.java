@@ -30,6 +30,6 @@ public class Review {
     @Column(name = "comment")
     private String comment;
 
-    @Column(name = "username")
+    @Column(name = "name")
     private String username;
 }

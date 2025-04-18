@@ -142,7 +142,7 @@ public class OrderHistoryController {
         if ("saved".equals(addressOption)){
             shippingAddress = customer.getAddress();
         } else {
-            if (address.isBlank() || floorNumber.isBlank() || unitNumber.isBlank()) {
+            if (address == null || address.isBlank()) {
                 model.addAttribute("error", "Please fill in valid delivery address!");
                 model.addAttribute("cartId",cartId);
                 return "checkout-page";

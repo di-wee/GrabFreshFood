@@ -7,6 +7,7 @@ import nus.iss.team1.grabfreshfood.model.Cart;
 import nus.iss.team1.grabfreshfood.model.Customer;
 import nus.iss.team1.grabfreshfood.repository.CartRepository;
 import nus.iss.team1.grabfreshfood.repository.CustomerRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,8 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Controller
@@ -28,7 +32,8 @@ public class CustomerController {
     private CartRepository cartRepo;
 
     @GetMapping("/login")
-    public String showLoginForm() {
+    public String showLoginForm(Model model) {
+        model.addAttribute("customer", new Customer()); // ensure form model is ready
         return "login-page";
     }
 
@@ -53,8 +58,24 @@ public class CustomerController {
     }
 
     @GetMapping("/logout")
-    public String doLogout(HttpSession session) {
+    public String doLogout(HttpSession session, RedirectAttributes redirectAttributes) {
         session.invalidate();
+
+        // Determine time-based greeting
+        LocalTime now = LocalTime.now();
+        String greeting;
+
+        if (now.isBefore(LocalTime.NOON)) {
+            greeting = "Good morning";
+        } else if (now.isBefore(LocalTime.of(18, 0))) {
+            greeting = "Good afternoon";
+        } else {
+            greeting = "Good evening";
+        }
+
+        String message = "You have sucessfully logged out. Thank you for shopping with GrabFreshFood ☺! Have a " + greeting.toLowerCase() + "!";
+        redirectAttributes.addFlashAttribute("logoutMessage", message);
+
         return "redirect:/login";
     }
 
@@ -73,7 +94,7 @@ public class CustomerController {
             result.rejectValue("username", "error.username", "Username already exists");
         }
         if (result.hasErrors()) {
-        	System.out.println("Phone number submitted: " + customerDTO.getPhoneNumber());
+            System.out.println("Phone number submitted: " + customerDTO.getPhoneNumber());
             result.getAllErrors().forEach(error -> System.out.println("Register validation error: " + error.getDefaultMessage()));
             return "register";   
         }

@@ -30,6 +30,7 @@ public class ProductController {
         this.productService = productService;
     }
 
+    //Done by Priscilla and Ben
     //display product details
     @GetMapping("/product/{id}")
     public String getProductInfo(@PathVariable("id") int id, Model model, HttpSession session) {
@@ -60,6 +61,7 @@ public class ProductController {
 
     }
 
+    //Done by Priscilla
     //check if the user is login before allowing usage of add to cart function
     @PostMapping("/product/addToCart")
     public String addToCart(HttpSession session,

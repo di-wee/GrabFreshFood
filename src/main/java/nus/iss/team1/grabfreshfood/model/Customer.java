@@ -4,6 +4,7 @@ package nus.iss.team1.grabfreshfood.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * Represents a Customer in the system.
  * Includes personal and login information, along with account status and orders.
  */
+//Done by Lewis
 @Entity
 @Table(name = "customer")
 public class Customer {
@@ -24,8 +26,8 @@ public class Customer {
     // Username used as email; must be unique and match specific pattern
     @NotBlank(message = "Email is required")
     @Pattern(
-        regexp = "^[\\w.-]+@[\\w.-]+\\.com$",
-        message = "Email must be a valid address ending with .com"
+            regexp = "^[\\w.-]+@[\\w.-]+\\.com$",
+            message = "Email must be a valid address ending with .com"
     )
     @Column(name = "email", nullable = false, unique = true)
     private String username;
@@ -45,8 +47,8 @@ public class Customer {
     // Phone number validation: must be digits only
     @NotBlank(message = "Phone number is required")
     @Pattern(
-        regexp = "\\d+",
-        message = "Phone number must contain only digits"
+            regexp = "\\d+",
+            message = "Phone number must contain only digits"
     )
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -79,6 +81,7 @@ public class Customer {
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -86,6 +89,7 @@ public class Customer {
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -93,6 +97,7 @@ public class Customer {
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String fn) {
         this.firstName = fn;
     }
@@ -100,6 +105,7 @@ public class Customer {
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String ln) {
         this.lastName = ln;
     }
@@ -107,6 +113,7 @@ public class Customer {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
     public void setPhoneNumber(String pn) {
         this.phoneNumber = pn;
     }
@@ -114,6 +121,7 @@ public class Customer {
     public String getAddress() {
         return address;
     }
+
     public void setAddress(String addr) {
         this.address = addr;
     }
@@ -121,6 +129,7 @@ public class Customer {
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
     }
+
     public void setRegistrationDate(LocalDateTime dt) {
         this.registrationDate = dt;
     }
@@ -128,6 +137,7 @@ public class Customer {
     public Boolean getIsActive() {
         return isActive;
     }
+
     public void setIsActive(Boolean active) {
         this.isActive = active;
     }
@@ -135,6 +145,7 @@ public class Customer {
     public List<Order> getMyOrders() {
         return myOrders;
     }
+
     public void setMyOrders(List<Order> myOrders) {
         this.myOrders = myOrders;
     }

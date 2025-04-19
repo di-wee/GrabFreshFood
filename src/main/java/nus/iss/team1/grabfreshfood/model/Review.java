@@ -7,6 +7,7 @@ import lombok.Setter;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 
+//Done by Benjamin
 @Getter
 @Setter
 @Entity

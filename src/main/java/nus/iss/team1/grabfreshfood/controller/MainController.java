@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
+//Done by Shawn
 @Controller
 public class MainController {
     @Autowired
     private CategoryService categoryService;
+
     // Main landing page
     @GetMapping("/")
     public String landingPage(Model model) {
-        List<Category> categories=categoryService.getAllCategoriesWithSubcategories();
+        List<Category> categories = categoryService.getAllCategoriesWithSubcategories();
         model.addAttribute("categories", categories);
 
         return "landing-page";

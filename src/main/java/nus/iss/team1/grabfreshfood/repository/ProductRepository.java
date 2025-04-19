@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
+    //Done by Shi Ying
     @Query("SELECT p from Product p WHERE " +
             "LOWER(p.name) LIKE LOWER(CONCAT('%',:query, '%')) OR " +
             "LOWER(p.subCategory.name) LIKE LOWER(CONCAT('%',:query, '%')) OR " +

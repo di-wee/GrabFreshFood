@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
+//Done by Lewis
 @Controller
 public class CustomerController {
 
@@ -107,7 +108,7 @@ public class CustomerController {
         if (result.hasErrors()) {
             System.out.println("Phone number submitted: " + customerDTO.getPhoneNumber());
             result.getAllErrors().forEach(error -> System.out.println("Register validation error: " + error.getDefaultMessage()));
-            return "register";   
+            return "register";
         }
 
         // Create and populate new Customer entity

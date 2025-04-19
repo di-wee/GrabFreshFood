@@ -15,7 +15,6 @@ public interface ProductService {
     public List<Product> findAllProduct();
 
     Product findProductById(int id);
-//    public Optional<Product> findProductById(int id);
 
 
 }

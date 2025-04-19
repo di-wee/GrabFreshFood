@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+//Done by Dionis
 public class AddItemToCartReq {
     private int customerId, productId;
 

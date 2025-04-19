@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+//Done by Dionis
 @Getter
 @Setter
 @Entity
@@ -25,7 +26,6 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
-
 
 
 }

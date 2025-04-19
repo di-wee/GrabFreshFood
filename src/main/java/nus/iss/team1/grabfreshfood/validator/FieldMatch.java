@@ -3,14 +3,16 @@ package nus.iss.team1.grabfreshfood.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+
 import java.lang.annotation.*;
 
 /**
  * Custom annotation to validate that two fields in a class match.
  * Commonly used for password and confirm password validation.
  */
+//Done by Lewis
 @Documented
-@Target({ ElementType.TYPE }) // Annotation can be applied at the class level
+@Target({ElementType.TYPE}) // Annotation can be applied at the class level
 @Retention(RetentionPolicy.RUNTIME) // Available at runtime for reflection
 @Constraint(validatedBy = FieldMatchValidator.class) // Specifies the validator class to be used
 public @interface FieldMatch {

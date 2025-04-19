@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * Validator class for the @FieldMatch annotation.
  * Compares two fields of an object and returns true if they match.
  */
+//Done by Lewis
 public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Object> {
 
     // Names of the fields to compare
@@ -25,7 +26,7 @@ public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Obje
 
     /**
      * Checks if the two specified fields in the object have equal values.
-     * 
+     *
      * @param value   The object being validated (e.g., DTO)
      * @param context Context in which the constraint is evaluated
      * @return true if fields match, false otherwise

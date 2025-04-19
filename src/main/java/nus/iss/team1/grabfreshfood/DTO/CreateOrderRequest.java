@@ -10,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+//Done by Dionis
 public class CreateOrderRequest {
     private int customerId;
     private double totalAmount;

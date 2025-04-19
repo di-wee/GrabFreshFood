@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
  * Repository interface for Customer entity.
  * Extends JpaRepository to provide standard CRUD operations.
  */
+//Done by Lewis
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
@@ -20,6 +21,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Customer findByUsername(String username);
 
     // Done by Dionis
+
     /**
      * Custom method to retrieve a customer by ID.
      * Duplicate of findById, but returns Customer directly instead of Optional<Customer>.

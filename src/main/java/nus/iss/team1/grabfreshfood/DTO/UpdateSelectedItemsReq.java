@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.List;
 
+//Done by Dionis
 @Getter
 @Setter
 public class UpdateSelectedItemsReq {

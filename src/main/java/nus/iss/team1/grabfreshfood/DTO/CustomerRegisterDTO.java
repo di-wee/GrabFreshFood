@@ -9,6 +9,7 @@ import nus.iss.team1.grabfreshfood.validator.FieldMatch;
  * DTO for customer registration.
  * Includes field-level and class-level validation.
  */
+//Done by Lewis
 @Getter
 @Setter
 @FieldMatch(first = "password", second = "confirmPassword", message = "Passwords do not match")

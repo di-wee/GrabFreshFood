@@ -6,6 +6,7 @@ import nus.iss.team1.grabfreshfood.model.SubCategory;
 
 import java.util.List;
 
+//Done by Shi Ying
 public interface CategoryService {
     List<Category> getAllCategoriesWithSubcategories();
 

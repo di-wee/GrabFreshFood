@@ -33,24 +33,30 @@
 <!--Done by LIU SHUTING-->
 <div class="payment-grid container bg-light">
     <div class="top-banner">
-        <h5 class="banner-text"><span style="margin-right: 10px"><i class="bi bi-credit-card"></i></span>Payment method</h5>
+        <h5 class="banner-text"><span style="margin-right: 10px"><i class="bi bi-credit-card"></i></span>Payment method
+        </h5>
     </div>
     <form id="paymentForm" method="post" style="width: 100%" th:action="@{/payment}">
         <input name="orderId" th:value="${orderId}" type="hidden">
         <div class="payment-form form-group">
             <label>Card number</label>
-            <input class="form-control" id="cardNumber" name="cardNumber" type="text" maxlength="19" placeholder="0000-0000-0000-0000" required inputmode="numeric"/>
+            <input class="form-control" id="cardNumber" inputmode="numeric" maxlength="19" name="cardNumber"
+                   placeholder="0000-0000-0000-0000" required type="text"/>
             <span class="text-danger small" id="cardError"></span>
 
             <div class="row row-cols-2">
                 <div class="col">
                     <label>Expiry</label>
-                    <input class="form-control" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" type="text" required pattern="^(0[1-9]|1[0-2])\/\d{2}$" inputmode="numeric"/>
+                    <input class="form-control" id="cardExpiry" inputmode="numeric" name="cardExpiry"
+                           pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+                           placeholder="MM/YY" required type="text"/>
                     <span class="text-danger small" id="expiryError"></span>
                 </div>
                 <div class="col">
                     <label>CVC</label>
-                    <input class="form-control" id="cardCVC" name="CVC" placeholder="CVC" type="text" maxlength="3" required pattern="\d{3}" inputmode="numeric" title="Key in numbers only"/>
+                    <input class="form-control" id="cardCVC" inputmode="numeric" maxlength="3" name="CVC"
+                           pattern="\d{3}"
+                           placeholder="CVC" required title="Key in numbers only" type="text"/>
                     <span class="text-danger small" id="cvcError"></span>
                 </div>
             </div>
@@ -86,6 +92,16 @@
             let formatted = value.match(/.{1,4}/g);
             cardInput.value = formatted ? formatted.join("-") : "";
         });
+        const expiryInput = document.getElementById("cardExpiry")
+
+        expiryInput.addEventListener("input", () => {
+            let checkValue = expiryInput.value.replace(/\D/g, ''); // remove non-digits globally
+            if (checkValue.length >= 3) {
+                expiryInput.value = checkValue.substring(0, 2) + "/" + checkValue.substring(2, 4);
+            } else {
+                expiry.value = checkValue;
+            }
+        })
 
         // Form validation on submit
         document.getElementById("paymentForm").addEventListener("submit", function (e) {
@@ -102,7 +118,7 @@
             }
 
             // Validate expiry MM/YY
-            const expiry = document.getElementById("cardExpiry").value;
+            const expiry = expiryInput.value;
             const match = expiry.match(/^(\d{2})\/(\d{2})$/);
             if (!match) {
                 document.getElementById("expiryError").innerText = "Enter expiry as MM/YY.";
@@ -117,6 +133,7 @@
                     isValid = false;
                 }
             }
+
 
             // Validate CVC (3 digits)
             const cvc = document.getElementById("cardCVC").value;

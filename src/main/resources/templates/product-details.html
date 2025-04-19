@@ -134,6 +134,7 @@
                 </div>
             </div>
         </div>
+        <!-- Review DONE BY BEN YEN -->
         <div class="mt-5">
             <h4>Customer Reviews</h4>
             <p th:text="${reviewCount} + ' review' + (${reviewCount == 1} ? '' : 's')"></p>
@@ -160,15 +161,16 @@
                     <h5 class="mb-3">Write a Review</h5>
                     <form method="post" th:action="@{/product/{id}/review(id=${product.id})}" th:object="${reviewForm}">
                         <input th:field="*{productId}" th:value="${product.id}" type="hidden"/>
-                        <div class="mb-2">
+                        <div class="mb-3">
                             <label class="form-label">Rating</label>
-                            <select class="form-select" required th:field="*{rating}">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
+                            <div id="starRating" class="d-flex gap-1">
+                                <input type="hidden" th:field="*{rating}" id="rating" />
+                                <i class="bi bi-star" data-value="1"></i>
+                                <i class="bi bi-star" data-value="2"></i>
+                                <i class="bi bi-star" data-value="3"></i>
+                                <i class="bi bi-star" data-value="4"></i>
+                                <i class="bi bi-star" data-value="5"></i>
+                                </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Comment</label>
@@ -206,6 +208,23 @@
 
     const maxInput = parseInt(quantityInput.getAttribute("max")) //product.quantity > 30 ? 30:product.quantity
     const maxStock = Math.min(maxInput, 30); // choose the lesser of the two
+
+    //JS DONE BY BEN YEN
+    const stars = document.querySelectorAll('#starRating i');
+    const ratingInput = document.getElementById('rating');
+
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            ratingInput.value = star.dataset.value;
+
+            stars.forEach((s, i) => {
+                s.classList.toggle('bi-star-fill', i < star.dataset.value);
+                s.classList.toggle('bi-star', i >= star.dataset.value);
+                s.classList.add('text-warning');
+            });
+        });
+    });
+    //END OF SECTION BY BENJAMIN YEN
 
     //Update the stock message
     function updateStockStatus() {

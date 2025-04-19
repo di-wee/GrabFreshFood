@@ -78,6 +78,7 @@ public class ProductController {
         return "redirect:/cart";
     }
 
+    //DONE BY BEN YEN
     @PostMapping("/product/{id}/review")
     public String submitReview(@PathVariable("id") int productId,
                                @ModelAttribute("reviewForm") Review review,

@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
 function CartItem({
-	item,
-	selectedItems,
-	setSelectedItems,
-	setQuantities,
-	quantities,
-	setSubTotal,
-	subTotal,
-	cartItems,
-	itemPrice,
-	setItemPrice,
-	removeCartItem,
-	itemSubtotal,
-}) {
+					  item,
+					  selectedItems,
+					  setSelectedItems,
+					  setQuantities,
+					  quantities,
+					  setSubTotal,
+					  subTotal,
+					  cartItems,
+					  itemPrice,
+					  setItemPrice,
+					  removeCartItem,
+					  itemSubtotal,
+				  }) {
 	const [product, setProduct] = useState({});
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
 
@@ -111,93 +111,74 @@ function CartItem({
 	}, [cartItems, quantities, selectedItems, itemPrice]);
 
 	return (
-		<div className='row border-bottom p-3 align-items-center'>
-			<div className='product-checkbox col-1 d-flex justify-content-center'>
-				<input
-					className='form-check-input'
-					type='checkbox'
-					checked={selectedItems.includes(item.cartItemId)}
-					onChange={() => handleToggleCheckBox(item.cartItemId)}
-				/>
-			</div>
-
-			<div className='product-image col-2'>
-				{product.imageURL && (
-					<img
-						alt={product.name}
-						className='img-fluid rounded'
-						src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
-						onError={(e) => {
-							e.target.onerror = null;
-							e.target.src = `${import.meta.env.VITE_SERVER}assets/placeholder.jpg`;
-						}}
+		<div className='card mb-3 shadow-sm'>
+			<div className='card-body d-flex align-items-start'>
+				<div className='me-3'>
+					<input
+						className='form-check-input mt-2'
+						type='checkbox'
+						checked={selectedItems.includes(item.cartItemId)}
+						onChange={() => handleToggleCheckBox(item.cartItemId)}
 					/>
-				)}
-			</div>
+				</div>
 
-			<div className='product-name col-7'>
-				<h6>
-					<b>{product.name}</b>
-				</h6>
+				<div className='me-3' style={{ width: '100px', minWidth: '100px' }}>
+					{product.imageURL && (
+						<img
+							alt={product.name}
+							className='img-fluid rounded'
+							src={`${import.meta.env.VITE_SERVER}${product.imageURL}`}
+							onError={(e) => {
+								e.target.onerror = null;
+								e.target.src = `${import.meta.env.VITE_SERVER}assets/placeholder.jpg`;
+							}}
+						/>
+					)}
+				</div>
 
-				<p style={{ fontSize: 'smaller', marginBottom: '0.5rem' }}>
-					<i>{product.description}</i>
-				</p>
+				<div className='flex-grow-1'>
+					<h6 className='mb-1 fw-bold'>{product.name}</h6>
+					<p className='text-muted small mb-1'>{product.description}</p>
+					<p className='fw-semibold mb-2'>${product.price?.toFixed(2)}</p>
 
-				<p
-					style={{
-						fontSize: 'smaller',
-						fontWeight: 'bold',
-						marginBottom: '0.5rem',
-					}}>
-					${product.price !== undefined
-						? product.price.toFixed(2)
-						: product.price}
-				</p>
+					<div className='d-flex align-items-center'>
+						<input
+							className='form-control form-control-sm text-center'
+							min='1'
+							max={Math.min(product.quantity, 30)}
+							style={{ width: '80px' }}
+							type='number'
+							value={quantities[item.cartItemId]}
+							onChange={(event) => {
+								const newQty = parseInt(event.target.value);
+								const maxAllowed = Math.min(product.quantity, 30);
+								if (newQty > maxAllowed) {
+									alert(`You can only purchase up to ${maxAllowed} units`);
+									return;
+								}
+								setLocalQuantity(newQty);
+								handleUpdateQuantity(item.cartItemId, newQty);
+							}}
+							onBlur={() => {
+								const qty = parseInt(localQuantity);
+								const maxAllowed = Math.min(product.quantity, 30);
+								if (!isNaN(qty) && qty >= 1 && qty <= maxAllowed) {
+									updateQuantityDB(item.cartId, item.cartItemId, qty);
+								}
+							}}
+						/>
+						<small className='text-muted ms-2'>(Max 30)</small>
+					</div>
+				</div>
 
-				{/* Quantity input with dual constraint logic */}
-				<input
-					className='form-control form-control-sm text-center'
-					min='1'
-					max={Math.min(product.quantity, 30)}
-					style={{ width: '80px' }}
-					type='number'
-					value={quantities[item.cartItemId]}
-					onChange={(event) => {
-						const newQty = parseInt(event.target.value);
-						const maxAllowed = Math.min(product.quantity, 30);
-						if (newQty > maxAllowed) {
-							alert(`You can only purchase up to ${maxAllowed} units`);
-							return;
-						}
-						setLocalQuantity(newQty);
-						handleUpdateQuantity(item.cartItemId, newQty);
-					}}
-					onBlur={() => {
-						const qty = parseInt(localQuantity);
-						const maxAllowed = Math.min(product.quantity, 30);
-						if (!isNaN(qty) && qty >= 1 && qty <= maxAllowed) {
-							updateQuantityDB(item.cartId, item.cartItemId, qty);
-						} else {
-							console.warn('Invalid quantity entered');
-						}
-					}}
-				/>
-
-				<p className='text-muted small mt-1'>(Max 30 per customer)</p>
-			</div>
-
-			<div
-				className='price-delete col-1 d-flex flex-column align-items-center'
-				style={{ marginLeft: '3vh' }}>
-				<p
-					style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '5px' }}>
-					${itemSubtotal}
-				</p>
-				<i
-					onClick={() => handleDeleteItem(item.cartId, item.cartItemId)}
-					className='bi bi-trash3'
-					style={{ cursor: 'pointer' }}></i>
+				<div className='text-end d-flex flex-column align-items-end justify-content-between' style={{ minWidth: '80px' }}>
+					<p className='fw-bold mb-2'>${itemSubtotal}</p>
+					<i
+						onClick={() => handleDeleteItem(item.cartId, item.cartItemId)}
+						className='bi bi-trash3'
+						style={{ cursor: 'pointer' }}
+					></i>
+				</div>
 			</div>
 		</div>
 	);

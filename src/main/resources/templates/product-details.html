@@ -163,14 +163,14 @@
                         <input th:field="*{productId}" th:value="${product.id}" type="hidden"/>
                         <div class="mb-3">
                             <label class="form-label">Rating</label>
-                            <div id="starRating" class="d-flex gap-1">
-                                <input type="hidden" th:field="*{rating}" id="rating" />
+                            <div class="d-flex gap-1" id="starRating">
+                                <input id="rating" th:field="*{rating}" type="hidden"/>
                                 <i class="bi bi-star" data-value="1"></i>
                                 <i class="bi bi-star" data-value="2"></i>
                                 <i class="bi bi-star" data-value="3"></i>
                                 <i class="bi bi-star" data-value="4"></i>
                                 <i class="bi bi-star" data-value="5"></i>
-                                </div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Comment</label>
@@ -200,6 +200,7 @@
 <div th:replace="~{fragments/scripts :: dropdown-hover-script}"></div>
 
 <script>
+    //Done by Priscilla
     const quantityInput = document.getElementById("quantity");
     const stockStatus = document.getElementById("stockStatus");
     const addToCart = document.getElementById("addToCart");
@@ -248,6 +249,8 @@
     // real-time feedback when user type in the input box
     quantityInput.addEventListener("input", updateStockStatus);
 
+
+    //Done by Priscilla
     // Update +/- button logic and status update message
     function increaseQuantity() {
         let value = parseInt(quantityInput.value) || 1;
@@ -258,6 +261,7 @@
         updateStockStatus();
     }
 
+    //Done by Priscilla
     function decreaseQuantity() {
         let value = parseInt(quantityInput.value) || 1;
         if (value > 1) {
@@ -266,6 +270,7 @@
         updateStockStatus();
     }
 
+    //Done by Priscilla
     // Still enforce the max on form submit
     function maxQuantity() {
         const value = parseInt(quantityInput.value) || 1;

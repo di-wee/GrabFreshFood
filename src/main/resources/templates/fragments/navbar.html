@@ -1,3 +1,5 @@
+<!--DONE BY SHAWN-->
+
 <div th:fragment="navbar">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-3 navbar-grabfreshfood">
@@ -6,19 +8,20 @@
                 GrabFreshFood
             </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
-                    aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+            <button aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+                    data-bs-target="#navbarMain" data-bs-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle px-3" href="#" id="categoriesDropdown" role="button" aria-expanded="false">
+                        <a aria-expanded="false" class="nav-link dropdown-toggle px-3" href="#" id="categoriesDropdown"
+                           role="button">
                             Categories
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
-                            <li th:each="cat : ${categories}" class="dropdown-submenu">
+                        <ul aria-labelledby="categoriesDropdown" class="dropdown-menu">
+                            <li class="dropdown-submenu" th:each="cat : ${categories}">
                                 <a class="dropdown-item"
                                    th:href="@{'/category/' + ${cat.name}}"
                                    th:text="${cat.name}"></a>
@@ -34,10 +37,10 @@
                     </li>
                 </ul>
 
-                <form class="d-flex mb-3 mb-lg-0 me-lg-3 w-100 w-lg-50" th:action="@{/search/result}" method="get">
+                <form class="d-flex mb-3 mb-lg-0 me-lg-3 w-100 w-lg-50" method="get" th:action="@{/search/result}">
                     <div class="input-group">
-                        <input class="form-control search-bar" type="search" name="keyword"
-                               placeholder="Search for groceries..." aria-label="Search">
+                        <input aria-label="Search" class="form-control search-bar" name="keyword"
+                               placeholder="Search for groceries..." type="search">
                         <button class="btn search-button" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
@@ -53,16 +56,17 @@
                             <span class="d-none d-md-inline small">Login</span>
                         </a>
                     </span>
-                    <span th:if="${session.customer != null}" class="d-flex">
+                    <span class="d-flex" th:if="${session.customer != null}">
                         <div class="nav-item dropdown mx-2 hover-dropdown">
-                            <a class="nav-link dropdown-toggle d-flex flex-column align-items-center" href="#" id="accountDropdown"
-                               role="button" aria-expanded="false">
+                            <a aria-expanded="false" class="nav-link dropdown-toggle d-flex flex-column align-items-center"
+                               href="#"
+                               id="accountDropdown" role="button">
                                 <div class="position-relative">
                                     <i class="bi bi-person fs-5"></i>
                                 </div>
                                 <span class="d-none d-md-inline small">Account</span>
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="accountDropdown">
+                            <ul aria-labelledby="accountDropdown" class="dropdown-menu">
                                 <li><a class="dropdown-item" th:href="@{/account}">Account</a></li>
                                 <li><a class="dropdown-item" th:href="@{/order-history}">Orders</a></li>
                                 <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
@@ -73,7 +77,8 @@
                     <a class="nav-link d-flex flex-column align-items-center mx-2" th:href="@{/cart}">
                         <div class="position-relative">
                             <i class="bi bi-cart fs-5"></i>
-                            <span class="badge rounded-pill badge-cart" th:if="${cartItemCount > 0}" th:text="${cartItemCount}">0</span>
+                            <span class="badge rounded-pill badge-cart" th:if="${cartItemCount > 0}"
+                                  th:text="${cartItemCount}">0</span>
                         </div>
                         <span class="d-none d-md-inline small">Cart</span>
                     </a>

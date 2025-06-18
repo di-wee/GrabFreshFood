@@ -75,13 +75,13 @@ npm start
 ## ✨ Credits
 Proudly authored by GDipSA60, Team 1.
 
-@benyen-GA (Benjamin)
-@di-wee (Dionis)
-@huanglewis (Lewis)
-@Lunar-lau (Shu Ting)
-@Prizellia (Priscilla)
-@shiy-liang (Shi Ying)
-@slz-wei (Shawn)
-@
+- @benyen-GA (Benjamin)
+- @di-wee (Dionis)
+- @huanglewis (Lewis)
+- @Lunar-lau (Shu Ting)
+- @Prizellia (Priscilla)
+- @shiy-liang (Shi Ying)
+- @slz-wei (Shawn)
+
 
 

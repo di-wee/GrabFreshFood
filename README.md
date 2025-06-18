@@ -37,7 +37,8 @@ GrabFreshFood is a mock e-commerce supermarket web application that allows users
 
 | Homepage | Product Details | Shopping Cart | Login Page |
 |----------|------------------|----------------|-------------|
-| ![Home](./screenshots/home.png) | ![Product](./screenshots/product.png) | ![Cart](./screenshots/cart.png) | ![Login](./screenshots/login.png) |
+| ![Home]![149af217-3b56-43b5-aeff-e1b6a62d4470](https://github.com/user-attachments/assets/1bd4ad0b-ce40-46fc-9cb9-26a056ffb501)
+ | ![Product](./screenshots/product.png) | ![Cart](./screenshots/cart.png) | ![Login](./screenshots/login.png) |
 
 > ℹ️ *Replace the image paths above with actual screenshots from your `/screenshots/` folder.*
 
